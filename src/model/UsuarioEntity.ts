@@ -1,20 +1,22 @@
-export class Usuario{
+export class UsuarioEntity{
     nome: string;
     cpf: number;
     email: string;
     categoria: string;
     curso: string;
+    status: boolean;
 
-    constructor(nome: string, email: string, categoria: string, curso: string){
+    constructor(nome: string, cpf: number, email: string, categoria: string, curso: string){
         this.nome = nome;
-        this.cpf = this.meuCPF();
+        this.cpf = this.meuCPF(cpf);
         this.email = email;
         this.categoria = categoria;
         this.curso = curso;
+        this.status = true;
     }
 
-    private meuCPF(): number{
-        const cpfStr = this.cpf.toString();
+    private meuCPF(cpf: number): number{
+        const cpfStr = cpf.toString();
 
         if(cpfStr.length != 11){
             throw new Error("O seu CPF não tem 11 digitos, por favor tente novamente!");
@@ -93,7 +95,6 @@ export class Usuario{
                 }
             }
         }
-        throw new Error("CPF inválido ou não pôde ser validado.");
+        throw new Error("CPF inválido ou não pode ser validado.");
     }
-
-    }
+}
