@@ -30,12 +30,14 @@ let soma = 0;
             digitoVerificador = d;
         }
 
+        console.log("O seu digito verificador é " + digitoVerificador);
+
         let valido;
 
         if(parseInt(cpfStr[9]) && digitoVerificador == 0){
-            valido = "Valido";
+            console.log("Valido");
         }else if(parseInt(cpfStr[9]) && digitoVerificador == d){
-            valido = "Valido";
+            console.log("Valido");
         }else{
-            valido = "CPF falso";
+            console.log("CPF Invalido");
         }
