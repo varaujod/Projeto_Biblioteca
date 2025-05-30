@@ -1,4 +1,4 @@
-const cpfStr = "7777777";
+const cpfStr = "66548519515";
 // let repetido = true;
 
 // for (let i = 0; i < cpfStr.length; i++) {
@@ -15,29 +15,21 @@ const cpfStr = "7777777";
 // }
 
 let soma = 0;
+for (let i = 0; i < 9; i++) {
+    soma += parseInt(cpfStr[i]) * (10 - i);
+}
+let resto = soma % 11;
+let digito1;
+if (resto < 2) {
+    digito1 = 0;
+} else {
+    digito1 = 11 - resto;
+}
 
-        for (let i = 0; i <= 11; i++){
-            soma = soma + parseInt(cpfStr[i]);
-        }
+console.log("Primeiro dígito verificador calculado:", digito1);
 
-        let restOnze = soma % 11;
-        let digitoVerificador = 0;
-        let d = 11 - restOnze;
-
-        if(restOnze < 2){
-            digitoVerificador = 0;
-        } else{
-            digitoVerificador = d;
-        }
-
-        console.log("O seu digito verificador é " + digitoVerificador);
-
-        let valido;
-
-        if(parseInt(cpfStr[9]) && digitoVerificador == 0){
-            console.log("Valido");
-        }else if(parseInt(cpfStr[9]) && digitoVerificador == d){
-            console.log("Valido");
-        }else{
-            console.log("CPF Invalido");
-        }
+if (parseInt(cpfStr[9]) === digito1) {
+    console.log("Primeiro dígito verificador válido");
+} else {
+    console.log("CPF Invalido");
+}

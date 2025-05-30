@@ -1,6 +1,6 @@
 export class Usuario{
     nome: string;
-    cpf: number[];
+    cpf: number;
     email: string;
     categoria: string;
     curso: string;
@@ -13,7 +13,7 @@ export class Usuario{
         this.curso = curso;
     }
 
-    private meuCPF(): any{
+    private meuCPF(): number{
         const cpfStr = this.cpf.toString();
 
         if(cpfStr.length != 11){
@@ -37,34 +37,63 @@ export class Usuario{
             }
         }
 
+        function verificarPrimeiroDigito(): boolean{
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpfStr[i]) * (10 - i);
+            }
 
-        let soma = 0;
+            let resto = soma % 11;
+            let digito1;
 
-        for (let i = 0; i <= 11; i++){
-            soma = soma + parseInt(cpfStr[i]);
+            if(resto < 2){
+                digito1 = 0;
+            } else{
+                digito1 = 11 - resto;
+            }
+
+            if(parseInt(cpfStr[9]) === digito1){
+                return true;
+            } else{
+                throw new Error("O CPF é inválido!");
+            }
         }
 
-        let restOnze = soma % 11;
-        let digitoVerificador = 0;
-        let d = 11 - restOnze;
+        function verificarSegundoDigito(): boolean{
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpfStr[i]) * (12 - i);
+            }
 
-        if(restOnze < 2){
-            digitoVerificador = 0;
-        } else{
-            digitoVerificador = d;
+            let resto = soma % 11;
+            let digito1;
+
+            if(resto < 2){
+                digito1 = 0;
+            } else{
+                digito1 = 11 - resto;
+            }
+
+            if(parseInt(cpfStr[9]) === digito1){
+                return true;
+            } else{
+                throw new Error("O CPF é inválido!");
+            }
         }
 
-        let valido;
-
-        if(parseInt(cpfStr[9]) && digitoVerificador == 0){
-            valido = "Valido";
-        }else if(parseInt(cpfStr[9]) && digitoVerificador == d){
-            valido = "Valido";
-        }else{
-            valido = "CPF falso";
+        const cpfArray: number[] = [];
+        for (let i = 0; i < cpfStr.length; i++) {
+            cpfArray[i] = Number(cpfStr[i]);
         }
-            
-    }
         
-            // return this.cpf;
+        if(sequenciaRepetida()){
+            if(verificarPrimeiroDigito()){
+                if(verificarSegundoDigito()){
+                    return parseInt(cpfArray.join(''));
+                }
+            }
+        }
+        throw new Error("CPF inválido ou não pôde ser validado.");
+    }
+
     }
