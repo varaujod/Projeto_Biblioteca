@@ -13,6 +13,7 @@ function logInfo(){
 }
 
 app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioController));
-app.get("/library/usuarios", usuarioController.filtrarUsuario);
+app.get("/library/usuarios", usuarioController.listarUsuarios);
+
 
 app.listen(PORT, logInfo);

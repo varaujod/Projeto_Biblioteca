@@ -13,5 +13,5 @@ function logInfo() {
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
 app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioController));
-app.get("/library/usuarios", usuarioController.filtrarUsuario);
+app.get("/library/usuarios", usuarioController.listarUsuarios);
 app.listen(PORT, logInfo);

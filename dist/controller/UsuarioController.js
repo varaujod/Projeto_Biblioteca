@@ -19,9 +19,24 @@ class UsuarioController {
             });
         }
     }
+    listarUsuarios(req, res) {
+        try {
+            const lista = this.usuarioService.listarUsuarios();
+            res.status(201).json(lista);
+        }
+        catch (error) {
+            let message = "Não conseguimos realizar a listagem";
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            res.status(400).json({
+                message: message
+            });
+        }
+    }
     filtrarUsuario(req, res) {
         try {
-            const usuario = this.usuarioService.filtrarUsuario(req.body.cpf);
+            const usuario = this.usuarioService.filtrarUsuario(req.params.cpf);
             res.status(201).json(usuario);
         }
         catch (error) {

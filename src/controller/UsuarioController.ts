@@ -19,9 +19,25 @@ export class UsuarioController{
         }
     }
 
+    listarUsuarios(req: Request, res: Response): void{
+        try{
+            const lista = this.usuarioService.listarUsuarios();
+            res.status(201).json(lista);
+        } catch(error: unknown){
+           let message = "Não conseguimos realizar a listagem";
+            if(error instanceof Error){
+                message = error.message;
+            }
+            res.status(400).json({
+                message: message
+            })
+        }
+    }
+
+
     filtrarUsuario(req: Request, res: Response): void{
         try{
-            const usuario = this.usuarioService.filtrarUsuario(req.body.cpf);
+            const usuario = this.usuarioService.filtrarUsuario(req.params.cpf);
             res.status(201).json(usuario);
         } catch(error: unknown){
             let message = "Não existe esse usuario em nosso cadastro, por favor cadastre esse usuario";
