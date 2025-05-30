@@ -9,11 +9,11 @@ export class UsuarioService{
             throw new Error("Por favor informar todos os campos");
         }
 
-        if(data.categoria != "Aluno" || "Professor" || "Bibliotecario"){
+        if(data.categoria != "Aluno" && data.categoria != "Professor" && data.categoria != "Bibliotecario"){
             throw new Error("Por favor informar uma categoria existente");
         }
 
-        if(data.curso != "ADS" || "Pedagogia" || "Administração"){
+        if(data.curso != "ADS" && data.categoria != "Pedagogia" && data.categoria != "Administração"){
             throw new Error("Por favor informar um curso existente");
         }
 
