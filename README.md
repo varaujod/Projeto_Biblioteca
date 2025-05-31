@@ -1,14 +1,3 @@
-## Projeto I - Gestão de Biblioteca.
-
-Esta atividade está sendo desenvolvida como parte da avaliação da disciplina de Programação Web do
-Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São
-Paulo, Campus Boituva ministrada pelo Professor e Doutor Anisio Silva.
-
-O projeto tem com objetivo desenvolver uma API para gestão de biblioteca acadêmica com arquitetura MVC.
-
-O sistema deve permitir o gerenciamento completo do acervo bibliográfico, usuários e empréstimos,
-seguindo rigorosamente as regras de negócio estabelecidas.
-
 ## Projeto I - Gestão de Biblioteca Acadêmica
 
 Este projeto é uma atividade de avaliação da disciplina de Programação Web, parte do Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São Paulo (IFSP), Câmpus Boituva. A disciplina é ministrada pelo **Prof. Dr. Anisio Silva**. [cite: 1]
