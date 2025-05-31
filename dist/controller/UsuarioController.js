@@ -22,7 +22,7 @@ class UsuarioController {
     listarUsuarios(req, res) {
         try {
             const lista = this.usuarioService.listarUsuarios();
-            res.status(201).json(lista);
+            res.status(200).json(lista);
         }
         catch (error) {
             let message = "Não conseguimos realizar a listagem";
@@ -36,8 +36,8 @@ class UsuarioController {
     }
     filtrarUsuario(req, res) {
         try {
-            const usuario = this.usuarioService.filtrarUsuario(req.params.cpf);
-            res.status(201).json(usuario);
+            const usuario = this.usuarioService.filtrarUsuario({ cpf: Number(req.params.cpf) });
+            res.status(200).json(usuario);
         }
         catch (error) {
             let message = "Não existe esse usuario em nosso cadastro, por favor cadastre esse usuario";

@@ -26,7 +26,8 @@ export class UsuarioService{
 
     filtrarUsuario(data: any){
         const cpf = data.cpf;
-        this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        return this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        // console.log(this.usuarioRepository.filtraUsuarioPorCPF(cpf));
     }
 
     removeUsuario(data: any){
@@ -35,6 +36,14 @@ export class UsuarioService{
     }
 
     listarUsuarios(){
-        this.usuarioRepository.listarUsuarios();
+        // console.log(this.usuarioRepository.listarUsuarios());
+        return this.usuarioRepository.listarUsuarios()
+    }
+
+    atualizaUsuario(data: any){
+        const cpf = data.cpf;
+        const novosDados = data.novosDados;
+
+        return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
 }

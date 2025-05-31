@@ -19,7 +19,7 @@ class UsuarioRepository {
     }
     removeUsuarioPorCPF(cpf) {
         const index = this.findIndex(cpf);
-        this.UsuarioList.slice(index, 1);
+        this.UsuarioList.splice(index, 1);
     }
     listarUsuarios() {
         return this.UsuarioList;
@@ -27,7 +27,7 @@ class UsuarioRepository {
     findIndex(cpf) {
         const index = this.UsuarioList.findIndex(user => user.cpf == cpf);
         if (index == -1) {
-            throw new Error("CPF informado não foi encontardo!");
+            throw new Error("CPF informado não foi encontrado!");
         }
         return index;
     }

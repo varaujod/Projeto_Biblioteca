@@ -21,14 +21,16 @@ class UsuarioService {
     }
     filtrarUsuario(data) {
         const cpf = data.cpf;
-        this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        return this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        // console.log(this.usuarioRepository.filtraUsuarioPorCPF(cpf));
     }
     removeUsuario(data) {
         const cpf = data.cpf;
         this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
     listarUsuarios() {
-        this.usuarioRepository.listarUsuarios();
+        // console.log(this.usuarioRepository.listarUsuarios());
+        return this.usuarioRepository.listarUsuarios();
     }
 }
 exports.UsuarioService = UsuarioService;

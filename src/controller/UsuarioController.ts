@@ -22,7 +22,7 @@ export class UsuarioController{
     listarUsuarios(req: Request, res: Response): void{
         try{
             const lista = this.usuarioService.listarUsuarios();
-            res.status(201).json(lista);
+            res.status(200).json(lista);
         } catch(error: unknown){
            let message = "Não conseguimos realizar a listagem";
             if(error instanceof Error){
@@ -34,11 +34,10 @@ export class UsuarioController{
         }
     }
 
-
     filtrarUsuario(req: Request, res: Response): void{
         try{
-            const usuario = this.usuarioService.filtrarUsuario(req.params.cpf);
-            res.status(201).json(usuario);
+            const usuario = this.usuarioService.filtrarUsuario({ cpf: Number(req.params.cpf)});
+            res.status(200).json(usuario);
         } catch(error: unknown){
             let message = "Não existe esse usuario em nosso cadastro, por favor cadastre esse usuario";
             if(error instanceof Error){
@@ -50,10 +49,8 @@ export class UsuarioController{
         }
     }
 
+    atualizarUsuario(req: Request, res: Response): void{
 
-
-
-
-
+    }
 
 }

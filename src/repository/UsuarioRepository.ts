@@ -24,7 +24,32 @@ export class UsuarioRepository{
     removeUsuarioPorCPF(cpf: number){
         const index = this.findIndex(cpf);
 
-        this.UsuarioList.slice(index, 1);
+        this.UsuarioList.splice(index, 1);
+    }
+
+    atualizarUsuarioPorCPF(cpf: number, novosDados: any){
+        const index = this.findIndex(cpf);
+        const usuario = this.UsuarioList[index];
+
+        if(novosDados.nome){
+            usuario.nome = novosDados.nome
+        }
+        
+        if(novosDados.email){
+            usuario.email = novosDados.email
+        }
+
+        if(novosDados.categoria){
+            usuario.categoria = novosDados.categoria
+        }
+
+        if(novosDados.curso){
+            usuario.curso = novosDados.curso
+        }
+
+        this.UsuarioList[index] = usuario;
+
+        return usuario;
     }
 
     listarUsuarios(): UsuarioEntity[]{
@@ -35,7 +60,7 @@ export class UsuarioRepository{
         const index = this.UsuarioList.findIndex(user => user.cpf == cpf);
 
         if(index == -1){
-            throw new Error("CPF informado não foi encontardo!");
+            throw new Error("CPF informado não foi encontrado!");
         }
 
         return index;

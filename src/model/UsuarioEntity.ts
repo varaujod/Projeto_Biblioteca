@@ -15,14 +15,7 @@ export class UsuarioEntity{
         this.status = true;
     }
 
-    private meuCPF(cpf: number): number{
-        const cpfStr = cpf.toString();
-
-        if(cpfStr.length != 11){
-            throw new Error("O seu CPF não tem 11 digitos, por favor tente novamente!");
-        }
-
-        function sequenciaRepetida(): boolean{
+        sequenciaRepetida(cpfStr: string): boolean{
             let repetido = true;
 
             for (let i = 0; i < cpfStr.length; i++) {
@@ -33,13 +26,14 @@ export class UsuarioEntity{
             }
 
             if(repetido == true){
+                console.log("O CPF não pode ser uma sequência repetida!");
                 throw new Error("O CPF não pode ser uma sequência repetida!");
             } else{
                 return true;
             }
         }
 
-        function verificarPrimeiroDigito(): boolean{
+        verificarPrimeiroDigito(cpfStr: string): boolean{
             let soma = 0;
             for (let i = 0; i < 9; i++) {
                 soma += parseInt(cpfStr[i]) * (10 - i);
@@ -57,14 +51,15 @@ export class UsuarioEntity{
             if(parseInt(cpfStr[9]) === digito1){
                 return true;
             } else{
+                console.log("O CPF é AAAAAAAA!")
                 throw new Error("O CPF é inválido!");
             }
         }
 
-        function verificarSegundoDigito(): boolean{
+        verificarSegundoDigito(cpfStr: string): boolean{
             let soma = 0;
-            for (let i = 0; i < 9; i++) {
-                soma += parseInt(cpfStr[i]) * (12 - i);
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpfStr[i]) * (11 - i);
             }
 
             let resto = soma % 11;
@@ -76,11 +71,21 @@ export class UsuarioEntity{
                 digito1 = 11 - resto;
             }
 
-            if(parseInt(cpfStr[9]) === digito1){
+            if(parseInt(cpfStr[10]) === digito1){
                 return true;
             } else{
+                console.log("O CPF é inválido!")
                 throw new Error("O CPF é inválido!");
             }
+        }
+
+    private meuCPF(cpf: number): number{
+        const cpfStr = cpf.toString();
+        console.log(cpfStr);
+        console.log(`Verificar sequencia: ${this.sequenciaRepetida(cpfStr)}, Primriro Digito: ${this.verificarPrimeiroDigito(cpfStr)}, Segundo Digito: ${this.verificarSegundoDigito(cpfStr)}`)
+
+        if(cpfStr.length != 11){
+            throw new Error("O seu CPF não tem 11 digitos, por favor tente novamente!");
         }
 
         const cpfArray: number[] = [];
@@ -88,9 +93,10 @@ export class UsuarioEntity{
             cpfArray[i] = Number(cpfStr[i]);
         }
         
-        if(sequenciaRepetida()){
-            if(verificarPrimeiroDigito()){
-                if(verificarSegundoDigito()){
+        if(this.sequenciaRepetida(cpfStr)){
+            
+            if(this.verificarPrimeiroDigito(cpfStr)){
+                if(this.verificarSegundoDigito(cpfStr)){
                     return parseInt(cpfArray.join(''));
                 }
             }
