@@ -71,7 +71,7 @@ export class UsuarioController{
     removerUsuario(req: Request, res: Response): void{
         try{
             const cpf = Number(req.params.cpf);
-            const usuario = this.usuarioService.removeUsuario(cpf)
+            const usuario = this.usuarioService.removeUsuario(cpf);
 
             res.status(200).json({
                 "status": "Usuario Deletado com Sucesso!",

@@ -30,8 +30,7 @@ export class UsuarioService{
         // console.log(this.usuarioRepository.filtraUsuarioPorCPF(cpf));
     }
 
-    removeUsuario(data: any){
-        const cpf = data.cpf;
+    removeUsuario(cpf: number){
         return this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
 
