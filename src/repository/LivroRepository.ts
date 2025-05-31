@@ -49,6 +49,10 @@ export class LivroRepository{
         if(novosDados.categoria){
             livro.categoria = novosDados.categoria;
         }
+
+        this.LivroList[index] = livro;
+
+        return livro;
     }
 
     listarLivros(): LivroEntity[]{

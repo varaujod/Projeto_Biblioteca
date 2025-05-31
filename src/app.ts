@@ -1,9 +1,11 @@
 import express from "express";
 import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
+import { EstoqueController } from "./controller/EstoqueController";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
+const estoqueController = new EstoqueController();
 
 const app = express();
 
@@ -29,6 +31,14 @@ app.get("/library/livros", livroController.listarLivros.bind(livroController));
 app.get("/library/livros/:isbn", livroController.filtrarLivro.bind(livroController));
 app.put("/library/livros/:isbn", livroController.atualizarLivro.bind(livroController));
 app.delete("/library/livros/:isbn", livroController.removerLivro.bind(livroController));
+
+// Estoque
+
+app.post("/library/estoque", estoqueController.adicionarLivroNoEstoque.bind(estoqueController));
+app.get("/library/estoque", estoqueController.listarEstoque.bind(estoqueController));
+app.get("/library/estoque/:cod", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
+app.put("/library/estoque/:cod", estoqueController.atualizarDisponibildade.bind(estoqueController));
+app.delete("/library/estoque/:cod", estoqueController.removerLivroNoEstoque.bind(estoqueController));
 
 // Listen 
 
