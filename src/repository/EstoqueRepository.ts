@@ -32,16 +32,14 @@ export class EstoqueRepository{
         const estoque = this.EstoqueList[index];
 
         if(novaDisponibilidade.disponibilidade){
-            if(novaDisponibilidade.disponibilidade == 'não-disponivel'){
-                throw new Error("Este exemplar não está disponivel (não-disponivel");
-            } else if(novaDisponibilidade.disponibilidade == 'disponivel'){
-                estoque.disponibilidade = novaDisponibilidade;
+            if(novaDisponibilidade.disponibilidade === 'não-disponivel'){
+                throw new Error("Este exemplar não está disponivel (não-disponivel)");
+            } else if(novaDisponibilidade.disponibilidade === 'disponivel'){
+                estoque.disponibilidade = novaDisponibilidade.disponibilidade;
             }
 
             this.EstoqueList[index] = estoque;
-
             return estoque;
-            
         }
     }
 
