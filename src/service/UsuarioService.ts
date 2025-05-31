@@ -17,11 +17,15 @@ export class UsuarioService{
             throw new Error("Por favor informar um curso existente");
         }
 
-        const usuario = new UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
+        if(this.usuarioRepository.validacaoCadastro(data.cpf)){
+            throw new Error("Este usuário já é cadastrado!");
+        } else{
+            const usuario = new UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
 
-        this.usuarioRepository.insereUsuario(usuario);
+            this.usuarioRepository.insereUsuario(usuario);
 
-        return usuario;
+            return usuario;
+        }
     }
 
     filtrarUsuario(data: any){

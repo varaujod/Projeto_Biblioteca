@@ -31,19 +31,19 @@ export class UsuarioRepository{
         const usuario = this.UsuarioList[index];
 
         if(novosDados.nome){
-            usuario.nome = novosDados.nome
+            usuario.nome = novosDados.nome;
         }
         
         if(novosDados.email){
-            usuario.email = novosDados.email
+            usuario.email = novosDados.email;
         }
 
         if(novosDados.categoria){
-            usuario.categoria = novosDados.categoria
+            usuario.categoria = novosDados.categoria;
         }
 
         if(novosDados.curso){
-            usuario.curso = novosDados.curso
+            usuario.curso = novosDados.curso;
         }
 
         this.UsuarioList[index] = usuario;
@@ -53,6 +53,10 @@ export class UsuarioRepository{
 
     listarUsuarios(): UsuarioEntity[]{
         return this.UsuarioList;
+    }
+
+    validacaoCadastro(cpf: number): boolean{
+        return this.UsuarioList.find(usuario => usuario.cpf === cpf) !== undefined;
     }
 
     private findIndex(cpf: number): number{
