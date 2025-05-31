@@ -1,6 +1,6 @@
 ## Projeto I - Gestão de Biblioteca.
 
-# Esta atividade está sendo desenvolvida como parte da avaliação da disciplina de Programação Web do
+Esta atividade está sendo desenvolvida como parte da avaliação da disciplina de Programação Web do
 Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São
 Paulo, Campus Boituva ministrada pelo Professor e Doutor Anisio Silva.
 
