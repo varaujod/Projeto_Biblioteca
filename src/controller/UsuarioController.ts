@@ -24,7 +24,7 @@ export class UsuarioController{
             const lista = this.usuarioService.listarUsuarios();
             res.status(200).json(lista);
         } catch(error: unknown){
-           let message = "Não conseguimos realizar a listagem";
+           let message = "Não conseguimos realizar a listagem de usuários";
             if(error instanceof Error){
                 message = error.message;
             }
@@ -79,7 +79,7 @@ export class UsuarioController{
 
             })
         } catch(error: unknown){
-            let message = "Não foi possivel realizar atualização";
+            let message = "Não foi possivel realizar a remoção";
             if(error instanceof Error){
                 message = error.message;
             }
