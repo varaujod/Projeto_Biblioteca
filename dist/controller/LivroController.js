@@ -34,7 +34,7 @@ class LivroController {
             });
         }
     }
-    filtrarLivros(req, res) {
+    filtrarLivro(req, res) {
         try {
             const livro = this.livroService.filtrarLivro({ isbn: Number(req.params.isbn) });
             res.status(200).json(livro);

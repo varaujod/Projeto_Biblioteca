@@ -26,11 +26,9 @@ app.delete("/library/usuarios/:cpf", usuarioController.removerUsuario.bind(usuar
 
 app.post("/library/livros", livroController.criarLivro.bind(livroController));
 app.get("/library/livros", livroController.listarLivros.bind(livroController));
-app.get("/library/livros/:isbn", livroController.filtrarLivros.bind(livroController));
+app.get("/library/livros/:isbn", livroController.filtrarLivro.bind(livroController));
 app.put("/library/livros/:isbn", livroController.atualizarLivro.bind(livroController));
 app.delete("/library/livros/:isbn", livroController.removerLivro.bind(livroController));
-
-
 
 // Listen 
 

@@ -34,7 +34,7 @@ export class LivroController{
         }
     }
 
-    filtrarLivros(req: Request, res: Response): void{
+    filtrarLivro(req: Request, res: Response): void{
         try{
             const livro = this.livroService.filtrarLivro({ isbn: Number(req.params.isbn) });
             res.status(200).json(livro);
@@ -89,6 +89,6 @@ export class LivroController{
         }
     }
 
-    
+
 
 }
