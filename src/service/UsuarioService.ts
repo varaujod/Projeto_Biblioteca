@@ -32,7 +32,7 @@ export class UsuarioService{
 
     removeUsuario(data: any){
         const cpf = data.cpf;
-        this.usuarioRepository.removeUsuarioPorCPF(cpf);
+        return this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
 
     listarUsuarios(){

@@ -15,5 +15,5 @@ function logInfo(){
 app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioController));
 app.get("/library/usuarios", usuarioController.listarUsuarios.bind(usuarioController));
 app.get("/library/usuarios/:cpf", usuarioController.filtrarUsuario.bind(usuarioController));
-
+app.put("/library/usuarios/:cpf", usuarioController.atualizarUsuario.bind(usuarioController));
 app.listen(PORT, logInfo);

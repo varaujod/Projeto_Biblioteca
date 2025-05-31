@@ -49,5 +49,23 @@ class UsuarioController {
             });
         }
     }
+    atualizarUsuario(req, res) {
+        try {
+            const usuarioAtualizado = this.usuarioService.atualizaUsuario({
+                cpf: Number(req.params.cpf),
+                novosDados: req.body
+            });
+            res.status(200).json(usuarioAtualizado);
+        }
+        catch (error) {
+            let message = "Não foi possivel realizar atualização";
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            res.status(400).json({
+                message: message
+            });
+        }
+    }
 }
 exports.UsuarioController = UsuarioController;

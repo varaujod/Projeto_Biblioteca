@@ -32,5 +32,10 @@ class UsuarioService {
         // console.log(this.usuarioRepository.listarUsuarios());
         return this.usuarioRepository.listarUsuarios();
     }
+    atualizaUsuario(data) {
+        const cpf = data.cpf;
+        const novosDados = data.novosDados;
+        return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
+    }
 }
 exports.UsuarioService = UsuarioService;
