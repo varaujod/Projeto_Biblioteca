@@ -67,5 +67,24 @@ class UsuarioController {
             });
         }
     }
+    removerUsuario(req, res) {
+        try {
+            const cpf = Number(req.params.cpf);
+            const usuario = this.usuarioService.removeUsuario(cpf);
+            res.status(200).json({
+                "status": "Usuario Deletado com Sucesso!",
+                "usuario": usuario
+            });
+        }
+        catch (error) {
+            let message = "Não foi possivel realizar atualização";
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            res.status(400).json({
+                message: message
+            });
+        }
+    }
 }
 exports.UsuarioController = UsuarioController;

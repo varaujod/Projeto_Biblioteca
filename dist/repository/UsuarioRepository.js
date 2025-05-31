@@ -19,7 +19,7 @@ class UsuarioRepository {
     }
     removeUsuarioPorCPF(cpf) {
         const index = this.findIndex(cpf);
-        this.UsuarioList.splice(index, 1);
+        return this.UsuarioList.splice(index, 1);
     }
     atualizarUsuarioPorCPF(cpf, novosDados) {
         const index = this.findIndex(cpf);

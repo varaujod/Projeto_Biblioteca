@@ -23,7 +23,7 @@ export class UsuarioRepository{
 
     removeUsuarioPorCPF(cpf: number){
         const index = this.findIndex(cpf);
-        this.UsuarioList.splice(index, 1);
+        return this.UsuarioList.splice(index, 1);
     }
 
     atualizarUsuarioPorCPF(cpf: number, novosDados: any){

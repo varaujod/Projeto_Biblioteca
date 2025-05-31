@@ -16,4 +16,5 @@ app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioControl
 app.get("/library/usuarios", usuarioController.listarUsuarios.bind(usuarioController));
 app.get("/library/usuarios/:cpf", usuarioController.filtrarUsuario.bind(usuarioController));
 app.put("/library/usuarios/:cpf", usuarioController.atualizarUsuario.bind(usuarioController));
+app.delete("/library/usuarios/:cpf", usuarioController.removerUsuario.bind(usuarioController));
 app.listen(PORT, logInfo);

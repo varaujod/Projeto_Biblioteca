@@ -26,7 +26,7 @@ class UsuarioService {
     }
     removeUsuario(data) {
         const cpf = data.cpf;
-        this.usuarioRepository.removeUsuarioPorCPF(cpf);
+        return this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
     listarUsuarios() {
         // console.log(this.usuarioRepository.listarUsuarios());
