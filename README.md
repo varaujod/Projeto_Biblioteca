@@ -9,7 +9,7 @@ O projeto tem com objetivo desenvolver uma API para gestão de biblioteca acadê
 O sistema deve permitir o gerenciamento completo do acervo bibliográfico, usuários e empréstimos,
 seguindo rigorosamente as regras de negócio estabelecidas.
 
-# Projeto I - Gestão de Biblioteca Acadêmica
+## Projeto I - Gestão de Biblioteca Acadêmica
 
 Este projeto é uma atividade de avaliação da disciplina de Programação Web, parte do Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São Paulo (IFSP), Câmpus Boituva. A disciplina é ministrada pelo **Prof. Dr. Anisio Silva**. [cite: 1]
 
