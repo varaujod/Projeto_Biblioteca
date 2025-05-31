@@ -15,9 +15,14 @@ class UsuarioService {
         if (data.curso != "ADS" && data.categoria != "Pedagogia" && data.categoria != "Administração") {
             throw new Error("Por favor informar um curso existente");
         }
-        const usuario = new UsuarioEntity_1.UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
-        this.usuarioRepository.insereUsuario(usuario);
-        return usuario;
+        if (this.usuarioRepository.validacaoCadastro(data.cpf)) {
+            throw new Error("Este usuário já é cadastrado!");
+        }
+        else {
+            const usuario = new UsuarioEntity_1.UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
+            this.usuarioRepository.insereUsuario(usuario);
+            return usuario;
+        }
     }
     filtrarUsuario(data) {
         const cpf = data.cpf;

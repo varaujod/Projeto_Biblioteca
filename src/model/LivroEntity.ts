@@ -5,6 +5,7 @@ export class LivroEntity{
     editora: string;
     edicao: string;
     categoria: string;
+    status: 'disponivel' | 'emprestado';
 
     constructor(titulo: string, isbn: number, autor: string, editora: string, edicao: string, categoria: string){
         this.titulo = titulo;
@@ -13,5 +14,6 @@ export class LivroEntity{
         this.editora = editora;
         this.edicao = edicao;
         this.categoria = categoria;
+        this.status = 'disponivel';
     }
 }

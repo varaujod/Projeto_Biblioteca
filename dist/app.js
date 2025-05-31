@@ -5,16 +5,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const UsuarioController_1 = require("./controller/UsuarioController");
+const LivroController_1 = require("./controller/LivroController");
 const usuarioController = new UsuarioController_1.UsuarioController();
+const livroController = new LivroController_1.LivroController();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT ?? 3090;
 app.use(express_1.default.json());
 function logInfo() {
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
+// Usuarios
 app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioController));
 app.get("/library/usuarios", usuarioController.listarUsuarios.bind(usuarioController));
 app.get("/library/usuarios/:cpf", usuarioController.filtrarUsuario.bind(usuarioController));
 app.put("/library/usuarios/:cpf", usuarioController.atualizarUsuario.bind(usuarioController));
 app.delete("/library/usuarios/:cpf", usuarioController.removerUsuario.bind(usuarioController));
+// Livros
+app.post("/library/livros", livroController.criarLivro.bind(livroController));
+app.get("/library/livros", livroController.listarLivros.bind(livroController));
+app.get("/library/livros/:isbn", livroController.filtrarLivros.bind(livroController));
+app.put("/library/livros/:isbn", livroController.atualizarLivro.bind(livroController));
+app.delete("/library/livros/:isbn", livroController.removerLivro.bind(livroController));
+// Listen 
 app.listen(PORT, logInfo);

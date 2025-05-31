@@ -14,7 +14,7 @@ class UsuarioEntity {
         this.email = email;
         this.categoria = categoria;
         this.curso = curso;
-        this.status = true;
+        this.status = "ativo";
     }
     sequenciaRepetida(cpfStr) {
         let repetido = true;
@@ -25,7 +25,7 @@ class UsuarioEntity {
             }
         }
         if (repetido == true) {
-            console.log("O CPF não pode ser uma sequência repetida!");
+            // console.log("O CPF não pode ser uma sequência repetida!");
             throw new Error("O CPF não pode ser uma sequência repetida!");
         }
         else {
@@ -49,7 +49,7 @@ class UsuarioEntity {
             return true;
         }
         else {
-            console.log("O CPF é AAAAAAAA!");
+            // console.log("O CPF é AAAAAAAA!")
             throw new Error("O CPF é inválido!");
         }
     }
@@ -70,7 +70,7 @@ class UsuarioEntity {
             return true;
         }
         else {
-            console.log("O CPF é inválido!");
+            // console.log("O CPF é inválido!")
             throw new Error("O CPF é inválido!");
         }
     }
