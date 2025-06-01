@@ -1,6 +1,5 @@
 import { EstoqueEntity } from "../model/EstoqueEntity";
 
-
 export class EstoqueRepository{
     private static instance: EstoqueRepository;
     private EstoqueList: EstoqueEntity[] = [];
