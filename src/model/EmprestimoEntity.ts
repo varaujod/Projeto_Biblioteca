@@ -5,7 +5,6 @@ export class EmprestimoEntity{
     usuario: number;
     codExemplar: number;
     categoria: 'professor' | 'aluno';
-    areaDoCurso: boolean;
     dataEmprestimo: Date;
     dataDevolucao: Date | null;
     dataPrevista: Date;
@@ -13,12 +12,11 @@ export class EmprestimoEntity{
     multaAtrasado: number;
     diasSuspensao: number;
 
-    constructor(id: number, usuario: number, codExemplar: number, categoria: 'aluno' | 'professor', areaDoCurso: boolean = false){
+    constructor(id: number, usuario: number, codExemplar: number, categoria: 'aluno' | 'professor'){
         this.id = id;
         this.usuario = usuario;
         this.codExemplar = codExemplar;
         this.categoria = categoria;
-        this.areaDoCurso = areaDoCurso;
         this.dataEmprestimo = new Date();
         this.dataPrevista = this.calcularDataDevolucao();
         this.dataDevolucao = null;
@@ -81,11 +79,18 @@ export class EmprestimoEntity{
     }
 
     diasRestantes(): number {
-        if (this.status === 'devolvido') return 0;
-        
+        if (this.status === 'devolvido') {
+            return 0;
+        }
+
         const hoje = new Date();
-        const diffTime = this.dataPrevista.getTime() - hoje.getTime();
-        const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDias > 0 ? diffDias : 0;
+        const diferencaTime = this.dataPrevista.getTime() - hoje.getTime();
+        const diferencaDias = Math.floor(diferencaTime / (1000 * 60 * 60 * 24));
+
+        if(diferencaDias > 0){
+            return diferencaDias;
+        } else{
+            return 0;
+        }
     }
 }
