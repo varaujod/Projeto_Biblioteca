@@ -23,19 +23,15 @@ class EstoqueRepository {
     atualizarDisponibilidade(cod, novaDisponibilidade) {
         const index = this.findIndex(cod);
         const estoque = this.EstoqueList[index];
-        if (novaDisponibilidade.disponibilidade) {
-            if (novaDisponibilidade.disponibilidade === 'não-disponivel') {
-                estoque.disponibilidade = novaDisponibilidade.disponibilidade;
-            }
-            else if (novaDisponibilidade.disponibilidade === 'disponivel') {
-                estoque.disponibilidade = novaDisponibilidade.disponibilidade;
-            }
-            this.EstoqueList[index] = estoque;
-            return estoque;
+        if (!novaDisponibilidade || !novaDisponibilidade.disponibilidade) {
+            throw new Error("É necessário informar a nova disponibilidade");
         }
-        else {
-            throw new Error("Este exemplar não está disponivel (não-disponivel)");
+        if (novaDisponibilidade.disponibilidade !== 'disponivel' && novaDisponibilidade.disponibilidade !== 'não-disponivel') {
+            throw new Error("Disponibilidade inválida. Use 'disponivel' ou 'não-disponivel'");
         }
+        estoque.disponibilidade = novaDisponibilidade.disponibilidade;
+        this.EstoqueList[index] = estoque;
+        return estoque;
     }
     removerLivroNoEstoque(cod) {
         const index = this.findIndex(cod);

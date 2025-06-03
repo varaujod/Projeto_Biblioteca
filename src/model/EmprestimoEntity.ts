@@ -12,8 +12,8 @@ export class EmprestimoEntity{
     multaAtrasado: number;
     diasSuspensao: number;
 
-    constructor(id: number, usuario: number, codExemplar: number, categoria: 'aluno' | 'professor'){
-        this.id = id;
+    constructor(usuario: number, codExemplar: number, categoria: 'aluno' | 'professor'){
+        this.id = this.gerarId();
         this.usuario = usuario;
         this.codExemplar = codExemplar;
         this.categoria = categoria;

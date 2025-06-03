@@ -13,8 +13,8 @@ class EmprestimoEntity {
     status;
     multaAtrasado;
     diasSuspensao;
-    constructor(id, usuario, codExemplar, categoria) {
-        this.id = id;
+    constructor(usuario, codExemplar, categoria) {
+        this.id = this.gerarId();
         this.usuario = usuario;
         this.codExemplar = codExemplar;
         this.categoria = categoria;

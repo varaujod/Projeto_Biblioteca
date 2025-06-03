@@ -56,7 +56,7 @@ export class EmprestimoController{
         try{
             const devolucao = this.emprestimoService.registrarDevolucao({
                 id: Number(req.params.id),
-                novoStatus: req.body
+                novoStatus: "devolvido"
             });
 
             res.status(200).json({

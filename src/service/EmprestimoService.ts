@@ -9,7 +9,7 @@ export class EmprestimoService{
     private estoqueRepository = EstoqueRepository.getInstance();
 
     novoEmprestimo(data: any): EmprestimoEntity{
-        if(!data.id || !data.usuario || !data.codExemplar || !data.categoria){
+        if(!data.usuario || !data.codExemplar || !data.categoria){
             throw new Error("Por favor informar todos os campos");
         }
         
@@ -33,7 +33,7 @@ export class EmprestimoService{
             throw new Error("Exemplar não encontrado!");
         }
 
-        if(!exemplar.disponibilidade){
+        if(exemplar.disponibilidade === 'não-disponivel'){
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
 
@@ -64,13 +64,12 @@ export class EmprestimoService{
         }
 
         const novoEmprestimo = new EmprestimoEntity(
-            this.emprestimoRespository.gerarNovoId(),
             data.usuario,
             data.codExemplar,
             data.categoria
         );
 
-        this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, false);
+        this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
 
         return novoEmprestimo;
@@ -96,12 +95,14 @@ export class EmprestimoService{
         const novoStatus = data.novoStatus;
 
         if(novoStatus == 'devolvido'){
-            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus)
-        } else{
-            throw new Error("Não foi possivel registrar a sua devolução!");
+            const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
+            if (emprestimo) {
+                this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
+                return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+            }
         }
         
-        
+        throw new Error("Não foi possivel registrar a sua devolução!");
     }
     
 }

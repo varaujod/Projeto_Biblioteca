@@ -10,7 +10,7 @@ class EmprestimoService {
     usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     novoEmprestimo(data) {
-        if (!data.id || !data.usuario || !data.codExemplar || !data.categoria) {
+        if (!data.usuario || !data.codExemplar || !data.categoria) {
             throw new Error("Por favor informar todos os campos");
         }
         const usuario = this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
@@ -27,7 +27,7 @@ class EmprestimoService {
         if (!exemplar) {
             throw new Error("Exemplar não encontrado!");
         }
-        if (!exemplar.disponibilidade) {
+        if (exemplar.disponibilidade === 'não-disponivel') {
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
         let categoria;
@@ -51,8 +51,8 @@ class EmprestimoService {
         if (emprestimoAtivo) {
             throw new Error("Este exemplar já está emprestado!");
         }
-        const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(this.emprestimoRespository.gerarNovoId(), data.usuario, data.codExemplar, data.categoria);
-        this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, false);
+        const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(data.usuario, data.codExemplar, data.categoria);
+        this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
         return novoEmprestimo;
     }
@@ -71,11 +71,13 @@ class EmprestimoService {
         const id = data.id;
         const novoStatus = data.novoStatus;
         if (novoStatus == 'devolvido') {
-            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+            const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
+            if (emprestimo) {
+                this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
+                return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+            }
         }
-        else {
-            throw new Error("Não foi possivel registrar a sua devolução!");
-        }
+        throw new Error("Não foi possivel registrar a sua devolução!");
     }
 }
 exports.EmprestimoService = EmprestimoService;
