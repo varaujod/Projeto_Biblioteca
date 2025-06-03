@@ -81,9 +81,9 @@ export class EmprestimoRepository{
 
         if(categoria === 'professor'){
             limiteEmprestimos = 5;
+        } else {
+            limiteEmprestimos = 3;
         }
-
-        limiteEmprestimos = 3;
 
         return emprestimosAtivos < limiteEmprestimos;
     }
