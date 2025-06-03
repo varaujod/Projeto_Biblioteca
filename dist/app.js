@@ -7,9 +7,11 @@ const express_1 = __importDefault(require("express"));
 const UsuarioController_1 = require("./controller/UsuarioController");
 const LivroController_1 = require("./controller/LivroController");
 const EstoqueController_1 = require("./controller/EstoqueController");
+const EmprestimoController_1 = require("./controller/EmprestimoController");
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
+const emprestimoController = new EmprestimoController_1.EmprestimoController();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT ?? 3090;
 app.use(express_1.default.json());
@@ -34,5 +36,9 @@ app.get("/library/estoque", estoqueController.listarEstoque.bind(estoqueControll
 app.get("/library/estoque/:cod", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
 app.put("/library/estoque/:cod", estoqueController.atualizarDisponibildade.bind(estoqueController));
 app.delete("/library/estoque/:cod", estoqueController.removerLivroNoEstoque.bind(estoqueController));
+// Emprestimo
+app.post("/library/emprestimos", emprestimoController.novoEmprestimo.bind(emprestimoController));
+app.get("/library/emprestimos", emprestimoController.listarEmprestimos.bind(emprestimoController));
+app.put("/library/emprestimos/devolucao/:id", emprestimoController.registrarDevolucao.bind(emprestimoController));
 // Listen 
 app.listen(PORT, logInfo);

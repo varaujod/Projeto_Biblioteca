@@ -2,10 +2,12 @@ import express from "express";
 import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
 import { EstoqueController } from "./controller/EstoqueController";
+import { EmprestimoController } from "./controller/EmprestimoController";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
 const estoqueController = new EstoqueController();
+const emprestimoController = new EmprestimoController();
 
 const app = express();
 
@@ -39,6 +41,12 @@ app.get("/library/estoque", estoqueController.listarEstoque.bind(estoqueControll
 app.get("/library/estoque/:cod", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
 app.put("/library/estoque/:cod", estoqueController.atualizarDisponibildade.bind(estoqueController));
 app.delete("/library/estoque/:cod", estoqueController.removerLivroNoEstoque.bind(estoqueController));
+
+// Emprestimo
+
+app.post("/library/emprestimos", emprestimoController.novoEmprestimo.bind(emprestimoController));
+app.get("/library/emprestimos", emprestimoController.listarEmprestimos.bind(emprestimoController));
+app.put("/library/emprestimos/devolucao/:id", emprestimoController.registrarDevolucao.bind(emprestimoController));
 
 // Listen 
 

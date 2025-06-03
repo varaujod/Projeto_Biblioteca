@@ -9,7 +9,7 @@ export class EmprestimoService{
     private estoqueRepository = EstoqueRepository.getInstance();
 
     novoEmprestimo(data: any): EmprestimoEntity{
-        if(!data.id || !data.usuario || !data.codExemplar || !data.categoria || !data.areaDoCurso){
+        if(!data.id || !data.usuario || !data.codExemplar || !data.categoria){
             throw new Error("Por favor informar todos os campos");
         }
         
@@ -97,7 +97,11 @@ export class EmprestimoService{
 
         if(novoStatus == 'devolvido'){
             return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus)
-        } 
+        } else{
+            throw new Error("Não foi possivel registrar a sua devolução!");
+        }
+        
+        
     }
     
 }

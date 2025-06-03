@@ -1,18 +1,19 @@
-export class EmprestimoEntity{
-    static ultimoId: number = 0;
-
-    id: number;
-    usuario: number;
-    codExemplar: number;
-    categoria: 'professor' | 'aluno';
-    dataEmprestimo: Date;
-    dataDevolucao: Date | null;
-    dataPrevista: Date;
-    status: 'ativo' | 'devolvido' | 'atrasado';
-    multaAtrasado: number;
-    diasSuspensao: number;
-
-    constructor(id: number, usuario: number, codExemplar: number, categoria: 'aluno' | 'professor'){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EmprestimoEntity = void 0;
+class EmprestimoEntity {
+    static ultimoId = 0;
+    id;
+    usuario;
+    codExemplar;
+    categoria;
+    dataEmprestimo;
+    dataDevolucao;
+    dataPrevista;
+    status;
+    multaAtrasado;
+    diasSuspensao;
+    constructor(id, usuario, codExemplar, categoria) {
         this.id = id;
         this.usuario = usuario;
         this.codExemplar = codExemplar;
@@ -24,80 +25,66 @@ export class EmprestimoEntity{
         this.multaAtrasado = 0;
         this.diasSuspensao = 0;
     }
-
-    private calcularDataDevolucao(): Date{
+    calcularDataDevolucao() {
         const dataPrevista = new Date(this.dataEmprestimo);
-        let diasEmprestimo: number;
-
-        if(this.categoria === 'professor'){
+        let diasEmprestimo;
+        if (this.categoria === 'professor') {
             diasEmprestimo = 40;
-        } else{
+        }
+        else {
             diasEmprestimo = 15;
         }
-
         dataPrevista.setDate(this.dataEmprestimo.getDate() + diasEmprestimo);
         return dataPrevista;
     }
-
-    calcularDiasAtraso(): number{
-        if(this.status != 'devolvido' || !this.dataDevolucao){
+    calcularDiasAtraso() {
+        if (this.status != 'devolvido' || !this.dataDevolucao) {
             const hoje = new Date();
-
-            if(hoje > this.dataPrevista){
+            if (hoje > this.dataPrevista) {
                 const diferencaTime = hoje.getTime() - this.dataPrevista.getTime();
                 return Math.floor(diferencaTime / (1000 * 60 * 60 * 24));
             }
-
             return 0;
         }
-
         const diferencaTime = this.dataDevolucao.getTime() - this.dataPrevista.getTime();
         const diferencaDias = Math.floor(diferencaTime / (1000 * 60 * 60 * 24));
-
-        if(diferencaDias > 0){
+        if (diferencaDias > 0) {
             return diferencaDias;
-        } else{
+        }
+        else {
             return 0;
         }
     }
-
-    calcularDiasSuspensao(): number{
+    calcularDiasSuspensao() {
         const diasAtraso = this.calcularDiasAtraso();
         this.diasSuspensao = diasAtraso * 3;
-
         return this.diasSuspensao;
     }
-
-    finalizarEmprestimo(): void{
+    finalizarEmprestimo() {
         this.dataDevolucao = new Date();
         this.status = 'devolvido';
         this.calcularDiasSuspensao();
     }
-
-    estaAtrasado(): boolean {
+    estaAtrasado() {
         return this.calcularDiasAtraso() > 0;
     }
-
-    diasRestantes(): number {
+    diasRestantes() {
         if (this.status === 'devolvido') {
             return 0;
         }
-
         const hoje = new Date();
         const diferencaTime = this.dataPrevista.getTime() - hoje.getTime();
         const diferencaDias = Math.floor(diferencaTime / (1000 * 60 * 60 * 24));
-
-        if(diferencaDias > 0){
+        if (diferencaDias > 0) {
             return diferencaDias;
-        } else{
+        }
+        else {
             return 0;
         }
     }
-
-    gerarId(): number{
+    gerarId() {
         EmprestimoEntity.ultimoId++;
         return EmprestimoEntity.ultimoId;
     }
-
-
 }
+exports.EmprestimoEntity = EmprestimoEntity;
