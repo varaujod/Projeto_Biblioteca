@@ -76,5 +76,15 @@ export class EmprestimoService{
         return novoEmprestimo;
     }
 
+    listarEmprestimos(){
+        return this.emprestimoRespository.listarEmprestimos();
+    }
+
+    filtrarEmprestimoPorID(data: any){
+        const id = data.id;
+        const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID;
+
+        
+    }
     
 }

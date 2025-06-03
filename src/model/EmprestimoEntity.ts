@@ -1,5 +1,3 @@
-import { UsuarioEntity } from "./UsuarioEntity";
-
 export class EmprestimoEntity{
     id: number;
     usuario: number;

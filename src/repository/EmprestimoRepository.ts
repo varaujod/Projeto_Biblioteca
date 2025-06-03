@@ -19,7 +19,7 @@ export class EmprestimoRepository{
         this.EmprestimoList.push(emprestimo);
     }
 
-    listarEmprestimo(){
+    listarEmprestimos(){
         return this.EmprestimoList;
     }
 
