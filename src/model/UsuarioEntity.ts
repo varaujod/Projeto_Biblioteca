@@ -5,6 +5,8 @@ export class UsuarioEntity{
     categoria: string;
     curso: string;
     status: 'ativo' | 'inativo' | 'suspenso';
+    diasSuspensao: number;
+    livrosAtrasados: number;
 
     constructor(nome: string, cpf: number, email: string, categoria: string, curso: string){
         this.nome = nome;
@@ -13,6 +15,8 @@ export class UsuarioEntity{
         this.categoria = categoria;
         this.curso = curso;
         this.status = "ativo";
+        this.diasSuspensao = 0;
+        this.livrosAtrasados = 0;
     }
 
     sequenciaRepetida(cpfStr: string): boolean{
@@ -104,5 +108,28 @@ export class UsuarioEntity{
         throw new Error("CPF inválido ou não pode ser validado.");
     }
 
-    
+    atualizarStatusPorAtraso(diasAtraso: number): void {
+        this.diasSuspensao += (diasAtraso * 3);
+        
+        if (this.diasSuspensao > 60) {
+            this.status = "suspenso";
+        }
+    }
+
+    atualizarLivrosAtrasados(quantidade: number): void {
+        this.livrosAtrasados = quantidade;
+        if (this.livrosAtrasados > 2) {
+            this.status = "inativo";
+        }
+    }
+
+    podeRealizarEmprestimo(): boolean {
+        return this.status === "ativo";
+    }
+
+    regularizarStatus(): void {
+        if (this.livrosAtrasados === 0 && this.diasSuspensao === 0) {
+            this.status = "ativo";
+        }
+    }
 }

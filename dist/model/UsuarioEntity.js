@@ -8,6 +8,8 @@ class UsuarioEntity {
     categoria;
     curso;
     status;
+    diasSuspensao;
+    livrosAtrasados;
     constructor(nome, cpf, email, categoria, curso) {
         this.nome = nome;
         this.cpf = this.meuCPF(cpf);
@@ -15,6 +17,8 @@ class UsuarioEntity {
         this.categoria = categoria;
         this.curso = curso;
         this.status = "ativo";
+        this.diasSuspensao = 0;
+        this.livrosAtrasados = 0;
     }
     sequenciaRepetida(cpfStr) {
         let repetido = true;
@@ -93,6 +97,26 @@ class UsuarioEntity {
             }
         }
         throw new Error("CPF inválido ou não pode ser validado.");
+    }
+    atualizarStatusPorAtraso(diasAtraso) {
+        this.diasSuspensao += (diasAtraso * 3);
+        if (this.diasSuspensao > 60) {
+            this.status = "suspenso";
+        }
+    }
+    atualizarLivrosAtrasados(quantidade) {
+        this.livrosAtrasados = quantidade;
+        if (this.livrosAtrasados > 2) {
+            this.status = "inativo";
+        }
+    }
+    podeRealizarEmprestimo() {
+        return this.status === "ativo";
+    }
+    regularizarStatus() {
+        if (this.livrosAtrasados === 0 && this.diasSuspensao === 0) {
+            this.status = "ativo";
+        }
     }
 }
 exports.UsuarioEntity = UsuarioEntity;

@@ -49,7 +49,7 @@ export class EmprestimoService{
             let limite = 0;
 
             if(categoria === 'professor'){
-                limite = 5
+                limite = 5;
             } else{
                 limite = 3;
             }

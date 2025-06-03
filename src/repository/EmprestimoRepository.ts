@@ -3,7 +3,6 @@ import { EmprestimoEntity } from "../model/EmprestimoEntity";
 export class EmprestimoRepository{
     private static instance: EmprestimoRepository;
     private EmprestimoList: EmprestimoEntity[] = [];
-    private ultimoId: number = 0;
 
     private constructor() {}
 
@@ -64,11 +63,6 @@ export class EmprestimoRepository{
                 emprestimo.finalizarEmprestimo();
             }
         }
-    }
-
-    gerarNovoId(): number{
-        this.ultimoId++;
-        return this.ultimoId;
     }
 
     filtraHistoricoEmprestimosDoUsuario(cpf: number): EmprestimoEntity[]{

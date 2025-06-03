@@ -8,6 +8,7 @@ export class EmprestimoEntity{
     dataEmprestimo: Date;
     dataDevolucao: Date | null;
     dataPrevista: Date;
+    diasRestantes: number;
     status: 'ativo' | 'devolvido' | 'atrasado';
     multaAtrasado: number;
     diasSuspensao: number;
@@ -19,13 +20,14 @@ export class EmprestimoEntity{
         this.categoria = categoria;
         this.dataEmprestimo = new Date();
         this.dataPrevista = this.calcularDataDevolucao();
+        this.diasRestantes = this.diasRestantesEmprestimo();
         this.dataDevolucao = null;
         this.status = 'ativo';
-        this.multaAtrasado = 0;
-        this.diasSuspensao = 0;
+        this.multaAtrasado = this.calcularDiasAtraso();
+        this.diasSuspensao = this.calcularDiasSuspensao();
     }
 
-    private calcularDataDevolucao(): Date{
+    calcularDataDevolucao(): Date{
         const dataPrevista = new Date(this.dataEmprestimo);
         let diasEmprestimo: number;
 
@@ -78,7 +80,7 @@ export class EmprestimoEntity{
         return this.calcularDiasAtraso() > 0;
     }
 
-    diasRestantes(): number {
+    diasRestantesEmprestimo(): number {
         if (this.status === 'devolvido') {
             return 0;
         }

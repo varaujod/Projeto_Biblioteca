@@ -13,7 +13,7 @@ export class UsuarioService{
             throw new Error("Por favor informar uma categoria existente");
         }
 
-        if(data.curso != "ADS" && data.categoria != "Pedagogia" && data.categoria != "Administração"){
+        if(data.curso != "ADS" && data.curso != "Pedagogia" &&  data.curso != "Administração"){
             throw new Error("Por favor informar um curso existente");
         }
 

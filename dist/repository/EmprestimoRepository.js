@@ -4,7 +4,6 @@ exports.EmprestimoRepository = void 0;
 class EmprestimoRepository {
     static instance;
     EmprestimoList = [];
-    ultimoId = 0;
     constructor() { }
     static getInstance() {
         if (!this.instance) {
@@ -45,10 +44,6 @@ class EmprestimoRepository {
                 emprestimo.finalizarEmprestimo();
             }
         }
-    }
-    gerarNovoId() {
-        this.ultimoId++;
-        return this.ultimoId;
     }
     filtraHistoricoEmprestimosDoUsuario(cpf) {
         return this.EmprestimoList.filter(emprestimo => emprestimo.usuario === cpf);
