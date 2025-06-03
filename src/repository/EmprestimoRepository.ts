@@ -71,17 +71,6 @@ export class EmprestimoRepository{
         return this.ultimoId;
     }
 
-    deletarEmprestimo(id: number): boolean{
-        const index = this.EmprestimoList.findIndex(emprestimo => emprestimo.id === id);
-
-        if(index !== -1){
-            this.EmprestimoList.splice(index, 1);
-            return true;
-        }
-
-        return false;
-    }
-
     filtraHistoricoEmprestimosDoUsuario(cpf: number): EmprestimoEntity[]{
         return this.EmprestimoList.filter(emprestimo => emprestimo.usuario === cpf)
     }

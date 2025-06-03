@@ -82,9 +82,22 @@ export class EmprestimoService{
 
     filtrarEmprestimoPorID(data: any){
         const id = data.id;
-        const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID;
+        const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
 
-        
+        if(!emprestimo){
+            throw new Error("Emprestimo não encontrado");
+        }
+
+        return emprestimo;
+    }
+
+    registrarDevolucao(data: any){
+        const id = data.id;
+        const novoStatus = data.novoStatus;
+
+        if(novoStatus == 'devolvido'){
+            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus)
+        } 
     }
     
 }
