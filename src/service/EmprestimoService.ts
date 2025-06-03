@@ -57,9 +57,9 @@ export class EmprestimoService{
             throw new Error(`Usuário já atingiu o limite máximo de ${limite} empréstimos simultâneos!`);
         }
 
-        const emprestimoAtivo = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
+        const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
 
-        if(emprestimoAtivo){
+        if(exemplarEmprestado){
             throw new Error("Este exemplar já está emprestado!");
         }
 
