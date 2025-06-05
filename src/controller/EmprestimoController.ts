@@ -25,7 +25,13 @@ export class EmprestimoController{
     listarEmprestimos(req: Request, res: Response): void{
         try{
             const lista = this.emprestimoService.listarEmprestimos();
-            res.status(200).json(lista);
+            const ativos = this.emprestimoService.listarEmprestimosAtivos();
+            res.status(200).json({
+                "message": "Emprestimos Ativos",
+                "emprestimos": ativos,
+                "historico": "Histórico de Emprestimo",
+                "lista": lista
+            });
         } catch(error: unknown){
             let message = "Não conseguimos realizar a listagem dos emprestimos feitos!";
             if(error instanceof Error){

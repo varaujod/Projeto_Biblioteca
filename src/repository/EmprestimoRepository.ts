@@ -65,12 +65,11 @@ export class EmprestimoRepository{
         }
     }
 
-
-    // filtraEmprestimosFinalizadosDoUsuario(cpf: number): EmprestimoEntity[]{
-    //     return this.EmprestimoList.filter(
-    //         emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'devolvido'
-    //     );
-    // }
+    filtraEmprestimosFinalizadosDoUsuario(cpf: number): EmprestimoEntity[]{
+        return this.EmprestimoList.filter(
+            emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'devolvido'
+        );
+    }
 
     verificarLimiteEmprestimo(cpf: number, categoria: 'professor' | 'aluno'): boolean{
         const emprestimosAtivos = this.emprestimosAtivosDoUsuario(cpf);
@@ -85,9 +84,9 @@ export class EmprestimoRepository{
         return emprestimosAtivos < limiteEmprestimos;
     }
 
-    // filtraEmprestimosAtrasados(): EmprestimoEntity[]{
-    //     return this.EmprestimoList.filter(
-    //         emprestimo => emprestimo.status === 'ativo' && emprestimo.estaAtrasado()
-    //     );
-    // }
+    listarEmprestimosAtivos(){
+        return this.EmprestimoList.filter(
+            emprestimo => emprestimo.status === 'ativo'
+        );
+    }
 }

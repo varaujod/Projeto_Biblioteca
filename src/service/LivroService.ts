@@ -13,11 +13,15 @@ export class LivroService{
             throw new Error("Por favor informar uma categoria existente");
         }
 
-        const livro = new LivroEntity(data.titulo, data.isbn, data.autor, data.editora, data.edicao, data.categoria);
+        if(this.livroRepository.validacaoLivro(data.isbn)){
+            throw new Error("Este livro já é cadastrado!");
+        } else{
+            const livro = new LivroEntity(data.titulo, data.isbn, data.autor, data.editora, data.edicao, data.categoria);
 
-        this.livroRepository.insereLivro(livro);
+            this.livroRepository.insereLivro(livro);
 
-        return livro;
+            return livro;
+        }
     }
 
     filtrarLivro(data: any){

@@ -2,11 +2,13 @@ import { EmprestimoEntity } from "../model/EmprestimoEntity";
 import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
+import { LivroRepository } from "../repository/LivroRepository";
 
 export class EmprestimoService{
     private emprestimoRespository = EmprestimoRepository.getInstance();
     private usuarioRepository = UsuarioRepository.getInstance();
     private estoqueRepository = EstoqueRepository.getInstance();
+    private livroRepository = LivroRepository.getInstance();
 
     novoEmprestimo(data: any): EmprestimoEntity{
         if(!data.usuario || !data.codExemplar || !data.categoria){
@@ -70,6 +72,12 @@ export class EmprestimoService{
         );
 
         this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
+        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+
+        if(exemplarEstoque && exemplarEstoque.isbn) {
+            this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
+        }
+
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
 
         return novoEmprestimo;
@@ -79,6 +87,10 @@ export class EmprestimoService{
         return this.emprestimoRespository.listarEmprestimos();
     }
 
+    listarEmprestimosAtivos(){
+        return this.emprestimoRespository.listarEmprestimosAtivos();
+    }
+    
     filtrarEmprestimoPorID(data: any){
         const id = data.id;
         const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
@@ -98,6 +110,10 @@ export class EmprestimoService{
             const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
             if (emprestimo) {
                 this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
+                const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
+                if (exemplarEstoque && exemplarEstoque.isbn) {
+                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel'});
+                }
                 return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
             }
         }

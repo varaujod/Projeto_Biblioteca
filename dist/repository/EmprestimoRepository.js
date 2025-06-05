@@ -45,9 +45,6 @@ class EmprestimoRepository {
             }
         }
     }
-    filtraHistoricoEmprestimosDoUsuario(cpf) {
-        return this.EmprestimoList.filter(emprestimo => emprestimo.usuario === cpf);
-    }
     filtraEmprestimosFinalizadosDoUsuario(cpf) {
         return this.EmprestimoList.filter(emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'devolvido');
     }
@@ -57,11 +54,13 @@ class EmprestimoRepository {
         if (categoria === 'professor') {
             limiteEmprestimos = 5;
         }
-        limiteEmprestimos = 3;
+        else {
+            limiteEmprestimos = 3;
+        }
         return emprestimosAtivos < limiteEmprestimos;
     }
-    filtraEmprestimosAtrasados() {
-        return this.EmprestimoList.filter(emprestimo => emprestimo.status === 'ativo' && emprestimo.estaAtrasado());
+    listarEmprestimosAtivos() {
+        return this.EmprestimoList.filter(emprestimo => emprestimo.status === 'ativo');
     }
 }
 exports.EmprestimoRepository = EmprestimoRepository;

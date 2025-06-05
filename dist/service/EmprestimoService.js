@@ -5,10 +5,12 @@ const EmprestimoEntity_1 = require("../model/EmprestimoEntity");
 const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
+const LivroRepository_1 = require("../repository/LivroRepository");
 class EmprestimoService {
     emprestimoRespository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
     usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
+    livroRepository = LivroRepository_1.LivroRepository.getInstance();
     novoEmprestimo(data) {
         if (!data.usuario || !data.codExemplar || !data.categoria) {
             throw new Error("Por favor informar todos os campos");
@@ -47,17 +49,24 @@ class EmprestimoService {
             }
             throw new Error(`Usuário já atingiu o limite máximo de ${limite} empréstimos simultâneos!`);
         }
-        const emprestimoAtivo = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
-        if (emprestimoAtivo) {
+        const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
+        if (exemplarEmprestado) {
             throw new Error("Este exemplar já está emprestado!");
         }
         const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(data.usuario, data.codExemplar, data.categoria);
         this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
+        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+        if (exemplarEstoque && exemplarEstoque.isbn) {
+            this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado' });
+        }
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
         return novoEmprestimo;
     }
     listarEmprestimos() {
         return this.emprestimoRespository.listarEmprestimos();
+    }
+    listarEmprestimosAtivos() {
+        return this.emprestimoRespository.listarEmprestimosAtivos();
     }
     filtrarEmprestimoPorID(data) {
         const id = data.id;
@@ -74,6 +83,10 @@ class EmprestimoService {
             const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
             if (emprestimo) {
                 this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
+                const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
+                if (exemplarEstoque && exemplarEstoque.isbn) {
+                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel' });
+                }
                 return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
             }
         }

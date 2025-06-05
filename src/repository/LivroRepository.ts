@@ -21,6 +21,10 @@ export class LivroRepository{
         return this.LivroList.find(livro => livro.isbn === isbn);
     }
 
+    validacaoLivro(isbn: number): boolean{
+        return this.LivroList.find(livro => livro.isbn === isbn) !== undefined;
+    }
+
     removeLivroPorISBN(isbn: number){
         const index = this.findIndex(isbn);
         return this.LivroList.splice(index, 1);
@@ -48,6 +52,10 @@ export class LivroRepository{
 
         if(novosDados.categoria){
             livro.categoria = novosDados.categoria;
+        }
+
+        if(novosDados.status){
+            livro.status = novosDados.status;
         }
 
         this.LivroList[index] = livro;
