@@ -5,6 +5,7 @@ import { EstoqueController } from "./controller/EstoqueController";
 import { EmprestimoController } from "./controller/EmprestimoController";
 import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
 import { CategoriaCursoController } from "./controller/CategoriaCursoController";
+import { CategoriaLivroController } from "./controller/CategoriaLivroController";
 
 const usuarioController             = new UsuarioController();
 const livroController               = new LivroController();
@@ -12,6 +13,7 @@ const estoqueController             = new EstoqueController();
 const emprestimoController          = new EmprestimoController();
 const categoriaUsuarioController    = new CategoriaUsuarioController();
 const categoriaCursoController      = new CategoriaCursoController();
+const categoriaLivroController      = new CategoriaLivroController();
 
 const app = express();
 
@@ -55,7 +57,7 @@ app.put("/library/emprestimos/devolucao/:id", emprestimoController.registrarDevo
 // Catalogos
 
 app.get("/library/catalogos/categorias-usuario", categoriaUsuarioController.listarCategoria.bind(categoriaUsuarioController));
-
+app.get("/library/catalogos/categorias-livro", categoriaLivroController.listarCategoriaLivro.bind(categoriaLivroController));
 app.get("/library/catalogos/cursos", categoriaCursoController.listarCurso.bind(categoriaCursoController));
 
 // Listen 

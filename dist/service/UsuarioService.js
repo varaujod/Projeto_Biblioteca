@@ -4,9 +4,11 @@ exports.UsuarioService = void 0;
 const UsuarioEntity_1 = require("../model/UsuarioEntity");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
+const CategoriaCursoRepository_1 = require("../repository/CategoriaCursoRepository");
 class UsuarioService {
     usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
+    categoriaCursoRepository = CategoriaCursoRepository_1.CategoriaCursoRepository.getInstance();
     novoUsuario(data) {
         if (!data.nome || !data.cpf || !data.email || !data.email || !data.categoria || !data.curso) {
             throw new Error("Por favor informar todos os campos");
@@ -14,7 +16,7 @@ class UsuarioService {
         if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         }
-        if (data.curso != "ADS" && data.curso != "Pedagogia" && data.curso != "Administração") {
+        if (!this.categoriaCursoRepository.encontrarCurso(data.curso)) {
             throw new Error("Por favor informar um curso existente");
         }
         if (this.usuarioRepository.validacaoCadastro(data.cpf)) {

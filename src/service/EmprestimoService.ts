@@ -22,6 +22,9 @@ export class EmprestimoService{
         if(!usuario){
             throw new Error("Usuário não encontrado!");
         }
+        
+        usuario.atualizarStatusPorAtraso(usuario.diasAtraso || 0);
+        usuario.atualizarLivrosAtrasados(usuario.livrosAtrasados || 0);
 
         if(usuario.status != 'ativo'){
             throw new Error("Usuário não está ativo para realizar empréstimos!");
@@ -112,6 +115,15 @@ export class EmprestimoService{
     registrarDevolucao(data: any){
         const id = data.id;
         const novoStatus = data.novoStatus;
+        
+        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(Number(id));
+        
+        if (!usuario) {
+            throw new Error("Usuário não encontrado!");
+        }
+
+        usuario.status = novoStatus;
+        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
 
         if(novoStatus == 'devolvido'){
             const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);

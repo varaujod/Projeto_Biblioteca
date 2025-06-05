@@ -1,10 +1,14 @@
 import { UsuarioEntity } from "../model/UsuarioEntity";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
+import { CategoriaCursoRepository } from "../repository/CategoriaCursoRepository";
+import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 
 export class UsuarioService{
     private usuarioRepository = UsuarioRepository.getInstance();
     private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
+    private categoriaCursoRepository = CategoriaCursoRepository.getInstance();
+    private emprestimoRepository = EmprestimoRepository.getInstance();
 
     novoUsuario(data: any): UsuarioEntity{
         if(!data.nome || !data.cpf || !data.email || !data.email || !data.categoria || !data.curso){
@@ -15,7 +19,7 @@ export class UsuarioService{
             throw new Error("Por favor informar uma categoria existente");
         } 
 
-        if(data.curso != "ADS" && data.curso != "Pedagogia" &&  data.curso != "Administração"){
+        if(!this.categoriaCursoRepository.encontrarCurso(data.curso)){
             throw new Error("Por favor informar um curso existente");
         }
 
@@ -37,6 +41,10 @@ export class UsuarioService{
     }
 
     removeUsuario(cpf: number){
+        const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);
+        if (emprestimosAtivos.length > 0) {
+            throw new Error("Usuário não pode ser removido pois possui empréstimos pendentes!");
+        }
         return this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
 

@@ -7,6 +7,7 @@ export class UsuarioEntity{
     status: 'ativo' | 'inativo' | 'suspenso';
     diasSuspensao: number;
     livrosAtrasados: number;
+    diasAtraso: number;
 
     constructor(nome: string, cpf: number, email: string, categoria: string, curso: string){
         this.nome = nome;
@@ -17,6 +18,7 @@ export class UsuarioEntity{
         this.status = "ativo";
         this.diasSuspensao = 0;
         this.livrosAtrasados = 0;
+        this.diasAtraso = 0;
     }
 
     sequenciaRepetida(cpfStr: string): boolean{
