@@ -100,5 +100,4 @@ export class EmprestimoEntity{
         EmprestimoEntity.ultimoId++;
         return EmprestimoEntity.ultimoId;
     }
-
 }

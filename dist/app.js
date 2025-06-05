@@ -9,11 +9,13 @@ const LivroController_1 = require("./controller/LivroController");
 const EstoqueController_1 = require("./controller/EstoqueController");
 const EmprestimoController_1 = require("./controller/EmprestimoController");
 const CategoriaUsuarioController_1 = require("./controller/CategoriaUsuarioController");
+const CategoriaCursoController_1 = require("./controller/CategoriaCursoController");
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
 const emprestimoController = new EmprestimoController_1.EmprestimoController();
 const categoriaUsuarioController = new CategoriaUsuarioController_1.CategoriaUsuarioController();
+const categoriaCursoController = new CategoriaCursoController_1.CategoriaCursoController();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT ?? 3090;
 app.use(express_1.default.json());
@@ -43,7 +45,7 @@ app.post("/library/emprestimos", emprestimoController.novoEmprestimo.bind(empres
 app.get("/library/emprestimos", emprestimoController.listarEmprestimos.bind(emprestimoController));
 app.put("/library/emprestimos/devolucao/:id", emprestimoController.registrarDevolucao.bind(emprestimoController));
 // Catalogos
-app.post("/library/catalogos/categorias-usuario", categoriaUsuarioController.novaCategoria.bind(categoriaUsuarioController));
 app.get("/library/catalogos/categorias-usuario", categoriaUsuarioController.listarCategoria.bind(categoriaUsuarioController));
+app.get("/library/catalogos/cursos", categoriaCursoController.listarCurso.bind(categoriaCursoController));
 // Listen 
 app.listen(PORT, logInfo);

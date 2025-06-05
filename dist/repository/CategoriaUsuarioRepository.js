@@ -1,19 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaUsuarioRepository = void 0;
+const CategoriaUsuario_1 = require("../model/CategoriaUsuario");
 class CategoriaUsuarioRepository {
     static instance;
     CategoriaUsuarioList = [];
-    constructor() { }
+    constructor() {
+        this.CategoriaUsuarioList.push(new CategoriaUsuario_1.CategoriaUsuario("Aluno"));
+        this.CategoriaUsuarioList.push(new CategoriaUsuario_1.CategoriaUsuario("Professor"));
+        this.CategoriaUsuarioList.push(new CategoriaUsuario_1.CategoriaUsuario("Bibliotecario"));
+    }
     ;
     static getInstance() {
         if (!this.instance) {
             this.instance = new CategoriaUsuarioRepository();
         }
         return this.instance;
-    }
-    insereCategoria(categoria) {
-        this.CategoriaUsuarioList.push(categoria);
     }
     listarCategoria() {
         return this.CategoriaUsuarioList;

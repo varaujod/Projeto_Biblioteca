@@ -4,7 +4,11 @@ export class CategoriaUsuarioRepository{
     private static instance: CategoriaUsuarioRepository;
     private CategoriaUsuarioList: CategoriaUsuario[] = [];
 
-    private constructor() {};
+    private constructor() {
+        this.CategoriaUsuarioList.push(new CategoriaUsuario("Aluno"));
+        this.CategoriaUsuarioList.push(new CategoriaUsuario("Professor"));
+        this.CategoriaUsuarioList.push(new CategoriaUsuario("Bibliotecario"));
+    };
 
     public static getInstance(): CategoriaUsuarioRepository{
         if(!this.instance){
@@ -12,10 +16,6 @@ export class CategoriaUsuarioRepository{
         }
 
         return this.instance;
-    }
-
-    insereCategoria(categoria: CategoriaUsuario){
-        this.CategoriaUsuarioList.push(categoria);
     }
 
     listarCategoria(){

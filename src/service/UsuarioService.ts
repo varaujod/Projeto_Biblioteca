@@ -11,7 +11,7 @@ export class UsuarioService{
             throw new Error("Por favor informar todos os campos");
         }
 
-        if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
+        if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         } 
 

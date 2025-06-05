@@ -3,12 +3,14 @@ import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { LivroRepository } from "../repository/LivroRepository";
+import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
 
 export class EmprestimoService{
     private emprestimoRespository = EmprestimoRepository.getInstance();
     private usuarioRepository = UsuarioRepository.getInstance();
     private estoqueRepository = EstoqueRepository.getInstance();
     private livroRepository = LivroRepository.getInstance();
+    private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
 
     novoEmprestimo(data: any): EmprestimoEntity{
         if(!data.usuario || !data.codExemplar || !data.categoria){
@@ -64,6 +66,10 @@ export class EmprestimoService{
 
         if(exemplarEmprestado){
             throw new Error("Este exemplar já está emprestado!");
+        }
+
+        if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
+            throw new Error("Por favor informar uma categoria existente");
         }
 
         const novoEmprestimo = new EmprestimoEntity(

@@ -6,11 +6,13 @@ const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const LivroRepository_1 = require("../repository/LivroRepository");
+const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
 class EmprestimoService {
     emprestimoRespository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
     usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
+    categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
     novoEmprestimo(data) {
         if (!data.usuario || !data.codExemplar || !data.categoria) {
             throw new Error("Por favor informar todos os campos");
@@ -53,6 +55,9 @@ class EmprestimoService {
         const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
         if (exemplarEmprestado) {
             throw new Error("Este exemplar já está emprestado!");
+        }
+        if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
+            throw new Error("Por favor informar uma categoria existente");
         }
         const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(data.usuario, data.codExemplar, data.categoria);
         this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
