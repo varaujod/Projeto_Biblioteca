@@ -3,11 +3,13 @@ import { UsuarioController } from "./controller/UsuarioController";
 import { LivroController } from "./controller/LivroController";
 import { EstoqueController } from "./controller/EstoqueController";
 import { EmprestimoController } from "./controller/EmprestimoController";
+import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
 
-const usuarioController = new UsuarioController();
-const livroController = new LivroController();
-const estoqueController = new EstoqueController();
-const emprestimoController = new EmprestimoController();
+const usuarioController             = new UsuarioController();
+const livroController               = new LivroController();
+const estoqueController             = new EstoqueController();
+const emprestimoController          = new EmprestimoController();
+const categoriaUsuarioController    = new CategoriaUsuarioController();
 
 const app = express();
 
@@ -47,6 +49,11 @@ app.delete("/library/estoque/:cod", estoqueController.removerLivroNoEstoque.bind
 app.post("/library/emprestimos", emprestimoController.novoEmprestimo.bind(emprestimoController));
 app.get("/library/emprestimos", emprestimoController.listarEmprestimos.bind(emprestimoController));
 app.put("/library/emprestimos/devolucao/:id", emprestimoController.registrarDevolucao.bind(emprestimoController));
+
+// Catalogos
+
+app.post("/library/catalogos/categorias-usuario", categoriaUsuarioController.novaCategoria.bind(categoriaUsuarioController));
+app.get("/library/catalogos/categorias-usuario", categoriaUsuarioController.listarCategoria.bind(categoriaUsuarioController));
 
 // Listen 
 

@@ -23,6 +23,7 @@ class EmprestimoService {
             throw new Error("Usuário não está ativo para realizar empréstimos!");
         }
         if (this.emprestimoRespository.verificarUsuarioSuspenso(data.usuario)) {
+            this.usuarioRepository.atualizarUsuarioPorCPF(data.usuario, { status: 'suspenso' });
             throw new Error("Usuário possui empréstimos em atraso!");
         }
         const exemplar = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);

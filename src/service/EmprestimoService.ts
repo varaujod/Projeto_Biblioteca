@@ -26,6 +26,7 @@ export class EmprestimoService{
         }
 
         if(this.emprestimoRespository.verificarUsuarioSuspenso(data.usuario)){
+            this.usuarioRepository.atualizarUsuarioPorCPF(data.usuario, { status: 'suspenso'});
             throw new Error("Usuário possui empréstimos em atraso!");
         }
 

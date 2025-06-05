@@ -46,6 +46,10 @@ export class UsuarioRepository{
             usuario.curso = novosDados.curso;
         }
 
+        if(novosDados.status){
+            usuario.status = novosDados.status;
+        }
+
         this.UsuarioList[index] = usuario;
 
         return usuario;

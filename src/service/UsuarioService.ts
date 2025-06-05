@@ -1,17 +1,19 @@
 import { UsuarioEntity } from "../model/UsuarioEntity";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
+import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
 
 export class UsuarioService{
     private usuarioRepository = UsuarioRepository.getInstance();
+    private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
 
     novoUsuario(data: any): UsuarioEntity{
         if(!data.nome || !data.cpf || !data.email || !data.email || !data.categoria || !data.curso){
             throw new Error("Por favor informar todos os campos");
         }
 
-        if(data.categoria != "Aluno" && data.categoria != "Professor" && data.categoria != "Bibliotecario"){
+        if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
-        }
+        } 
 
         if(data.curso != "ADS" && data.curso != "Pedagogia" &&  data.curso != "Administração"){
             throw new Error("Por favor informar um curso existente");
