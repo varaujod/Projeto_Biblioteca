@@ -32,8 +32,11 @@ class UsuarioService {
     }
     filtrarUsuario(data) {
         const cpf = data.cpf;
-        return this.usuarioRepository.filtraUsuarioPorCPF(cpf);
-        // console.log(this.usuarioRepository.filtraUsuarioPorCPF(cpf));
+        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        if (!usuario) {
+            throw new Error("Este usuário ainda não foi cadastrado com este CPF!");
+        }
+        return usuario;
     }
     removeUsuario(cpf) {
         const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);

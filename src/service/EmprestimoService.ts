@@ -114,7 +114,7 @@ export class EmprestimoService{
 
     registrarDevolucao(data: any){
         const id = data.id;
-        const novoStatus = data.novoStatus;
+        const novoStatus = 'devolvido';
 
         const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
         if (!emprestimo) {
@@ -126,7 +126,12 @@ export class EmprestimoService{
             throw new Error("Usuário não encontrado!");
         }
 
-        usuario.status = novoStatus;
+        this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+        usuario.atualizarLivrosAtrasados(Math.max(0, usuario.livrosAtrasados - 1));
+        if (usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
+            usuario.status = "ativo";
+        }
+
         this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
 
         if(novoStatus == 'devolvido'){
