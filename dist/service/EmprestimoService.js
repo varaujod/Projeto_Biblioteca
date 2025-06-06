@@ -30,11 +30,11 @@ class EmprestimoService {
             this.usuarioRepository.atualizarUsuarioPorCPF(data.usuario, { status: 'suspenso' });
             throw new Error("Usuário possui empréstimos em atraso!");
         }
-        const exemplar = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
-        if (!exemplar) {
+        const estoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+        if (!estoque) {
             throw new Error("Exemplar não encontrado!");
         }
-        if (exemplar.disponibilidade === 'não-disponivel') {
+        if (estoque.disponibilidade === 'não-disponivel') {
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
         let categoria;
@@ -54,15 +54,30 @@ class EmprestimoService {
             }
             throw new Error(`Usuário já atingiu o limite máximo de ${limite} empréstimos simultâneos!`);
         }
-        const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
-        if (exemplarEmprestado) {
-            throw new Error("Este exemplar já está emprestado!");
-        }
+        // const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
+        // if(exemplarEmprestado){
+        //     throw new Error("Este exemplar já está emprestado!");
+        // }
         if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         }
+        if (!estoque) {
+            throw new Error("Exemplar não encontrado!");
+        }
+        if (estoque.quantidade_emprestada < estoque.quantidade) {
+            estoque.quantidade_emprestada += 1;
+            if (estoque.quantidade_emprestada === estoque.quantidade) {
+                estoque.disponibilidade = 'não-disponivel';
+            }
+            this.estoqueRepository.atualizarDisponibilidade(estoque.cod, {
+                disponibilidade: estoque.disponibilidade,
+                quantidade_emprestada: estoque.quantidade_emprestada
+            });
+        }
+        else {
+            throw new Error("Todos os exemplares estão emprestados!");
+        }
         const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(data.usuario, data.codExemplar, data.categoria);
-        this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
         const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
         if (exemplarEstoque && exemplarEstoque.isbn) {
             this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado' });
@@ -101,15 +116,20 @@ class EmprestimoService {
             usuario.status = "ativo";
         }
         this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
-        if (novoStatus == 'devolvido') {
-            this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
-            const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
-            if (exemplarEstoque && exemplarEstoque.isbn) {
-                this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel' });
+        const estoque = this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
+        console.log('Estoque encontrado:', estoque);
+        if (estoque && estoque.quantidade_emprestada > 0) {
+            console.log('Entrou no if');
+            estoque.quantidade_emprestada -= 1;
+            if (estoque.quantidade_emprestada < estoque.quantidade) {
+                estoque.disponibilidade = 'disponivel';
             }
-            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+            this.estoqueRepository.atualizarDisponibilidade(estoque.cod, {
+                disponibilidade: estoque.disponibilidade,
+                quantidade_emprestada: estoque.quantidade_emprestada
+            });
+            console.log('Depois:', estoque.quantidade_emprestada);
         }
-        throw new Error("Não foi possivel registrar a sua devolução!");
     }
 }
 exports.EmprestimoService = EmprestimoService;

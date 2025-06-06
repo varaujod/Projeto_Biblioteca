@@ -35,13 +35,13 @@ export class EmprestimoService{
             throw new Error("Usuário possui empréstimos em atraso!");
         }
 
-        const exemplar = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+        const estoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
 
-        if(!exemplar){
+        if(!estoque){
             throw new Error("Exemplar não encontrado!");
         }
 
-        if(exemplar.disponibilidade === 'não-disponivel'){
+        if(estoque.disponibilidade === 'não-disponivel'){
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
 
@@ -65,14 +65,32 @@ export class EmprestimoService{
             throw new Error(`Usuário já atingiu o limite máximo de ${limite} empréstimos simultâneos!`);
         }
 
-        const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
+        // const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
 
-        if(exemplarEmprestado){
-            throw new Error("Este exemplar já está emprestado!");
-        }
+        // if(exemplarEmprestado){
+        //     throw new Error("Este exemplar já está emprestado!");
+        // }
 
         if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
+        }
+
+        if(!estoque) {
+            throw new Error("Exemplar não encontrado!");
+        }
+
+        if(estoque.quantidade_emprestada < estoque.quantidade) {
+            estoque.quantidade_emprestada += 1;
+            if (estoque.quantidade_emprestada === estoque.quantidade) {
+                estoque.disponibilidade = 'não-disponivel';
+            }
+
+            this.estoqueRepository.atualizarDisponibilidade(estoque.cod, { 
+            disponibilidade: estoque.disponibilidade,
+            quantidade_emprestada: estoque.quantidade_emprestada
+            });
+        } else {
+            throw new Error("Todos os exemplares estão emprestados!");
         }
 
         const novoEmprestimo = new EmprestimoEntity(
@@ -81,7 +99,6 @@ export class EmprestimoService{
             data.categoria
         );
 
-        this.estoqueRepository.atualizarDisponibilidade(data.codExemplar, { disponibilidade: 'não-disponivel' });
         const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
 
         if(exemplarEstoque && exemplarEstoque.isbn) {
@@ -128,22 +145,25 @@ export class EmprestimoService{
 
         this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
         usuario.atualizarLivrosAtrasados(Math.max(0, usuario.livrosAtrasados - 1));
-        if (usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
+
+        if(usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
             usuario.status = "ativo";
         }
 
         this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
 
-        if(novoStatus == 'devolvido'){
-            this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
-            const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
-            if (exemplarEstoque && exemplarEstoque.isbn) {
-                this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel'});
-            }
-            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
-        }
+        const estoque = this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
 
-        throw new Error("Não foi possivel registrar a sua devolução!");
+        if(estoque && estoque.quantidade_emprestada > 0) {
+            estoque.quantidade_emprestada -= 1;
+            if (estoque.quantidade_emprestada < estoque.quantidade) {
+                estoque.disponibilidade = 'disponivel';
+            }
+            this.estoqueRepository.atualizarDisponibilidade(estoque.cod, { 
+                disponibilidade: estoque.disponibilidade,
+                quantidade_emprestada: estoque.quantidade_emprestada
+            });
+        }
     }
     
 }

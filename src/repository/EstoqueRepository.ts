@@ -19,7 +19,7 @@ export class EstoqueRepository{
     }
 
     filtraLivroNoEstoque(cod: number){
-        return this.EstoqueList.find(estoque => estoque.cod === cod);
+        return this.EstoqueList.find(estoque => Number(estoque.cod) === Number(cod));
     }
 
     listarEstoque(){

@@ -19,7 +19,7 @@ class EstoqueService {
         if (exemplarExistente) {
             throw new Error("Já existe um exemplar com este código!");
         }
-        const livroNoEstoque = new EstoqueEntity_1.EstoqueEntity(data.isbn, data.cod);
+        const livroNoEstoque = new EstoqueEntity_1.EstoqueEntity(data.isbn, data.cod, data.quantidade, 0);
         this.estoqueRepository.insereLivroNoEstoque(livroNoEstoque);
         return livroNoEstoque;
     }
@@ -41,10 +41,20 @@ class EstoqueService {
     atualizarDisponibilidade(data) {
         const cod = data.cod;
         const novaDisponibilidade = data.novaDisponibilidade;
+        const estoque = this.estoqueRepository.filtraLivroNoEstoque(cod);
+        if (estoque && estoque.quantidade_emprestada === estoque.quantidade) {
+            this.estoqueRepository.atualizarDisponibilidade(cod, { disponibilidade: 'não-disponivel' });
+        }
         return this.estoqueRepository.atualizarDisponibilidade(cod, novaDisponibilidade);
     }
     removerLivroNoEstoque(cod) {
-        return this.estoqueRepository.removerLivroNoEstoque(cod);
+        const estoque = this.estoqueRepository.filtraLivroNoEstoque(cod);
+        if (estoque && estoque.quantidade === 0) {
+            return this.estoqueRepository.removerLivroNoEstoque(cod);
+        }
+        else {
+            throw new Error("Há exemplares emprestados desse Livro, assim que não tiver mais exemplares emprestados você poderá remover este livro no estoque");
+        }
     }
 }
 exports.EstoqueService = EstoqueService;

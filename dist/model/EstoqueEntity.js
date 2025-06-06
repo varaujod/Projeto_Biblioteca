@@ -4,10 +4,14 @@ exports.EstoqueEntity = void 0;
 class EstoqueEntity {
     isbn;
     cod;
+    quantidade;
+    quantidade_emprestada;
     disponibilidade;
-    constructor(isbn, cod) {
+    constructor(isbn, cod, quantidade, quantidade_emprestada) {
         this.isbn = isbn;
         this.cod = cod;
+        this.quantidade = quantidade;
+        this.quantidade_emprestada = quantidade_emprestada;
         this.disponibilidade = 'disponivel';
     }
 }

@@ -15,7 +15,7 @@ class EstoqueRepository {
         this.EstoqueList.push(livro);
     }
     filtraLivroNoEstoque(cod) {
-        return this.EstoqueList.find(estoque => estoque.cod === cod);
+        return this.EstoqueList.find(estoque => Number(estoque.cod) === Number(cod));
     }
     listarEstoque() {
         return this.EstoqueList;
