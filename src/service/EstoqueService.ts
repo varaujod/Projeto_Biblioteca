@@ -64,10 +64,13 @@ export class EstoqueService{
 
     removerLivroNoEstoque(cod: number){
         const estoque = this.estoqueRepository.filtraLivroNoEstoque(cod);
-        if(estoque && estoque.quantidade === 0){
-            return this.estoqueRepository.removerLivroNoEstoque(cod);
+        if (!estoque) {
+            throw new Error("Exemplar não encontrado!");
         }
-        else{
+    
+        if(estoque.quantidade_emprestada === 0){
+            return this.estoqueRepository.removerLivroNoEstoque(cod);
+        } else {
             throw new Error("Há exemplares emprestados desse Livro, assim que não tiver mais exemplares emprestados você poderá remover este livro no estoque");
         }
     }

@@ -117,9 +117,7 @@ class EmprestimoService {
         }
         this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
         const estoque = this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
-        console.log('Estoque encontrado:', estoque);
         if (estoque && estoque.quantidade_emprestada > 0) {
-            console.log('Entrou no if');
             estoque.quantidade_emprestada -= 1;
             if (estoque.quantidade_emprestada < estoque.quantidade) {
                 estoque.disponibilidade = 'disponivel';
@@ -128,7 +126,6 @@ class EmprestimoService {
                 disponibilidade: estoque.disponibilidade,
                 quantidade_emprestada: estoque.quantidade_emprestada
             });
-            console.log('Depois:', estoque.quantidade_emprestada);
         }
     }
 }
