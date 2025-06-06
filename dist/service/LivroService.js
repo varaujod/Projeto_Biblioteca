@@ -18,6 +18,9 @@ class LivroService {
         if (!this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         }
+        if (!this.livroRepository.validacaoISBN(data.isbn)) {
+            throw new Error("É necessário de 13 números obrigatorios da ISBN para cadastrar um livro!");
+        }
         if (this.livroRepository.validacaoLivro(data.isbn)) {
             throw new Error("Este livro já é cadastrado!");
         }

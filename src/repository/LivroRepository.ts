@@ -16,6 +16,10 @@ export class LivroRepository{
     insereLivro(livro: LivroEntity){
         this.LivroList.push(livro);
     }
+    
+    validacaoISBN(isbn: number): boolean {
+        return isbn.toString().length === 13;
+    }
 
     filtraLivroPorISBN(isbn: number){
         return this.LivroList.find(livro => livro.isbn === isbn);

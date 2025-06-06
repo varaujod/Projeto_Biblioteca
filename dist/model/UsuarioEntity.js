@@ -31,7 +31,6 @@ class UsuarioEntity {
             }
         }
         if (repetido == true) {
-            // console.log("O CPF não pode ser uma sequência repetida!");
             throw new Error("O CPF não pode ser uma sequência repetida!");
         }
         else {
@@ -55,7 +54,6 @@ class UsuarioEntity {
             return true;
         }
         else {
-            // console.log("O CPF é AAAAAAAA!")
             throw new Error("O CPF é inválido!");
         }
     }
@@ -76,7 +74,6 @@ class UsuarioEntity {
             return true;
         }
         else {
-            // console.log("O CPF é inválido!")
             throw new Error("O CPF é inválido!");
         }
     }

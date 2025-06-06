@@ -46,7 +46,6 @@ class UsuarioService {
         return this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
     listarUsuarios() {
-        // console.log(this.usuarioRepository.listarUsuarios());
         return this.usuarioRepository.listarUsuarios();
     }
     atualizaUsuario(data) {

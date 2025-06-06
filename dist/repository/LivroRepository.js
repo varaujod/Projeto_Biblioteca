@@ -14,6 +14,9 @@ class LivroRepository {
     insereLivro(livro) {
         this.LivroList.push(livro);
     }
+    validacaoISBN(isbn) {
+        return isbn.toString().length === 13;
+    }
     filtraLivroPorISBN(isbn) {
         return this.LivroList.find(livro => livro.isbn === isbn);
     }
