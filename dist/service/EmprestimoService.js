@@ -21,6 +21,8 @@ class EmprestimoService {
         if (!usuario) {
             throw new Error("Usuário não encontrado!");
         }
+        usuario.atualizarStatusPorAtraso(usuario.diasAtraso || 0);
+        usuario.atualizarLivrosAtrasados(usuario.livrosAtrasados || 0);
         if (usuario.status != 'ativo') {
             throw new Error("Usuário não está ativo para realizar empréstimos!");
         }
@@ -85,16 +87,23 @@ class EmprestimoService {
     registrarDevolucao(data) {
         const id = data.id;
         const novoStatus = data.novoStatus;
+        const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
+        if (!emprestimo) {
+            throw new Error("Empréstimo não encontrado!");
+        }
+        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(emprestimo.usuario);
+        if (!usuario) {
+            throw new Error("Usuário não encontrado!");
+        }
+        usuario.status = novoStatus;
+        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
         if (novoStatus == 'devolvido') {
-            const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
-            if (emprestimo) {
-                this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
-                const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
-                if (exemplarEstoque && exemplarEstoque.isbn) {
-                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel' });
-                }
-                return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+            this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
+            const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
+            if (exemplarEstoque && exemplarEstoque.isbn) {
+                this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel' });
             }
+            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
         }
         throw new Error("Não foi possivel registrar a sua devolução!");
     }

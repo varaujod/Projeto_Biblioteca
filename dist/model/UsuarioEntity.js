@@ -10,6 +10,7 @@ class UsuarioEntity {
     status;
     diasSuspensao;
     livrosAtrasados;
+    diasAtraso;
     constructor(nome, cpf, email, categoria, curso) {
         this.nome = nome;
         this.cpf = this.meuCPF(cpf);
@@ -19,6 +20,7 @@ class UsuarioEntity {
         this.status = "ativo";
         this.diasSuspensao = 0;
         this.livrosAtrasados = 0;
+        this.diasAtraso = 0;
     }
     sequenciaRepetida(cpfStr) {
         let repetido = true;

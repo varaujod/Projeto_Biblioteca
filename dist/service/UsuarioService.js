@@ -5,10 +5,12 @@ const UsuarioEntity_1 = require("../model/UsuarioEntity");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
 const CategoriaCursoRepository_1 = require("../repository/CategoriaCursoRepository");
+const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 class UsuarioService {
     usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
     categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
     categoriaCursoRepository = CategoriaCursoRepository_1.CategoriaCursoRepository.getInstance();
+    emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
     novoUsuario(data) {
         if (!data.nome || !data.cpf || !data.email || !data.email || !data.categoria || !data.curso) {
             throw new Error("Por favor informar todos os campos");
@@ -34,6 +36,10 @@ class UsuarioService {
         // console.log(this.usuarioRepository.filtraUsuarioPorCPF(cpf));
     }
     removeUsuario(cpf) {
+        const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);
+        if (emprestimosAtivos.length > 0) {
+            throw new Error("Usuário não pode ser removido pois possui empréstimos pendentes!");
+        }
         return this.usuarioRepository.removeUsuarioPorCPF(cpf);
     }
     listarUsuarios() {

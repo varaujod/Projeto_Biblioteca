@@ -115,9 +115,13 @@ export class EmprestimoService{
     registrarDevolucao(data: any){
         const id = data.id;
         const novoStatus = data.novoStatus;
-        
-        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(Number(id));
-        
+
+        const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
+        if (!emprestimo) {
+            throw new Error("Empréstimo não encontrado!");
+        }
+
+        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(emprestimo.usuario);
         if (!usuario) {
             throw new Error("Usuário não encontrado!");
         }
@@ -126,17 +130,14 @@ export class EmprestimoService{
         this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
 
         if(novoStatus == 'devolvido'){
-            const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
-            if (emprestimo) {
-                this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
-                const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
-                if (exemplarEstoque && exemplarEstoque.isbn) {
-                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel'});
-                }
-                return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+            this.estoqueRepository.atualizarDisponibilidade(emprestimo.codExemplar, { disponibilidade: 'disponivel' });
+            const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(emprestimo.codExemplar);
+            if (exemplarEstoque && exemplarEstoque.isbn) {
+                this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'disponivel'});
             }
+            return this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
         }
-        
+
         throw new Error("Não foi possivel registrar a sua devolução!");
     }
     
