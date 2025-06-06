@@ -65,12 +65,6 @@ export class EmprestimoService{
             throw new Error(`Usuário já atingiu o limite máximo de ${limite} empréstimos simultâneos!`);
         }
 
-        // const exemplarEmprestado = this.emprestimoRespository.filtraEmprestimoAtivoDoExemplar(data.codExemplar);
-
-        // if(exemplarEmprestado){
-        //     throw new Error("Este exemplar já está emprestado!");
-        // }
-
         if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         }
