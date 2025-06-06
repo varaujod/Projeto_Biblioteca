@@ -54,7 +54,6 @@ export class UsuarioService{
     }
 
     listarUsuarios(){
-        // console.log(this.usuarioRepository.listarUsuarios());
         return this.usuarioRepository.listarUsuarios()
     }
 
