@@ -7,13 +7,13 @@ import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioControl
 import { CategoriaCursoController } from "./controller/CategoriaCursoController";
 import { CategoriaLivroController } from "./controller/CategoriaLivroController";
 
-const usuarioController             = new UsuarioController();
-const livroController               = new LivroController();
-const estoqueController             = new EstoqueController();
-const emprestimoController          = new EmprestimoController();
-const categoriaUsuarioController    = new CategoriaUsuarioController();
-const categoriaCursoController      = new CategoriaCursoController();
-const categoriaLivroController      = new CategoriaLivroController();
+const usuarioController = new UsuarioController();
+const livroController = new LivroController();
+const estoqueController = new EstoqueController();
+const emprestimoController = new EmprestimoController();
+const categoriaUsuarioController = new CategoriaUsuarioController();
+const categoriaCursoController = new CategoriaCursoController();
+const categoriaLivroController = new CategoriaLivroController();
 
 const app = express();
 
