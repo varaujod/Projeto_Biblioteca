@@ -11,6 +11,7 @@ const EmprestimoController_1 = require("./controller/EmprestimoController");
 const CategoriaUsuarioController_1 = require("./controller/CategoriaUsuarioController");
 const CategoriaCursoController_1 = require("./controller/CategoriaCursoController");
 const CategoriaLivroController_1 = require("./controller/CategoriaLivroController");
+const UsuarioService_1 = require("./service/UsuarioService");
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
@@ -18,12 +19,23 @@ const emprestimoController = new EmprestimoController_1.EmprestimoController();
 const categoriaUsuarioController = new CategoriaUsuarioController_1.CategoriaUsuarioController();
 const categoriaCursoController = new CategoriaCursoController_1.CategoriaCursoController();
 const categoriaLivroController = new CategoriaLivroController_1.CategoriaLivroController();
+const usuarioService = new UsuarioService_1.UsuarioService();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT ?? 3090;
 app.use(express_1.default.json());
 function logInfo() {
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
+async function atualizarStatusUsuario() {
+    const usuarios = usuarioService.listarUsuarios();
+    for (const usuario of usuarios) {
+        usuario.regularizarStatus();
+        usuarioService.atualizaUsuario({ cpf: usuario.cpf, novosDados: usuario });
+    }
+    console.log("Status dos usuários após atualização automática:", usuarios);
+    console.log("Status do usuário atualizado automaticamente. " + new Date());
+}
+setInterval(atualizarStatusUsuario, 10000);
 // Usuarios
 app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioController));
 app.get("/library/usuarios", usuarioController.listarUsuarios.bind(usuarioController));

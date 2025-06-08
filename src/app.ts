@@ -6,6 +6,7 @@ import { EmprestimoController } from "./controller/EmprestimoController";
 import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
 import { CategoriaCursoController } from "./controller/CategoriaCursoController";
 import { CategoriaLivroController } from "./controller/CategoriaLivroController";
+import { UsuarioService } from "./service/UsuarioService";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
@@ -14,6 +15,7 @@ const emprestimoController = new EmprestimoController();
 const categoriaUsuarioController = new CategoriaUsuarioController();
 const categoriaCursoController = new CategoriaCursoController();
 const categoriaLivroController = new CategoriaLivroController();
+const usuarioService = new UsuarioService();
 
 const app = express();
 
@@ -23,6 +25,20 @@ app.use(express.json());
 function logInfo(){
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
+
+async function atualizarStatusUsuario(){
+    const usuarios = usuarioService.listarUsuarios();
+
+    for(const usuario of usuarios){
+        usuario.regularizarStatus();
+        usuarioService.atualizaUsuario({ cpf: usuario.cpf, novosDados: usuario });
+    }
+
+    console.log("Status dos usuários após atualização automática:", usuarios);
+    console.log("Status do usuário atualizado automaticamente. " + new Date());
+}
+
+setInterval(atualizarStatusUsuario, 10000);
 
 // Usuarios
 
