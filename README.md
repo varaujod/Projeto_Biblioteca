@@ -21,15 +21,3 @@ O sistema permitirá:
 * **Catálogos:** Listagem de categorias de usuários, categorias de livros e cursos disponíveis. 
 
 Todas as operações serão expostas através de endpoints RESTful acessíveis via `http://localhost:3090/library`.
-
-## Testes Realizados por mim durante o Desenvolvimento do Projeto - Via Postman (API Network)
-
-* **Usuário**: https://vinicius-9524872.postman.co/workspace/vinicius's-Workspace~3cfd6de5-ef05-4897-8a48-af17ccc0e9dd/collection/44799119-b0839ccd-ae23-4b47-9ad3-c358fe476763?action=share&creator=44799119
-
-* **Livro**: https://vinicius-9524872.postman.co/workspace/vinicius's-Workspace~3cfd6de5-ef05-4897-8a48-af17ccc0e9dd/collection/44799119-4e054198-7609-43de-acc4-37215b8a65f5?action=share&creator=44799119
-
-* **Estoque**: https://vinicius-9524872.postman.co/workspace/vinicius's-Workspace~3cfd6de5-ef05-4897-8a48-af17ccc0e9dd/collection/44799119-fe73ac99-29af-429c-8449-fe661532f4e4?action=share&creator=44799119
-
-* **Emprestimo**: https://vinicius-9524872.postman.co/workspace/vinicius's-Workspace~3cfd6de5-ef05-4897-8a48-af17ccc0e9dd/collection/44799119-6a837588-51a0-4244-a72a-a5ab11f865cf?action=share&creator=44799119
-
-* **Catalogo**: https://vinicius-9524872.postman.co/workspace/vinicius's-Workspace~3cfd6de5-ef05-4897-8a48-af17ccc0e9dd/collection/44799119-3a726146-cf4b-45ad-92c8-fd155d3de0b5?action=share&creator=44799119
