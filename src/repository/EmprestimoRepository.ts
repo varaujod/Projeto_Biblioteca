@@ -38,12 +38,6 @@ export class EmprestimoRepository{
         );
     }
 
-    filtraEmprestimoAtivoDoExemplar(codExemplar: number): EmprestimoEntity | undefined {
-        return this.EmprestimoList.find(
-            emprestimo => emprestimo.codExemplar === codExemplar && emprestimo.status === 'ativo'
-        );
-    }
-
     emprestimosAtivosDoUsuario(cpf: number): number {
         return this.filtraEmprestimosAtivosDoUsuario(cpf).length;
     }
@@ -63,12 +57,6 @@ export class EmprestimoRepository{
                 emprestimo.finalizarEmprestimo();
             }
         }
-    }
-
-    filtraEmprestimosFinalizadosDoUsuario(cpf: number): EmprestimoEntity[]{
-        return this.EmprestimoList.filter(
-            emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'devolvido'
-        );
     }
 
     verificarLimiteEmprestimo(cpf: number, categoria: 'professor' | 'aluno'): boolean{
