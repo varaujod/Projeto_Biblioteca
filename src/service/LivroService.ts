@@ -11,10 +11,6 @@ export class LivroService{
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
     novoLivro(data: any): LivroEntity{
-        if(!data.titulo || !data.isbn || !data.autor || !data.editora || !data.edicao || !data.categoria){
-            throw new Error("Por favor informar todos os campos");
-        }
-
         if(!this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria)){
             throw new Error("Por favor informar uma categoria existente");
         }
@@ -42,8 +38,8 @@ export class LivroService{
     removeLivro(isbn: number){
         const exemplares = this.estoqueRepository.listarEstoque().filter(e => e.isbn === isbn);
         for(const exemplar of exemplares){
-            const emprestimoAtivo = this.emprestimoRepository.filtraEmprestimoAtivoDoExemplar(exemplar.cod);
-            if (emprestimoAtivo) {
+            const emprestimosAtivoDoLivro = this.estoqueRepository.quantidadeLivrosEmprestados(exemplar.cod);
+            if (emprestimosAtivoDoLivro) {
                 throw new Error("Não é possível remover o livro: há exemplares emprestados!");
             }
         }

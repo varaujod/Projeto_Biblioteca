@@ -7,10 +7,6 @@ export class EstoqueService{
     private livroRepository = LivroRepository.getInstance();
 
     novoLivronoEstoque(data: any): EstoqueEntity{
-        if(!data.isbn || !data.cod){
-            throw new Error("Por favor informar todos os campos");
-        }
-
         const livroExistente = this.livroRepository.filtraLivroPorISBN(data.isbn);
 
         if(!livroExistente) {

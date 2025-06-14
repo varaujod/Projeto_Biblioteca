@@ -43,6 +43,9 @@ class EstoqueRepository {
             throw new Error("Este livro não pode ser excluido, assim que estiver disponivel, você poderá excluir!");
         }
     }
+    quantidadeLivrosEmprestados(cod) {
+        return this.EstoqueList.find(estoque => Number(estoque.cod) === Number(cod) && estoque.quantidade_emprestada > 0);
+    }
     findIndex(cod) {
         const index = this.EstoqueList.findIndex(estoque => estoque.cod == cod);
         if (index == -1) {

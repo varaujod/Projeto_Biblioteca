@@ -13,10 +13,6 @@ export class EmprestimoService{
     private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
 
     novoEmprestimo(data: any): EmprestimoEntity{
-        if(!data.usuario || !data.codExemplar || !data.categoria){
-            throw new Error("Por favor informar todos os campos");
-        }
-        
         const usuario = this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
 
         if(!usuario){
@@ -45,18 +41,10 @@ export class EmprestimoService{
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
 
-        let categoria: 'professor' | 'aluno';
-
-        if(usuario.categoria == 'professor'){
-            categoria = 'professor';
-        } else{
-            categoria = 'aluno';
-        }
-
-        if(!this.emprestimoRespository.verificarLimiteEmprestimo(data.usuario, categoria)){
+        if(!this.emprestimoRespository.verificarLimiteEmprestimo(data.usuario, data.categoria)){
             let limite = 0;
 
-            if(categoria === 'professor'){
+            if(data.categoria === 'professor'){
                 limite = 5;
             } else{
                 limite = 3;
@@ -144,7 +132,7 @@ export class EmprestimoService{
             usuario.status = "ativo";
         }
 
-        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
+        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
 
         const estoque = this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
 

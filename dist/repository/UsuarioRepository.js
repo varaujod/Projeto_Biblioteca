@@ -46,7 +46,7 @@ class UsuarioRepository {
         return this.UsuarioList;
     }
     validacaoCadastro(cpf) {
-        return this.UsuarioList.find(usuario => usuario.cpf === cpf) !== undefined;
+        return this.filtraUsuarioPorCPF(cpf) !== undefined;
     }
     findIndex(cpf) {
         const index = this.UsuarioList.findIndex(user => user.cpf == cpf);

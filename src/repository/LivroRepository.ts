@@ -26,7 +26,7 @@ export class LivroRepository{
     }
 
     validacaoLivro(isbn: number): boolean{
-        return this.LivroList.find(livro => livro.isbn === isbn) !== undefined;
+        return this.filtraLivroPorISBN(isbn) !== undefined;
     }
 
     removeLivroPorISBN(isbn: number){

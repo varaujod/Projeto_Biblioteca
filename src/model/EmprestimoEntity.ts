@@ -14,6 +14,10 @@ export class EmprestimoEntity{
     diasSuspensao: number;
 
     constructor(usuario: number, codExemplar: number, categoria: 'aluno' | 'professor'){
+        if(!usuario || !codExemplar || !categoria){
+            throw new Error("Por favor informar todos os campos");
+        }
+
         this.id = this.gerarId();
         this.usuario = usuario;
         this.codExemplar = codExemplar;

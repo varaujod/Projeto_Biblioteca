@@ -12,6 +12,9 @@ class UsuarioEntity {
     livrosAtrasados;
     diasAtraso;
     constructor(nome, cpf, email, categoria, curso) {
+        if (!nome || !cpf || !email || !categoria || !curso) {
+            throw new Error("Por favor informar todos os campos");
+        }
         this.nome = nome;
         this.cpf = this.meuCPF(cpf);
         this.email = email;

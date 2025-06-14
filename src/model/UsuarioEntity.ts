@@ -10,6 +10,10 @@ export class UsuarioEntity{
     diasAtraso: number;
 
     constructor(nome: string, cpf: number, email: string, categoria: string, curso: string){
+        if(!nome || !cpf || !email || !categoria || !curso){
+            throw new Error("Por favor informar todos os campos");
+        }
+        
         this.nome = nome;
         this.cpf = this.meuCPF(cpf);
         this.email = email;

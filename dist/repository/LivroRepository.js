@@ -21,7 +21,7 @@ class LivroRepository {
         return this.LivroList.find(livro => livro.isbn === isbn);
     }
     validacaoLivro(isbn) {
-        return this.LivroList.find(livro => livro.isbn === isbn) !== undefined;
+        return this.filtraLivroPorISBN(isbn) !== undefined;
     }
     removeLivroPorISBN(isbn) {
         const index = this.findIndex(isbn);

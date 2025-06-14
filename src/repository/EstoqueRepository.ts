@@ -54,6 +54,10 @@ export class EstoqueRepository{
         }
     }
 
+    quantidadeLivrosEmprestados(cod:number){
+        return this.EstoqueList.find(estoque => Number(estoque.cod) === Number(cod) && estoque.quantidade_emprestada > 0);
+    }
+
     private findIndex(cod: number): number{
         const index = this.EstoqueList.findIndex(estoque => estoque.cod == cod);
 

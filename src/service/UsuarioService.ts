@@ -11,10 +11,6 @@ export class UsuarioService{
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
     novoUsuario(data: any): UsuarioEntity{
-        if(!data.nome || !data.cpf || !data.email || !data.email || !data.categoria || !data.curso){
-            throw new Error("Por favor informar todos os campos");
-        }
-
         if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         } 
@@ -63,4 +59,19 @@ export class UsuarioService{
 
         return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
+
+    // private async atualizarStatusUsuarios(){
+    //     const usuarios = this.listarUsuarios();
+    //     const emprestimoRepository = EmprestimoRepository.getInstance();
+        
+    //     for(const usuario of usuarios){
+    //         const emprestimosAtivos = emprestimoRepository.filtraEmprestimosAtivosDoUsuario(usuario.cpf);
+
+    //         let livrosAtrasados = 0;
+    //         let diasAtrasoTotal = 0;
+
+    //         for(const emprestimo of emprestimo)
+
+    //     }
+    // }
 }

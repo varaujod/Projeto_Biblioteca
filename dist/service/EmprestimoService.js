@@ -14,9 +14,6 @@ class EmprestimoService {
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
     categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
     novoEmprestimo(data) {
-        if (!data.usuario || !data.codExemplar || !data.categoria) {
-            throw new Error("Por favor informar todos os campos");
-        }
         const usuario = this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
         if (!usuario) {
             throw new Error("Usuário não encontrado!");
@@ -37,16 +34,15 @@ class EmprestimoService {
         if (estoque.disponibilidade === 'não-disponivel') {
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
-        let categoria;
-        if (usuario.categoria == 'professor') {
-            categoria = 'professor';
-        }
-        else {
-            categoria = 'aluno';
-        }
-        if (!this.emprestimoRespository.verificarLimiteEmprestimo(data.usuario, categoria)) {
+        // let categoria: 'professor' | 'aluno';
+        // if(usuario.categoria == 'professor'){
+        //     categoria = 'professor';
+        // } else{
+        //     categoria = 'aluno';
+        // }
+        if (!this.emprestimoRespository.verificarLimiteEmprestimo(data.usuario, data.categoria)) {
             let limite = 0;
-            if (categoria === 'professor') {
+            if (data.categoria === 'professor') {
                 limite = 5;
             }
             else {
@@ -111,7 +107,7 @@ class EmprestimoService {
         if (usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
             usuario.status = "ativo";
         }
-        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario);
+        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
         const estoque = this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
         if (estoque && estoque.quantidade_emprestada > 0) {
             estoque.quantidade_emprestada -= 1;

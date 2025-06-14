@@ -26,9 +26,6 @@ class EmprestimoRepository {
     filtraEmprestimosAtrasadosDoUsuario(cpf) {
         return this.EmprestimoList.filter(emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'ativo' && emprestimo.estaAtrasado());
     }
-    filtraEmprestimoAtivoDoExemplar(codExemplar) {
-        return this.EmprestimoList.find(emprestimo => emprestimo.codExemplar === codExemplar && emprestimo.status === 'ativo');
-    }
     emprestimosAtivosDoUsuario(cpf) {
         return this.filtraEmprestimosAtivosDoUsuario(cpf).length;
     }
@@ -44,9 +41,6 @@ class EmprestimoRepository {
                 emprestimo.finalizarEmprestimo();
             }
         }
-    }
-    filtraEmprestimosFinalizadosDoUsuario(cpf) {
-        return this.EmprestimoList.filter(emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'devolvido');
     }
     verificarLimiteEmprestimo(cpf, categoria) {
         const emprestimosAtivos = this.emprestimosAtivosDoUsuario(cpf);

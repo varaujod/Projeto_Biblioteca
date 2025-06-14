@@ -10,6 +10,9 @@ class LivroEntity {
     categoria;
     status;
     constructor(titulo, isbn, autor, editora, edicao, categoria) {
+        if (!titulo || !isbn || !autor || !editora || !edicao || !categoria) {
+            throw new Error("Por favor informar todos os campos");
+        }
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;

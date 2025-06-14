@@ -12,9 +12,6 @@ class UsuarioService {
     categoriaCursoRepository = CategoriaCursoRepository_1.CategoriaCursoRepository.getInstance();
     emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
     novoUsuario(data) {
-        if (!data.nome || !data.cpf || !data.email || !data.email || !data.categoria || !data.curso) {
-            throw new Error("Por favor informar todos os campos");
-        }
         if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         }
@@ -52,6 +49,15 @@ class UsuarioService {
         const cpf = data.cpf;
         const novosDados = data.novosDados;
         return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
+    }
+    async atualizarStatusUsuarios() {
+        const usuarios = this.listarUsuarios();
+        const emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
+        for (const usuario of usuarios) {
+            const emprestimosAtivos = emprestimoRepository.filtraEmprestimosAtivosDoUsuario(usuario.cpf);
+            let livrosAtrasados = 0;
+            let diasAtrasoTotal = 0;
+        }
     }
 }
 exports.UsuarioService = UsuarioService;

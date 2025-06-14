@@ -60,7 +60,7 @@ export class UsuarioRepository{
     }
 
     validacaoCadastro(cpf: number): boolean{
-        return this.UsuarioList.find(usuario => usuario.cpf === cpf) !== undefined;
+        return this.filtraUsuarioPorCPF(cpf) !== undefined;
     }
 
     private findIndex(cpf: number): number{

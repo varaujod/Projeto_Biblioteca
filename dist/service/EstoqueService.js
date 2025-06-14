@@ -8,9 +8,6 @@ class EstoqueService {
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
     novoLivronoEstoque(data) {
-        if (!data.isbn || !data.cod) {
-            throw new Error("Por favor informar todos os campos");
-        }
         const livroExistente = this.livroRepository.filtraLivroPorISBN(data.isbn);
         if (!livroExistente) {
             throw new Error("Não é possível adicionar um exemplar de um livro que não está cadastrado. Por favor, cadastre o livro primeiro.");

@@ -8,6 +8,10 @@ export class LivroEntity{
     status: 'disponivel' | 'emprestado';
 
     constructor(titulo: string, isbn: number, autor: string, editora: string, edicao: string, categoria: string){
+        if(!titulo || !isbn || !autor || !editora || !edicao || !categoria){
+            throw new Error("Por favor informar todos os campos");
+        }
+        
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;
