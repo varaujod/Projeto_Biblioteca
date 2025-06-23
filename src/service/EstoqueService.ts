@@ -19,7 +19,11 @@ export class EstoqueService{
             throw new Error("Já existe um exemplar com este código!");
         }
 
-        const livroNoEstoque = new EstoqueEntity(data.isbn, data.cod, data.quantidade, 0);
+        if(data.quantidade <= 0){
+            throw new Error("Não é possível cadastrar este livro no estoque, pois a quantidade informada é zero");
+        }
+
+        const livroNoEstoque = new EstoqueEntity(data.isbn, data.quantidade, 0);
         
         this.estoqueRepository.insereLivroNoEstoque(livroNoEstoque);
         
