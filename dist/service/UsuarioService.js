@@ -50,14 +50,5 @@ class UsuarioService {
         const novosDados = data.novosDados;
         return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
-    async atualizarStatusUsuarios() {
-        const usuarios = this.listarUsuarios();
-        const emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
-        for (const usuario of usuarios) {
-            const emprestimosAtivos = emprestimoRepository.filtraEmprestimosAtivosDoUsuario(usuario.cpf);
-            let livrosAtrasados = 0;
-            let diasAtrasoTotal = 0;
-        }
-    }
 }
 exports.UsuarioService = UsuarioService;

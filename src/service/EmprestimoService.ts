@@ -61,10 +61,15 @@ export class EmprestimoService{
             throw new Error("Exemplar não encontrado!");
         }
 
+        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+
         if(estoque.quantidade_emprestada < estoque.quantidade) {
             estoque.quantidade_emprestada += 1;
             if (estoque.quantidade_emprestada === estoque.quantidade) {
                 estoque.disponibilidade = 'não-disponivel';
+                if(exemplarEstoque){
+                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
+                }
             }
 
             this.estoqueRepository.atualizarDisponibilidade(estoque.cod, { 
@@ -81,11 +86,11 @@ export class EmprestimoService{
             data.categoria
         );
 
-        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+        
 
-        if(exemplarEstoque && exemplarEstoque.isbn) {
-            this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
-        }
+        // if(exemplarEstoque && exemplarEstoque.isbn && ) {
+        //     this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
+        // }
 
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
 
@@ -140,6 +145,7 @@ export class EmprestimoService{
             estoque.quantidade_emprestada -= 1;
             if (estoque.quantidade_emprestada < estoque.quantidade) {
                 estoque.disponibilidade = 'disponivel';
+                this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel'});
             }
             this.estoqueRepository.atualizarDisponibilidade(estoque.cod, { 
                 disponibilidade: estoque.disponibilidade,

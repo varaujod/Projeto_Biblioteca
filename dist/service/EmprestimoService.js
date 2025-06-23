@@ -34,12 +34,6 @@ class EmprestimoService {
         if (estoque.disponibilidade === 'não-disponivel') {
             throw new Error("Este exemplar não está disponível para empréstimo!");
         }
-        // let categoria: 'professor' | 'aluno';
-        // if(usuario.categoria == 'professor'){
-        //     categoria = 'professor';
-        // } else{
-        //     categoria = 'aluno';
-        // }
         if (!this.emprestimoRespository.verificarLimiteEmprestimo(data.usuario, data.categoria)) {
             let limite = 0;
             if (data.categoria === 'professor') {
@@ -56,10 +50,14 @@ class EmprestimoService {
         if (!estoque) {
             throw new Error("Exemplar não encontrado!");
         }
+        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
         if (estoque.quantidade_emprestada < estoque.quantidade) {
             estoque.quantidade_emprestada += 1;
             if (estoque.quantidade_emprestada === estoque.quantidade) {
                 estoque.disponibilidade = 'não-disponivel';
+                if (exemplarEstoque) {
+                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado' });
+                }
             }
             this.estoqueRepository.atualizarDisponibilidade(estoque.cod, {
                 disponibilidade: estoque.disponibilidade,
@@ -70,10 +68,9 @@ class EmprestimoService {
             throw new Error("Todos os exemplares estão emprestados!");
         }
         const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(data.usuario, data.codExemplar, data.categoria);
-        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
-        if (exemplarEstoque && exemplarEstoque.isbn) {
-            this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado' });
-        }
+        // if(exemplarEstoque && exemplarEstoque.isbn && ) {
+        //     this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
+        // }
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
         return novoEmprestimo;
     }
@@ -113,6 +110,7 @@ class EmprestimoService {
             estoque.quantidade_emprestada -= 1;
             if (estoque.quantidade_emprestada < estoque.quantidade) {
                 estoque.disponibilidade = 'disponivel';
+                this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel' });
             }
             this.estoqueRepository.atualizarDisponibilidade(estoque.cod, {
                 disponibilidade: estoque.disponibilidade,
