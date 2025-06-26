@@ -57,7 +57,7 @@ export class EstoqueService{
 
         if(estoque && estoque.quantidade_emprestada === estoque.quantidade){
             this.estoqueRepository.atualizarDisponibilidade(cod, { disponibilidade: 'não-disponivel'});
-            this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'emprestado'});
+            this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'não-disponivel'});
         }
 
         return this.estoqueRepository.atualizarDisponibilidade(cod, novaDisponibilidade);

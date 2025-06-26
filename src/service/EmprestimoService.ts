@@ -68,7 +68,7 @@ export class EmprestimoService{
             if (estoque.quantidade_emprestada === estoque.quantidade) {
                 estoque.disponibilidade = 'não-disponivel';
                 if(exemplarEstoque){
-                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
+                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'não-disponivel'});
                 }
             }
 
@@ -86,11 +86,6 @@ export class EmprestimoService{
             data.categoria
         );
 
-        
-
-        // if(exemplarEstoque && exemplarEstoque.isbn && ) {
-        //     this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
-        // }
 
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
 

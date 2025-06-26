@@ -56,7 +56,7 @@ class EmprestimoService {
             if (estoque.quantidade_emprestada === estoque.quantidade) {
                 estoque.disponibilidade = 'não-disponivel';
                 if (exemplarEstoque) {
-                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado' });
+                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'não-disponivel' });
                 }
             }
             this.estoqueRepository.atualizarDisponibilidade(estoque.cod, {
@@ -68,9 +68,6 @@ class EmprestimoService {
             throw new Error("Todos os exemplares estão emprestados!");
         }
         const novoEmprestimo = new EmprestimoEntity_1.EmprestimoEntity(data.usuario, data.codExemplar, data.categoria);
-        // if(exemplarEstoque && exemplarEstoque.isbn && ) {
-        //     this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'emprestado'});
-        // }
         this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
         return novoEmprestimo;
     }

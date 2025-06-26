@@ -5,7 +5,7 @@ export class LivroEntity{
     editora: string;
     edicao: string;
     categoria: string;
-    status: 'disponivel' | 'emprestado';
+    status: 'disponivel' | 'não-disponivel';
 
     constructor(titulo: string, isbn: number, autor: string, editora: string, edicao: string, categoria: string){
         if(!titulo || !isbn || !autor || !editora || !edicao || !categoria){
