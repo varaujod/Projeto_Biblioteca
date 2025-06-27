@@ -71,15 +71,15 @@ export class LivroController{
     removerLivro(req: Request, res: Response): void{
         try{
             const isbn = Number(req.params.isbn);
-            const usuario = this.livroService.removeLivro(isbn);
+            const livro = this.livroService.removeLivro(isbn);
 
             res.status(200).json({
-                "status": "Usuario Deletado com Sucesso!",
-                "usuario": usuario
+                "status": "Livro Deletado com Sucesso!",
+                "livro": livro
 
             })
         } catch(error: unknown){
-            let message = "Não foi possivel realizar atualização";
+            let message = "Não foi possivel realizar a remoção";
             if(error instanceof Error){
                 message = error.message;
             }
