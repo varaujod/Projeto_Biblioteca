@@ -1,9 +1,34 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioRepository = void 0;
+const mysql_1 = require("../database/mysql");
 class UsuarioRepository {
     static instance;
-    UsuarioList = [];
+    // private UsuarioList: UsuarioEntity[] = [];
+    imprimeResult(err, result) {
+        if (result != undefined) {
+            console.log("Dentro callback", result);
+        }
+    }
+    async criarTable() {
+        try {
+            await (0, mysql_1.executarComandoSQL)(`CREATE TABLE IF NOT EXISTS biblioteca.Usuario(
+                id INT AUTO_INCREMENT PRIMARY KEY, 
+                nome VARCHAR(255) NOT NULL, 
+                cpf DECIMAL(11) NOT NULL UNIQUE, 
+                email VARCHAR(255) NOT NULL, 
+                categoria VARCHAR(255) NOT NULL, 
+                curso VARCHAR(255) NOT NULL, 
+                status VARCHAR(20) NOT NULL,
+                diasSuspensao DECIMAL(4),
+                livrosAtrasados DECIMAL(4),
+                diasAtraso DECIMAL(4)
+                )`, [], this.imprimeResult);
+        }
+        catch (err) {
+            console.error('Erro ao executar a query: ', err);
+        }
+    }
     constructor() { }
     static getInstance() {
         if (!this.instance) {
@@ -12,48 +37,108 @@ class UsuarioRepository {
         return this.instance;
     }
     insereUsuario(usuario) {
-        this.UsuarioList.push(usuario);
+        try {
+            const resultado = (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.Usuario (nome, cpf, email, categoria, curso, status, diasSuspensao, livrosAtrasados, diasAtraso) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+                usuario.nome,
+                usuario.cpf,
+                usuario.email,
+                usuario.categoria,
+                usuario.curso,
+                usuario.status,
+                usuario.diasSuspensao,
+                usuario.livrosAtrasados,
+                usuario.diasAtraso
+            ], this.imprimeResult);
+            console.log('Produto inserido com Sucesso: ', resultado);
+        }
+        catch (err) {
+            if (err.code === 'ER_DUP_ENTRY') {
+                throw new Error('Já existe um usuário com este CPF.');
+            }
+            throw new Error('Erro ao inserir usuário: ' + err);
+        }
     }
     filtraUsuarioPorCPF(cpf) {
-        return this.UsuarioList.find(usuario => usuario.cpf === cpf);
+        try {
+            const resultado = (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario WHERE cpf = ?", [cpf], this.imprimeResult);
+            return resultado;
+        }
+        catch (err) {
+            console.error('Erro ao consultar um usuario: ', err);
+        }
+        // return this.UsuarioList.find(usuario => usuario.cpf === cpf);
     }
     removeUsuarioPorCPF(cpf) {
-        const index = this.findIndex(cpf);
-        return this.UsuarioList.splice(index, 1);
+        try {
+            const resultado = (0, mysql_1.executarComandoSQL)("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf], this.imprimeResult);
+            return resultado;
+            // console.log('Usuário removido com sucesso:', resultado);
+        }
+        catch (err) {
+            console.error('Erro ao remover usuário:', err);
+        }
     }
     atualizarUsuarioPorCPF(cpf, novosDados) {
-        const index = this.findIndex(cpf);
-        const usuario = this.UsuarioList[index];
-        if (novosDados.nome) {
-            usuario.nome = novosDados.nome;
+        try {
+            const campos = [];
+            const valores = [];
+            if (novosDados.nome) {
+                campos.push("nome = ?");
+                valores.push(novosDados.nome);
+            }
+            if (novosDados.email) {
+                campos.push("email = ?");
+                valores.push(novosDados.email);
+            }
+            if (novosDados.categoria) {
+                campos.push("categoria = ?");
+                valores.push(novosDados.categoria);
+            }
+            if (novosDados.curso) {
+                campos.push("curso = ?");
+                valores.push(novosDados.curso);
+            }
+            if (novosDados.status) {
+                campos.push("status = ?");
+                valores.push(novosDados.status);
+            }
+            if (novosDados.diasSuspensao !== undefined) {
+                campos.push("diasSuspensao = ?");
+                valores.push(novosDados.diasSuspensao);
+            }
+            if (novosDados.livrosAtrasados !== undefined) {
+                campos.push("livrosAtrasados = ?");
+                valores.push(novosDados.livrosAtrasados);
+            }
+            if (novosDados.diasAtraso !== undefined) {
+                campos.push("diasAtraso = ?");
+                valores.push(novosDados.diasAtraso);
+            }
+            if (campos.length === 0) {
+                throw new Error("Nenhum dado para atualizar.");
+            }
+            const sql = `UPDATE biblioteca.Usuario SET ${campos.join(", ")} WHERE cpf = ?`;
+            valores.push(cpf);
+            const resultado = (0, mysql_1.executarComandoSQL)(sql, valores, this.imprimeResult);
+            return resultado;
+            // console.log('Usuário atualizado com sucesso:', resultado);
         }
-        if (novosDados.email) {
-            usuario.email = novosDados.email;
+        catch (err) {
+            console.error('Erro ao atualizar usuário:', err);
         }
-        if (novosDados.categoria) {
-            usuario.categoria = novosDados.categoria;
-        }
-        if (novosDados.curso) {
-            usuario.curso = novosDados.curso;
-        }
-        if (novosDados.status) {
-            usuario.status = novosDados.status;
-        }
-        this.UsuarioList[index] = usuario;
-        return usuario;
     }
     listarUsuarios() {
-        return this.UsuarioList;
+        try {
+            const resultado = (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario", [], this.imprimeResult);
+            return resultado;
+        }
+        catch (err) {
+            console.error('Erro ao listar usuários:', err);
+            return [];
+        }
     }
     validacaoCadastro(cpf) {
         return this.filtraUsuarioPorCPF(cpf) !== undefined;
-    }
-    findIndex(cpf) {
-        const index = this.UsuarioList.findIndex(user => user.cpf == cpf);
-        if (index == -1) {
-            throw new Error("CPF informado não foi encontrado!");
-        }
-        return index;
     }
 }
 exports.UsuarioRepository = UsuarioRepository;

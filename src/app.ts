@@ -7,6 +7,7 @@ import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioControl
 import { CategoriaCursoController } from "./controller/CategoriaCursoController";
 import { CategoriaLivroController } from "./controller/CategoriaLivroController";
 import { UsuarioService } from "./service/UsuarioService";
+import { UsuarioRepository } from "./repository/UsuarioRepository";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
@@ -26,19 +27,37 @@ function logInfo(){
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
 
-async function atualizarStatusUsuario(){
-    const usuarios = usuarioService.listarUsuarios();
+UsuarioRepository.getInstance().criarTable();
 
-    for(const usuario of usuarios){
+async function inicializarUsuarios() {
+    await UsuarioRepository.getInstance().criarTable();
+
+    const usuarios = UsuarioRepository.getInstance().listarUsuarios();
+
+    for (const usuario of usuarios) {
         usuario.regularizarStatus();
-        usuarioService.atualizaUsuario({ cpf: usuario.cpf, novosDados: usuario });
+        UsuarioRepository.getInstance().atualizarUsuarioPorCPF(usuario.cpf, usuario);
     }
 
-    console.log("Status dos usuários após atualização automática:", usuarios);
-    console.log("Status do usuário atualizado automaticamente. " + new Date());
+    console.log("Usuários processados na inicialização:", usuarios);
 }
 
-setInterval(atualizarStatusUsuario, 10000);
+// Chame a função de inicialização ao iniciar a API
+inicializarUsuarios();
+
+// async function atualizarStatusUsuario(){
+//     const usuarios = usuarioService.listarUsuarios();
+
+//     for(const usuario of usuarios){
+//         usuario.regularizarStatus();
+//         usuarioService.atualizaUsuario({ cpf: usuario.cpf, novosDados: usuario });
+//     }
+
+//     console.log("Status dos usuários após atualização automática:", usuarios);
+//     console.log("Status do usuário atualizado automaticamente. " + new Date());
+// }
+
+// setInterval(atualizarStatusUsuario, 10000);
 
 // Usuarios
 

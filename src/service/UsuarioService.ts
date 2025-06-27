@@ -22,19 +22,21 @@ export class UsuarioService{
         if(this.usuarioRepository.validacaoCadastro(data.cpf)){
             throw new Error("Este usuário já é cadastrado!");
         } else{
-            const usuario = new UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
-
-            this.usuarioRepository.insereUsuario(usuario);
-
-            return usuario;
-        }
+            try{
+                const usuario = new UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
+                this.usuarioRepository.insereUsuario(usuario);
+                return usuario;
+            } catch (err: any) {
+            throw new Error("Erro ao cadastrar usuário: " + err.message);
+            }
+        } 
     }
 
     filtrarUsuario(data: any){
         const cpf = data.cpf;
         const usuario = this.usuarioRepository.filtraUsuarioPorCPF(cpf);
 
-        if(!usuario){
+        if(usuario === null){
             throw new Error("Este usuário ainda não foi cadastrado com este CPF!");
         }
 

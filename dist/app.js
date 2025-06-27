@@ -12,6 +12,7 @@ const CategoriaUsuarioController_1 = require("./controller/CategoriaUsuarioContr
 const CategoriaCursoController_1 = require("./controller/CategoriaCursoController");
 const CategoriaLivroController_1 = require("./controller/CategoriaLivroController");
 const UsuarioService_1 = require("./service/UsuarioService");
+const UsuarioRepository_1 = require("./repository/UsuarioRepository");
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
@@ -26,16 +27,28 @@ app.use(express_1.default.json());
 function logInfo() {
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
-async function atualizarStatusUsuario() {
-    const usuarios = usuarioService.listarUsuarios();
+UsuarioRepository_1.UsuarioRepository.getInstance().criarTable();
+async function inicializarUsuarios() {
+    await UsuarioRepository_1.UsuarioRepository.getInstance().criarTable();
+    const usuarios = UsuarioRepository_1.UsuarioRepository.getInstance().listarUsuarios();
     for (const usuario of usuarios) {
         usuario.regularizarStatus();
-        usuarioService.atualizaUsuario({ cpf: usuario.cpf, novosDados: usuario });
+        UsuarioRepository_1.UsuarioRepository.getInstance().atualizarUsuarioPorCPF(usuario.cpf, usuario);
     }
-    console.log("Status dos usuários após atualização automática:", usuarios);
-    console.log("Status do usuário atualizado automaticamente. " + new Date());
+    console.log("Usuários processados na inicialização:", usuarios);
 }
-setInterval(atualizarStatusUsuario, 10000);
+// Chame a função de inicialização ao iniciar a API
+inicializarUsuarios();
+// async function atualizarStatusUsuario(){
+//     const usuarios = usuarioService.listarUsuarios();
+//     for(const usuario of usuarios){
+//         usuario.regularizarStatus();
+//         usuarioService.atualizaUsuario({ cpf: usuario.cpf, novosDados: usuario });
+//     }
+//     console.log("Status dos usuários após atualização automática:", usuarios);
+//     console.log("Status do usuário atualizado automaticamente. " + new Date());
+// }
+// setInterval(atualizarStatusUsuario, 10000);
 // Usuarios
 app.post("/library/usuarios", usuarioController.criarUsuario.bind(usuarioController));
 app.get("/library/usuarios", usuarioController.listarUsuarios.bind(usuarioController));
