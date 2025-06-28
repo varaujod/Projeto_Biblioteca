@@ -4,88 +4,76 @@ import { Request, Response } from "express";
 export class UsuarioController{
     private usuarioService = new UsuarioService();
 
-    criarUsuario(req: Request, res: Response): void{
+    async criarUsuario(req: Request, res: Response){
         try{
-            const usuario = this.usuarioService.novoUsuario(req.body);
+            const usuario = await this.usuarioService.novoUsuario(req.body);
             res.status(201).json(usuario);
-        } catch(error: unknown){
-            let message: string = "Não foi possivel criar usuário!"
-            if(error instanceof Error){
-                message = error.message
-            }
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel criar o Usuário!';
             res.status(400).json({
                 message: message
-            })
+            });
         }
     }
 
-    listarUsuarios(req: Request, res: Response): void{
+    async listarUsuarios(req: Request, res: Response){
         try{
-            const lista = this.usuarioService.listarUsuarios();
+            const lista = await this.usuarioService.listarUsuarios();
             res.status(200).json(lista);
-        } catch(error: unknown){
-           let message = "Não conseguimos realizar a listagem de usuários";
-            if(error instanceof Error){
-                message = error.message;
-            }
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel listar os usuarios!';
             res.status(400).json({
                 message: message
-            })
+            });
         }
     }
 
-    filtrarUsuario(req: Request, res: Response): void{
+    async filtrarUsuario(req: Request, res: Response){
         try{
-            const usuario = this.usuarioService.filtrarUsuario({ cpf: Number(req.params.cpf)});
+            const usuario = await this.usuarioService.filtrarUsuario({ cpf: Number(req.params.cpf)});
             res.status(200).json(usuario);
-        } catch(error: unknown){
-            let message = "Não existe esse usuario em nosso cadastro, por favor cadastre esse usuario";
-            if(error instanceof Error){
-                message = error.message;
-            }
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel filtrar o Usuário!';
             res.status(400).json({
                 message: message
-            })
+            });
         }
     }
 
-    atualizarUsuario(req: Request, res: Response): void{
+    async atualizarUsuario(req: Request, res: Response){
         try{
-            const usuarioAtualizado = this.usuarioService.atualizaUsuario({
+            const usuarioAtualizado = await this.usuarioService.atualizaUsuario({
                 cpf: Number(req.params.cpf),
                 novosDados: req.body
             });
 
-            res.status(200).json(usuarioAtualizado);
-        } catch(error: unknown){
-            let message = "Não foi possivel realizar atualização";
-            if(error instanceof Error){
-                message = error.message;
-            }
+            res.status(200).json({
+                "message": "Usuário atualizado com sucesso!",
+                "usuario": usuarioAtualizado
+            });
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel atualizar o Usuário!';
             res.status(400).json({
                 message: message
-            })
+            });
         }
     }
 
-    removerUsuario(req: Request, res: Response): void{
+    async removerUsuario(req: Request, res: Response){
         try{
             const cpf = Number(req.params.cpf);
-            const usuario = this.usuarioService.removeUsuario(cpf);
+            const usuario = await this.usuarioService.removeUsuario(cpf);
 
             res.status(200).json({
                 "status": "Usuario Deletado com Sucesso!",
                 "usuario": usuario
 
             })
-        } catch(error: unknown){
-            let message = "Não foi possivel realizar a remoção";
-            if(error instanceof Error){
-                message = error.message;
-            }
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel deletar o Usuário!';
             res.status(400).json({
                 message: message
-            })
+            });
         }
     }
 

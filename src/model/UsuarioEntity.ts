@@ -8,6 +8,7 @@ export class UsuarioEntity{
     diasSuspensao: number;
     livrosAtrasados: number;
     diasAtraso: number;
+    length: number;
 
     constructor(nome: string, cpf: number, email: string, categoria: string, curso: string){
         if(!nome || !cpf || !email || !categoria || !curso){

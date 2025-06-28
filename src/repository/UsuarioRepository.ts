@@ -3,17 +3,20 @@ import { UsuarioEntity } from "../model/UsuarioEntity";
 
 export class UsuarioRepository{
     private static instance: UsuarioRepository;
-    // private UsuarioList: UsuarioEntity[] = [];
-    imprimeResult(err: any, result: any){   
-        if(result != undefined){
-            console.log("Dentro callback", result);
-        }
+
+    private constructor() {
+        this.criarTable()
     }
 
-    async criarTable(){
-        try{
-            await executarComandoSQL(
-                `CREATE TABLE IF NOT EXISTS biblioteca.Usuario(
+    public static getInstance(): UsuarioRepository{
+        if(!this.instance){
+            this.instance = new UsuarioRepository();
+        }
+        return this.instance;
+    }
+    
+    private async criarTable(){
+        const query = `CREATE TABLE IF NOT EXISTS biblioteca.Usuario(
                 id INT AUTO_INCREMENT PRIMARY KEY, 
                 nome VARCHAR(255) NOT NULL, 
                 cpf DECIMAL(11) NOT NULL UNIQUE, 
@@ -24,144 +27,142 @@ export class UsuarioRepository{
                 diasSuspensao DECIMAL(4),
                 livrosAtrasados DECIMAL(4),
                 diasAtraso DECIMAL(4)
-                )`, [], this.imprimeResult);
-        } catch (err) {
+                )`
+        try{
+            const resultado = await executarComandoSQL(query, []);
+            console.log('Tabela criada com Sucesso!', resultado);
+        } catch(err){
             console.error('Erro ao executar a query: ', err);
         }
     }
 
-    private constructor() {}
-
-    public static getInstance(): UsuarioRepository{
-        if(!this.instance){
-            this.instance = new UsuarioRepository();
-        }
-        return this.instance;
-    }
-
-    insereUsuario(usuario: UsuarioEntity){
-        try{
-            const resultado = executarComandoSQL(
-                "INSERT INTO biblioteca.Usuario (nome, cpf, email, categoria, curso, status, diasSuspensao, livrosAtrasados, diasAtraso) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                [
-                    usuario.nome, 
-                    usuario.cpf, 
-                    usuario.email,  
-                    usuario.categoria, 
-                    usuario.curso,
-                    usuario.status,
-                    usuario.diasSuspensao,
-                    usuario.livrosAtrasados,
-                    usuario.diasAtraso], this.imprimeResult);
+    async insereUsuario(usuario: UsuarioEntity): Promise<UsuarioEntity>{
+        const resultado = await executarComandoSQL(
+            "INSERT INTO biblioteca.Usuario (nome, cpf, email, categoria, curso, status, diasSuspensao, livrosAtrasados, diasAtraso) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                usuario.nome, 
+                usuario.cpf, 
+                usuario.email,  
+                usuario.categoria, 
+                usuario.curso,
+                'ativo',
+                0,
+                0,
+                0]);
         
-            console.log('Produto inserido com Sucesso: ', resultado);
-        } catch(err: any){
-            if(err.code === 'ER_DUP_ENTRY') {
-                throw new Error('Já existe um usuário com este CPF.');
-            } 
-            throw new Error('Erro ao inserir usuário: '+ err);
-        }
+        console.log('Produto inserido com Sucesso: ', resultado);
+        return new UsuarioEntity(
+                usuario.nome, 
+                usuario.cpf, 
+                usuario.email,  
+                usuario.categoria, 
+                usuario.curso);
     }
 
-    filtraUsuarioPorCPF(cpf: number){
-        try {
-            const resultado = executarComandoSQL(
-                "SELECT * FROM biblioteca.Usuario WHERE cpf = ?",
-                [cpf], this.imprimeResult);
-
-            return resultado;
-        } catch (err) {
-            console.error('Erro ao consultar um usuario: ', err);
+    async filtraUsuarioPorCPF(cpf: number): Promise<UsuarioEntity>{
+        const usuario = await this.filtraUsuarioPorCPF(cpf);
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
         }
-        // return this.UsuarioList.find(usuario => usuario.cpf === cpf);
+
+        await executarComandoSQL("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
+
+        return usuario;
     }
 
-    removeUsuarioPorCPF(cpf: number){
-        try {
-            const resultado = executarComandoSQL(
-                "DELETE FROM biblioteca.Usuario WHERE cpf = ?",
-                [cpf], this.imprimeResult);
-
-            return resultado;
-
-            // console.log('Usuário removido com sucesso:', resultado);
-        } catch (err) {
-        console.error('Erro ao remover usuário:', err);
+    async removeUsuarioPorCPF(cpf: number): Promise<UsuarioEntity | null>{
+        const usuario = await this.filtraUsuarioPorCPF(cpf);
+        if (!usuario) {
+            return null;
         }
+
+        await executarComandoSQL("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
+
+        return usuario;
+
     }
 
-    atualizarUsuarioPorCPF(cpf: number, novosDados: any) {
-        try {
-            const campos: string[] = [];
-            const valores: any[] = [];
+    async atualizarUsuarioPorCPF(cpf: number, novosDados: any): Promise<UsuarioEntity | null> {
+        const campos: string[] = [];
+        const valores: any[] = [];
 
-            if (novosDados.nome) {
-                campos.push("nome = ?");
-                valores.push(novosDados.nome);
-            }
-
-            if (novosDados.email) {
-                campos.push("email = ?");
-                valores.push(novosDados.email);
-            }
-
-            if (novosDados.categoria) {
-                campos.push("categoria = ?");
-                valores.push(novosDados.categoria);
-            }
-
-            if (novosDados.curso) {
-                campos.push("curso = ?");
-                valores.push(novosDados.curso);
-            }
-
-            if (novosDados.status) {
-                campos.push("status = ?");
-                valores.push(novosDados.status);
-            }
-
-            if (novosDados.diasSuspensao !== undefined) {
-                campos.push("diasSuspensao = ?");
-                valores.push(novosDados.diasSuspensao);
-            }
-
-            if (novosDados.livrosAtrasados !== undefined) {
-                campos.push("livrosAtrasados = ?");
-                valores.push(novosDados.livrosAtrasados);
-            }
-
-            if (novosDados.diasAtraso !== undefined) {
-                campos.push("diasAtraso = ?");
-                valores.push(novosDados.diasAtraso);
-            }
-
-            if (campos.length === 0) {
-                throw new Error("Nenhum dado para atualizar.");
-            }
-
-            const sql = `UPDATE biblioteca.Usuario SET ${campos.join(", ")} WHERE cpf = ?`;
-            valores.push(cpf);
-            const resultado = executarComandoSQL(sql, valores, this.imprimeResult);
-
-            return resultado;
-            // console.log('Usuário atualizado com sucesso:', resultado);
-        } catch (err) {
-            console.error('Erro ao atualizar usuário:', err);
+        if (novosDados.nome) {
+            campos.push("nome = ?");
+            valores.push(novosDados.nome);
         }
+
+        if (novosDados.email) {
+            campos.push("email = ?");
+            valores.push(novosDados.email);
+        }
+
+        if (novosDados.categoria) {
+            campos.push("categoria = ?");
+            valores.push(novosDados.categoria);
+        }
+
+        if (novosDados.curso) {
+            campos.push("curso = ?");
+            valores.push(novosDados.curso);
+        }
+
+        if (novosDados.status) {
+            campos.push("status = ?");
+            valores.push(novosDados.status);
+        }
+
+        if (novosDados.diasSuspensao !== undefined) {
+            campos.push("diasSuspensao = ?");
+            valores.push(novosDados.diasSuspensao);
+        }
+
+        if (novosDados.livrosAtrasados !== undefined) {
+            campos.push("livrosAtrasados = ?");
+            valores.push(novosDados.livrosAtrasados);
+        }
+
+        if (novosDados.diasAtraso !== undefined) {
+            campos.push("diasAtraso = ?");
+            valores.push(novosDados.diasAtraso);
+        }
+
+        if (campos.length === 0) {
+            throw new Error("Nenhum dado para atualizar.");
+        }
+
+        const sql = `UPDATE biblioteca.Usuario SET ${campos.join(", ")} WHERE cpf = ?`;
+        valores.push(cpf);
+
+        const resultado = await executarComandoSQL(sql, valores);
+        console.log(resultado);
+
+        const usuarioAtualizado = await this.filtraUsuarioPorCPF(cpf);
+        return usuarioAtualizado;
+
     }
 
-    listarUsuarios(): UsuarioEntity[]{
-        try {
-            const resultado = executarComandoSQL("SELECT * FROM biblioteca.Usuario", [], this.imprimeResult);
-            return resultado as unknown as UsuarioEntity[];
-        } catch (err) {
-            console.error('Erro ao listar usuários:', err);
-            return [];
+    async listarUsuarios(): Promise<UsuarioEntity[]>{
+        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Usuario", []);
+        const usuarios: UsuarioEntity[] = [];
+        if(resultado && resultado.length > 0) {
+            for (let i = 0; i < resultado.length; i++) {
+                const user = resultado[i];
+                usuarios.push(new UsuarioEntity(
+                    user.nome,
+                    user.cpf,
+                    user.email,
+                    user.categoria,
+                    user.curso
+                ));
+            }
         }
+        return usuarios;
     }
 
-    validacaoCadastro(cpf: number): boolean{
-        return this.filtraUsuarioPorCPF(cpf) !== undefined;
+    async validacaoCadastro(cpf: number): Promise<boolean | null>{
+        const resultado = await this.filtraUsuarioPorCPF(cpf);
+
+        return resultado && resultado.length > 0;
     }
 
     // private findIndex(cpf: number): number{

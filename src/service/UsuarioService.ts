@@ -10,7 +10,7 @@ export class UsuarioService{
     private categoriaCursoRepository = CategoriaCursoRepository.getInstance();
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
-    novoUsuario(data: any): UsuarioEntity{
+    async novoUsuario(data: any): Promise<UsuarioEntity>{
         if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         } 
@@ -18,21 +18,17 @@ export class UsuarioService{
         if(!this.categoriaCursoRepository.encontrarCurso(data.curso)){
             throw new Error("Por favor informar um curso existente");
         }
+        const usuarioEncontrado = await this.usuarioRepository.validacaoCadastro(data.cpf)
 
-        if(this.usuarioRepository.validacaoCadastro(data.cpf)){
+        if(usuarioEncontrado){
             throw new Error("Este usuário já é cadastrado!");
-        } else{
-            try{
-                const usuario = new UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
-                this.usuarioRepository.insereUsuario(usuario);
-                return usuario;
-            } catch (err: any) {
-            throw new Error("Erro ao cadastrar usuário: " + err.message);
-            }
-        } 
+        }
+                
+        return await this.usuarioRepository.insereUsuario(data);
     }
 
-    filtrarUsuario(data: any){
+
+    filtrarUsuario(data: any): Promise<UsuarioEntity>{
         const cpf = data.cpf;
         const usuario = this.usuarioRepository.filtraUsuarioPorCPF(cpf);
 
@@ -43,23 +39,28 @@ export class UsuarioService{
         return usuario;
     }
 
-    removeUsuario(cpf: number){
+    async removeUsuario(cpf: number): Promise<UsuarioEntity>{
         const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);
         if (emprestimosAtivos.length > 0) {
             throw new Error("Usuário não pode ser removido pois possui empréstimos pendentes!");
         }
-        return this.usuarioRepository.removeUsuarioPorCPF(cpf);
+
+        const usuarioRemovido = await this.usuarioRepository.removeUsuarioPorCPF(cpf);
+        if(!usuarioRemovido){
+            throw new Error("Usuário não encontrado para remoção!");
+        }
+        return usuarioRemovido;
     }
 
-    listarUsuarios(){
-        return this.usuarioRepository.listarUsuarios()
+    async listarUsuarios(): Promise<UsuarioEntity[]>{
+        return await this.usuarioRepository.listarUsuarios();
     }
 
-    atualizaUsuario(data: any){
+    async atualizaUsuario(data: any): Promise<UsuarioEntity>{
         const cpf = data.cpf;
         const novosDados = data.novosDados;
 
-        return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
+        return await this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
 
     // private async atualizarStatusUsuarios(){

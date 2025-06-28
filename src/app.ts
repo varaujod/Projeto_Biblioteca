@@ -27,23 +27,21 @@ function logInfo(){
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
 
-UsuarioRepository.getInstance().criarTable();
 
-async function inicializarUsuarios() {
-    await UsuarioRepository.getInstance().criarTable();
+// async function inicializarUsuarios() {
+//     await UsuarioRepository.getInstance().criarTable();
 
-    const usuarios = UsuarioRepository.getInstance().listarUsuarios();
+//     const usuarios = UsuarioRepository.getInstance().listarUsuarios();
 
-    for (const usuario of usuarios) {
-        usuario.regularizarStatus();
-        UsuarioRepository.getInstance().atualizarUsuarioPorCPF(usuario.cpf, usuario);
-    }
+//     for (const usuario of usuarios) {
+//         usuario.regularizarStatus();
+//         UsuarioRepository.getInstance().atualizarUsuarioPorCPF(usuario.cpf, usuario);
+//     }
 
-    console.log("Usuários processados na inicialização:", usuarios);
-}
+//     console.log("Usuários processados na inicialização:", usuarios);
+// }
 
-// Chame a função de inicialização ao iniciar a API
-inicializarUsuarios();
+// inicializarUsuarios();
 
 // async function atualizarStatusUsuario(){
 //     const usuarios = usuarioService.listarUsuarios();

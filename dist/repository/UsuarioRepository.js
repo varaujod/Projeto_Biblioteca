@@ -2,17 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioRepository = void 0;
 const mysql_1 = require("../database/mysql");
+const UsuarioEntity_1 = require("../model/UsuarioEntity");
 class UsuarioRepository {
     static instance;
-    // private UsuarioList: UsuarioEntity[] = [];
-    imprimeResult(err, result) {
-        if (result != undefined) {
-            console.log("Dentro callback", result);
+    constructor() {
+        this.criarTable();
+    }
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new UsuarioRepository();
         }
+        return this.instance;
     }
     async criarTable() {
-        try {
-            await (0, mysql_1.executarComandoSQL)(`CREATE TABLE IF NOT EXISTS biblioteca.Usuario(
+        const query = `CREATE TABLE IF NOT EXISTS biblioteca.Usuario(
                 id INT AUTO_INCREMENT PRIMARY KEY, 
                 nome VARCHAR(255) NOT NULL, 
                 cpf DECIMAL(11) NOT NULL UNIQUE, 
@@ -23,122 +26,103 @@ class UsuarioRepository {
                 diasSuspensao DECIMAL(4),
                 livrosAtrasados DECIMAL(4),
                 diasAtraso DECIMAL(4)
-                )`, [], this.imprimeResult);
+                )`;
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
+            console.log('Tabela criada com Sucesso!', resultado);
         }
         catch (err) {
             console.error('Erro ao executar a query: ', err);
         }
     }
-    constructor() { }
-    static getInstance() {
-        if (!this.instance) {
-            this.instance = new UsuarioRepository();
-        }
-        return this.instance;
+    async insereUsuario(usuario) {
+        const resultado = await (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.Usuario (nome, cpf, email, categoria, curso, status, diasSuspensao, livrosAtrasados, diasAtraso) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+            usuario.nome,
+            usuario.cpf,
+            usuario.email,
+            usuario.categoria,
+            usuario.curso,
+            'ativo',
+            0,
+            0,
+            0
+        ]);
+        console.log('Produto inserido com Sucesso: ', resultado);
+        return new UsuarioEntity_1.UsuarioEntity(usuario.nome, usuario.cpf, usuario.email, usuario.categoria, usuario.curso);
     }
-    insereUsuario(usuario) {
-        try {
-            const resultado = (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.Usuario (nome, cpf, email, categoria, curso, status, diasSuspensao, livrosAtrasados, diasAtraso) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-                usuario.nome,
-                usuario.cpf,
-                usuario.email,
-                usuario.categoria,
-                usuario.curso,
-                usuario.status,
-                usuario.diasSuspensao,
-                usuario.livrosAtrasados,
-                usuario.diasAtraso
-            ], this.imprimeResult);
-            console.log('Produto inserido com Sucesso: ', resultado);
+    async filtraUsuarioPorCPF(cpf) {
+        const usuario = await this.filtraUsuarioPorCPF(cpf);
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
         }
-        catch (err) {
-            if (err.code === 'ER_DUP_ENTRY') {
-                throw new Error('Já existe um usuário com este CPF.');
-            }
-            throw new Error('Erro ao inserir usuário: ' + err);
-        }
+        await (0, mysql_1.executarComandoSQL)("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
+        return usuario;
     }
-    filtraUsuarioPorCPF(cpf) {
-        try {
-            const resultado = (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario WHERE cpf = ?", [cpf], this.imprimeResult);
-            return resultado;
-        }
-        catch (err) {
-            console.error('Erro ao consultar um usuario: ', err);
-        }
-        // return this.UsuarioList.find(usuario => usuario.cpf === cpf);
+    async removeUsuarioPorCPF(cpf) {
+        const resultado = await (0, mysql_1.executarComandoSQL)("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
+        console.log(resultado);
+        return resultado;
+        // console.log('Usuário removido com sucesso:', resultado);
     }
-    removeUsuarioPorCPF(cpf) {
-        try {
-            const resultado = (0, mysql_1.executarComandoSQL)("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf], this.imprimeResult);
-            return resultado;
-            // console.log('Usuário removido com sucesso:', resultado);
+    async atualizarUsuarioPorCPF(cpf, novosDados) {
+        const campos = [];
+        const valores = [];
+        if (novosDados.nome) {
+            campos.push("nome = ?");
+            valores.push(novosDados.nome);
         }
-        catch (err) {
-            console.error('Erro ao remover usuário:', err);
+        if (novosDados.email) {
+            campos.push("email = ?");
+            valores.push(novosDados.email);
         }
+        if (novosDados.categoria) {
+            campos.push("categoria = ?");
+            valores.push(novosDados.categoria);
+        }
+        if (novosDados.curso) {
+            campos.push("curso = ?");
+            valores.push(novosDados.curso);
+        }
+        if (novosDados.status) {
+            campos.push("status = ?");
+            valores.push(novosDados.status);
+        }
+        if (novosDados.diasSuspensao !== undefined) {
+            campos.push("diasSuspensao = ?");
+            valores.push(novosDados.diasSuspensao);
+        }
+        if (novosDados.livrosAtrasados !== undefined) {
+            campos.push("livrosAtrasados = ?");
+            valores.push(novosDados.livrosAtrasados);
+        }
+        if (novosDados.diasAtraso !== undefined) {
+            campos.push("diasAtraso = ?");
+            valores.push(novosDados.diasAtraso);
+        }
+        if (campos.length === 0) {
+            throw new Error("Nenhum dado para atualizar.");
+        }
+        const sql = `UPDATE biblioteca.Usuario SET ${campos.join(", ")} WHERE cpf = ?`;
+        valores.push(cpf);
+        const resultado = await (0, mysql_1.executarComandoSQL)(sql, valores);
+        console.log(resultado);
+        const usuarioAtualizado = await this.filtraUsuarioPorCPF(cpf);
+        return usuarioAtualizado;
     }
-    atualizarUsuarioPorCPF(cpf, novosDados) {
-        try {
-            const campos = [];
-            const valores = [];
-            if (novosDados.nome) {
-                campos.push("nome = ?");
-                valores.push(novosDados.nome);
+    async listarUsuarios() {
+        const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario", []);
+        const usuarios = [];
+        if (resultado && resultado.length > 0) {
+            for (let i = 0; i < resultado.length; i++) {
+                const user = resultado[i];
+                usuarios.push(new UsuarioEntity_1.UsuarioEntity(user.nome, user.cpf, user.email, user.categoria, user.curso));
             }
-            if (novosDados.email) {
-                campos.push("email = ?");
-                valores.push(novosDados.email);
-            }
-            if (novosDados.categoria) {
-                campos.push("categoria = ?");
-                valores.push(novosDados.categoria);
-            }
-            if (novosDados.curso) {
-                campos.push("curso = ?");
-                valores.push(novosDados.curso);
-            }
-            if (novosDados.status) {
-                campos.push("status = ?");
-                valores.push(novosDados.status);
-            }
-            if (novosDados.diasSuspensao !== undefined) {
-                campos.push("diasSuspensao = ?");
-                valores.push(novosDados.diasSuspensao);
-            }
-            if (novosDados.livrosAtrasados !== undefined) {
-                campos.push("livrosAtrasados = ?");
-                valores.push(novosDados.livrosAtrasados);
-            }
-            if (novosDados.diasAtraso !== undefined) {
-                campos.push("diasAtraso = ?");
-                valores.push(novosDados.diasAtraso);
-            }
-            if (campos.length === 0) {
-                throw new Error("Nenhum dado para atualizar.");
-            }
-            const sql = `UPDATE biblioteca.Usuario SET ${campos.join(", ")} WHERE cpf = ?`;
-            valores.push(cpf);
-            const resultado = (0, mysql_1.executarComandoSQL)(sql, valores, this.imprimeResult);
-            return resultado;
-            // console.log('Usuário atualizado com sucesso:', resultado);
         }
-        catch (err) {
-            console.error('Erro ao atualizar usuário:', err);
-        }
+        return usuarios;
     }
-    listarUsuarios() {
-        try {
-            const resultado = (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario", [], this.imprimeResult);
-            return resultado;
-        }
-        catch (err) {
-            console.error('Erro ao listar usuários:', err);
-            return [];
-        }
-    }
-    validacaoCadastro(cpf) {
-        return this.filtraUsuarioPorCPF(cpf) !== undefined;
+    async validacaoCadastro(cpf) {
+        const resultado = await this.filtraUsuarioPorCPF(cpf);
+        return resultado && resultado.length > 0;
     }
 }
 exports.UsuarioRepository = UsuarioRepository;

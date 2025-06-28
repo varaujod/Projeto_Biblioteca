@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioService = void 0;
-const UsuarioEntity_1 = require("../model/UsuarioEntity");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
 const CategoriaCursoRepository_1 = require("../repository/CategoriaCursoRepository");
@@ -11,26 +10,18 @@ class UsuarioService {
     categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
     categoriaCursoRepository = CategoriaCursoRepository_1.CategoriaCursoRepository.getInstance();
     emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
-    novoUsuario(data) {
+    async novoUsuario(data) {
         if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
             throw new Error("Por favor informar uma categoria existente");
         }
         if (!this.categoriaCursoRepository.encontrarCurso(data.curso)) {
             throw new Error("Por favor informar um curso existente");
         }
-        if (this.usuarioRepository.validacaoCadastro(data.cpf)) {
+        const usuarioEncontrado = await this.usuarioRepository.validacaoCadastro(data.cpf);
+        if (usuarioEncontrado) {
             throw new Error("Este usuário já é cadastrado!");
         }
-        else {
-            try {
-                const usuario = new UsuarioEntity_1.UsuarioEntity(data.nome, data.cpf, data.email, data.categoria, data.curso);
-                this.usuarioRepository.insereUsuario(usuario);
-                return usuario;
-            }
-            catch (err) {
-                throw new Error("Erro ao cadastrar usuário: " + err.message);
-            }
-        }
+        return await this.usuarioRepository.insereUsuario(data);
     }
     filtrarUsuario(data) {
         const cpf = data.cpf;
@@ -40,20 +31,24 @@ class UsuarioService {
         }
         return usuario;
     }
-    removeUsuario(cpf) {
+    async removeUsuario(cpf) {
         const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);
         if (emprestimosAtivos.length > 0) {
             throw new Error("Usuário não pode ser removido pois possui empréstimos pendentes!");
         }
-        return this.usuarioRepository.removeUsuarioPorCPF(cpf);
+        const usuarioRemovido = await this.usuarioRepository.removeUsuarioPorCPF(cpf);
+        if (!usuarioRemovido) {
+            throw new Error("Usuário não encontrado para remoção!");
+        }
+        return usuarioRemovido;
     }
-    listarUsuarios() {
-        return this.usuarioRepository.listarUsuarios();
+    async listarUsuarios() {
+        return await this.usuarioRepository.listarUsuarios();
     }
-    atualizaUsuario(data) {
+    async atualizaUsuario(data) {
         const cpf = data.cpf;
         const novosDados = data.novosDados;
-        return this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
+        return await this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
 }
 exports.UsuarioService = UsuarioService;

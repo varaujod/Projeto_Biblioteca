@@ -12,7 +12,6 @@ const CategoriaUsuarioController_1 = require("./controller/CategoriaUsuarioContr
 const CategoriaCursoController_1 = require("./controller/CategoriaCursoController");
 const CategoriaLivroController_1 = require("./controller/CategoriaLivroController");
 const UsuarioService_1 = require("./service/UsuarioService");
-const UsuarioRepository_1 = require("./repository/UsuarioRepository");
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
@@ -27,18 +26,16 @@ app.use(express_1.default.json());
 function logInfo() {
     console.log(`API em execucao no URL: http://localhost:${PORT}`);
 }
-UsuarioRepository_1.UsuarioRepository.getInstance().criarTable();
-async function inicializarUsuarios() {
-    await UsuarioRepository_1.UsuarioRepository.getInstance().criarTable();
-    const usuarios = UsuarioRepository_1.UsuarioRepository.getInstance().listarUsuarios();
-    for (const usuario of usuarios) {
-        usuario.regularizarStatus();
-        UsuarioRepository_1.UsuarioRepository.getInstance().atualizarUsuarioPorCPF(usuario.cpf, usuario);
-    }
-    console.log("Usuários processados na inicialização:", usuarios);
-}
-// Chame a função de inicialização ao iniciar a API
-inicializarUsuarios();
+// async function inicializarUsuarios() {
+//     await UsuarioRepository.getInstance().criarTable();
+//     const usuarios = UsuarioRepository.getInstance().listarUsuarios();
+//     for (const usuario of usuarios) {
+//         usuario.regularizarStatus();
+//         UsuarioRepository.getInstance().atualizarUsuarioPorCPF(usuario.cpf, usuario);
+//     }
+//     console.log("Usuários processados na inicialização:", usuarios);
+// }
+// inicializarUsuarios();
 // async function atualizarStatusUsuario(){
 //     const usuarios = usuarioService.listarUsuarios();
 //     for(const usuario of usuarios){
