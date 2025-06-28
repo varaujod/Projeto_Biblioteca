@@ -4,86 +4,73 @@ exports.EstoqueController = void 0;
 const EstoqueService_1 = require("../service/EstoqueService");
 class EstoqueController {
     estoqueService = new EstoqueService_1.EstoqueService();
-    adicionarLivroNoEstoque(req, res) {
+    async adicionarLivroNoEstoque(req, res) {
         try {
-            const livro = this.estoqueService.novoLivronoEstoque(req.body);
+            const livro = await this.estoqueService.novoLivronoEstoque(req.body);
             res.status(201).json({
                 "message": "Livro adicionado com Sucesso no seu Estoque! :)",
                 "livro": livro
             });
         }
-        catch (error) {
-            let message = "Não foi possivel adicionar o livro no estoque!";
-            if (error instanceof Error) {
-                message = error.message;
-            }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel adicionar o livro no Estoque!';
             res.status(400).json({
                 message: message
             });
         }
     }
-    listarEstoque(req, res) {
+    async listarEstoque(req, res) {
         try {
-            const lista = this.estoqueService.listarEstoque();
+            const lista = await this.estoqueService.listarEstoque();
             res.status(200).json(lista);
         }
-        catch (error) {
-            let message = "Não conseguimos realizar a listagem do seu estoque";
-            if (error instanceof Error) {
-                message = error.message;
-            }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel listar o seu estoque!';
             res.status(400).json({
                 message: message
             });
         }
     }
-    filtrarLivroNoEstoque(req, res) {
+    async filtrarLivroNoEstoque(req, res) {
         try {
-            const livro = this.estoqueService.filtrarLivroNoEstoque({ cod: Number(req.params.cod) });
-            res.status(200).json(livro);
+            const id = Number(req.params.id);
+            const resultado = await this.estoqueService.filtrarLivroNoEstoque({ id });
+            res.status(200).json(resultado);
         }
-        catch (error) {
-            let message = "Não existe esse exemplar em nosso cadastro, por favor cadastre esse exemplar";
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            res.status(400).json({
-                message: message
-            });
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel filtrar o livro no seu estoque!';
+            res.status(400).json({ message });
         }
     }
-    atualizarDisponibildade(req, res) {
+    async atualizarDisponibildade(req, res) {
         try {
-            const disponibilidadeAtualizada = this.estoqueService.atualizarDisponibilidade({
+            const disponibilidadeAtualizada = await this.estoqueService.atualizarDisponibilidade({
                 cod: Number(req.params.cod),
                 novaDisponibilidade: req.body
             });
-            res.status(200).json(disponibilidadeAtualizada);
+            res.status(200).json({
+                "message": "Disponibilidade atualizado com sucesso!",
+                "livro": disponibilidadeAtualizada
+            });
         }
-        catch (error) {
-            let message = "Não foi possivel realizar atualização";
-            if (error instanceof Error) {
-                message = error.message;
-            }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel atualizar a disponibilidade!';
             res.status(400).json({
                 message: message
             });
         }
     }
-    removerLivroNoEstoque(req, res) {
+    async removerLivroNoEstoque(req, res) {
         try {
-            const cod = Number(req.params.cod);
-            const livro = this.estoqueService.removerLivroNoEstoque(cod);
+            const id = Number(req.params.id);
+            const livro = await this.estoqueService.removerLivroNoEstoque(id);
             res.status(200).json({
                 "status": "Exemplar Deletado com sucesso em seu estoque!",
                 "usuario": livro
             });
         }
-        catch (error) {
-            let message = "Não foi possivel realizar a remoção";
-            if (error instanceof Error) {
-                message = error.message;
-            }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel deletar o Livro!';
             res.status(400).json({
                 message: message
             });

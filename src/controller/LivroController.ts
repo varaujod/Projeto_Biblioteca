@@ -42,7 +42,7 @@ export class LivroController{
 
     async atualizarLivro(req: Request, res: Response){
         try{
-            const livroAtualizado = this.livroService.atualizaLivro({
+            const livroAtualizado = await this.livroService.atualizaLivro({
                 isbn: Number(req.params.isbn),
                 novosDados: req.body
             });
@@ -62,7 +62,7 @@ export class LivroController{
     async removerLivro(req: Request, res: Response){
         try{
             const isbn = Number(req.params.isbn);
-            const livro = this.livroService.removeLivro(isbn);
+            const livro = await this.livroService.removeLivro(isbn);
 
             res.status(200).json({
                 "status": "Livro Deletado com Sucesso!",

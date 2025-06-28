@@ -11,7 +11,8 @@ const EmprestimoController_1 = require("./controller/EmprestimoController");
 const CategoriaUsuarioController_1 = require("./controller/CategoriaUsuarioController");
 const CategoriaCursoController_1 = require("./controller/CategoriaCursoController");
 const CategoriaLivroController_1 = require("./controller/CategoriaLivroController");
-const UsuarioService_1 = require("./service/UsuarioService");
+// import { UsuarioService } from "./service/UsuarioService";
+// import { UsuarioRepository } from "./repository/UsuarioRepository";
 const usuarioController = new UsuarioController_1.UsuarioController();
 const livroController = new LivroController_1.LivroController();
 const estoqueController = new EstoqueController_1.EstoqueController();
@@ -19,7 +20,7 @@ const emprestimoController = new EmprestimoController_1.EmprestimoController();
 const categoriaUsuarioController = new CategoriaUsuarioController_1.CategoriaUsuarioController();
 const categoriaCursoController = new CategoriaCursoController_1.CategoriaCursoController();
 const categoriaLivroController = new CategoriaLivroController_1.CategoriaLivroController();
-const usuarioService = new UsuarioService_1.UsuarioService();
+// const usuarioService = new UsuarioService();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT ?? 3090;
 app.use(express_1.default.json());
@@ -61,9 +62,9 @@ app.delete("/library/livros/:isbn", livroController.removerLivro.bind(livroContr
 // Estoque
 app.post("/library/estoque", estoqueController.adicionarLivroNoEstoque.bind(estoqueController));
 app.get("/library/estoque", estoqueController.listarEstoque.bind(estoqueController));
-app.get("/library/estoque/:cod", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
-app.put("/library/estoque/:cod", estoqueController.atualizarDisponibildade.bind(estoqueController));
-app.delete("/library/estoque/:cod", estoqueController.removerLivroNoEstoque.bind(estoqueController));
+app.get("/library/estoque/:id", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
+app.put("/library/estoque/:id", estoqueController.atualizarDisponibildade.bind(estoqueController));
+app.delete("/library/estoque/:id", estoqueController.removerLivroNoEstoque.bind(estoqueController));
 // Emprestimo
 app.post("/library/emprestimos", emprestimoController.novoEmprestimo.bind(emprestimoController));
 app.get("/library/emprestimos", emprestimoController.listarEmprestimos.bind(emprestimoController));

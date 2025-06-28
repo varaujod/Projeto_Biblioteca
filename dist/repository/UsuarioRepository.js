@@ -29,10 +29,10 @@ class UsuarioRepository {
                 )`;
         try {
             const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
-            console.log('Tabela criada com Sucesso!', resultado);
+            console.log('Tabela de Usuário criada com Sucesso!', resultado);
         }
         catch (err) {
-            console.error('Erro ao executar a query: ', err);
+            console.error('Erro ao executar a query de usuario: ', err);
         }
     }
     async insereUsuario(usuario) {
@@ -47,7 +47,7 @@ class UsuarioRepository {
             0,
             0
         ]);
-        console.log('Produto inserido com Sucesso: ', resultado);
+        console.log('Usuário criado com Sucesso: ', resultado);
         return new UsuarioEntity_1.UsuarioEntity(usuario.nome, usuario.cpf, usuario.email, usuario.categoria, usuario.curso);
     }
     async filtraUsuarioPorCPF(cpf) {
@@ -124,7 +124,7 @@ class UsuarioRepository {
     }
     async validacaoCadastro(cpf) {
         const resultado = await this.filtraUsuarioPorCPF(cpf);
-        return resultado && resultado.length > 0;
+        return resultado !== null;
     }
 }
 exports.UsuarioRepository = UsuarioRepository;

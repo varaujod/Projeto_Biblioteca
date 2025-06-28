@@ -1,10 +1,8 @@
 import { EstoqueEntity } from "../model/EstoqueEntity";
 import { executarComandoSQL } from "../database/mysql";
-import { LivroEntity } from "../model/LivroEntity";
 
 export class EstoqueRepository{
     private static instance: EstoqueRepository;
-    private EstoqueList: EstoqueEntity[] = [];
     
     private constructor() {
         this.createTable();
@@ -41,7 +39,7 @@ export class EstoqueRepository{
             [
                 livro.isbn,
                 livro.quantidade,
-                livro.quantidade_emprestada,
+                0,
                 'disponivel'
             ]);
 
@@ -50,8 +48,7 @@ export class EstoqueRepository{
             resultado.insertId,
             livro.isbn,
             livro.quantidade,
-            livro.quantidade_emprestada, 
-            livro.disponibilidade
+            livro.quantidade_emprestada
         )
     }
 
@@ -63,8 +60,7 @@ export class EstoqueRepository{
                 user.id,
                 user.isbn,
                 user.quantidade,
-                user.quantidade_emprestada,
-                user.disponibilidade
+                user.quantidade_emprestada
             );
         }
         return null;
@@ -81,8 +77,7 @@ export class EstoqueRepository{
                     user.id,
                     user.isbn,
                     user.quantidade,
-                    user.quantidade_emprestada,
-                    user.disponibilidade
+                    user.quantidade_emprestada
                 ));
             }
         }

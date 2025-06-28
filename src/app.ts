@@ -6,8 +6,8 @@ import { EmprestimoController } from "./controller/EmprestimoController";
 import { CategoriaUsuarioController } from "./controller/CategoriaUsuarioController";
 import { CategoriaCursoController } from "./controller/CategoriaCursoController";
 import { CategoriaLivroController } from "./controller/CategoriaLivroController";
-import { UsuarioService } from "./service/UsuarioService";
-import { UsuarioRepository } from "./repository/UsuarioRepository";
+// import { UsuarioService } from "./service/UsuarioService";
+// import { UsuarioRepository } from "./repository/UsuarioRepository";
 
 const usuarioController = new UsuarioController();
 const livroController = new LivroController();
@@ -16,7 +16,7 @@ const emprestimoController = new EmprestimoController();
 const categoriaUsuarioController = new CategoriaUsuarioController();
 const categoriaCursoController = new CategoriaCursoController();
 const categoriaLivroController = new CategoriaLivroController();
-const usuarioService = new UsuarioService();
+// const usuarioService = new UsuarioService();
 
 const app = express();
 
@@ -77,9 +77,9 @@ app.delete("/library/livros/:isbn", livroController.removerLivro.bind(livroContr
 
 app.post("/library/estoque", estoqueController.adicionarLivroNoEstoque.bind(estoqueController));
 app.get("/library/estoque", estoqueController.listarEstoque.bind(estoqueController));
-app.get("/library/estoque/:cod", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
-app.put("/library/estoque/:cod", estoqueController.atualizarDisponibildade.bind(estoqueController));
-app.delete("/library/estoque/:cod", estoqueController.removerLivroNoEstoque.bind(estoqueController));
+app.get("/library/estoque/:id", estoqueController.filtrarLivroNoEstoque.bind(estoqueController));
+app.put("/library/estoque/:id", estoqueController.atualizarDisponibildade.bind(estoqueController));
+app.delete("/library/estoque/:id", estoqueController.removerLivroNoEstoque.bind(estoqueController));
 
 // Emprestimo
 

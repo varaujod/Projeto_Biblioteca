@@ -1,60 +1,58 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstoqueService = void 0;
-const EstoqueEntity_1 = require("../model/EstoqueEntity");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const LivroRepository_1 = require("../repository/LivroRepository");
 class EstoqueService {
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
-    novoLivronoEstoque(data) {
-        const livroExistente = this.livroRepository.filtraLivroPorISBN(data.isbn);
+    async novoLivronoEstoque(data) {
+        const livroExistente = await this.livroRepository.filtraLivroPorISBN(data.isbn);
         if (!livroExistente) {
             throw new Error("Não é possível adicionar um exemplar de um livro que não está cadastrado. Por favor, cadastre o livro primeiro.");
         }
-        const exemplarExistente = this.estoqueRepository.filtraLivroNoEstoque(data.cod);
+        const exemplarExistente = await this.estoqueRepository.filtraLivroNoEstoque(data.id);
         if (exemplarExistente) {
             throw new Error("Já existe um exemplar com este código!");
         }
         if (data.quantidade <= 0) {
             throw new Error("Não é possível cadastrar este livro no estoque, pois a quantidade informada é zero");
         }
-        const livroNoEstoque = new EstoqueEntity_1.EstoqueEntity(data.isbn, data.quantidade, 0);
-        this.estoqueRepository.insereLivroNoEstoque(livroNoEstoque);
-        return livroNoEstoque;
+        return await this.estoqueRepository.insereLivroNoEstoque(data);
     }
-    listarEstoque() {
-        return this.estoqueRepository.listarEstoque();
+    async listarEstoque() {
+        return await this.estoqueRepository.listarEstoque();
     }
     filtrarLivroNoEstoque(data) {
-        const cod = data.cod;
-        const exemplar = this.estoqueRepository.filtraLivroNoEstoque(cod);
-        if (!exemplar) {
+        const id = data.id;
+        const exemplar = this.estoqueRepository.filtraLivroNoEstoque(id);
+        if (exemplar === null) {
             throw new Error("Exemplar não encontrado");
         }
-        const livro = this.livroRepository.filtraLivroPorISBN(exemplar.isbn);
-        return {
-            exemplar: exemplar,
-            livro: livro
-        };
+        return exemplar;
     }
-    atualizarDisponibilidade(data) {
-        const cod = data.cod;
+    async atualizarDisponibilidade(data) {
+        const id = data.id;
         const novaDisponibilidade = data.novaDisponibilidade;
-        const estoque = this.estoqueRepository.filtraLivroNoEstoque(cod);
+        const estoque = await this.estoqueRepository.filtraLivroNoEstoque(id);
         if (estoque && estoque.quantidade_emprestada === estoque.quantidade) {
-            this.estoqueRepository.atualizarDisponibilidade(cod, { disponibilidade: 'não-disponivel' });
-            this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'não-disponivel' });
+            await this.estoqueRepository.atualizarDisponibilidade(id, { disponibilidade: 'não-disponivel' });
+            await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'não-disponivel' });
         }
-        return this.estoqueRepository.atualizarDisponibilidade(cod, novaDisponibilidade);
+        return await this.estoqueRepository.atualizarDisponibilidade(id, novaDisponibilidade);
     }
-    removerLivroNoEstoque(cod) {
-        const estoque = this.estoqueRepository.filtraLivroNoEstoque(cod);
-        if (!estoque) {
+    async removerLivroNoEstoque(id) {
+        const estoque = await this.estoqueRepository.filtraLivroNoEstoque(id);
+        if (estoque === null) {
             throw new Error("Exemplar não encontrado!");
         }
-        if (estoque.quantidade_emprestada === 0) {
-            return this.estoqueRepository.removerLivroNoEstoque(cod);
+        console.log('quantidade_emprestada:', estoque.quantidade_emprestada, typeof estoque.quantidade_emprestada);
+        if (Number(estoque.quantidade_emprestada) === 0) {
+            const removido = await this.estoqueRepository.removerLivroNoEstoque(id);
+            if (!removido) {
+                throw new Error("Erro ao remover o exemplar do estoque!");
+            }
+            return removido;
         }
         else {
             throw new Error("Há exemplares emprestados desse Livro, assim que não tiver mais exemplares emprestados você poderá remover este livro no estoque");

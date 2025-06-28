@@ -11,7 +11,6 @@ class UsuarioEntity {
     diasSuspensao;
     livrosAtrasados;
     diasAtraso;
-    length;
     constructor(nome, cpf, email, categoria, curso) {
         if (!nome || !cpf || !email || !categoria || !curso) {
             throw new Error("Por favor informar todos os campos");
