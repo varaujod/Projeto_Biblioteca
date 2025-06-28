@@ -51,18 +51,20 @@ class UsuarioRepository {
         return new UsuarioEntity_1.UsuarioEntity(usuario.nome, usuario.cpf, usuario.email, usuario.categoria, usuario.curso);
     }
     async filtraUsuarioPorCPF(cpf) {
+        const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
+        if (resultado && resultado.length > 0) {
+            const user = resultado[0];
+            return new UsuarioEntity_1.UsuarioEntity(user.nome, user.cpf, user.email, user.categoria, user.curso);
+        }
+        return null;
+    }
+    async removeUsuarioPorCPF(cpf) {
         const usuario = await this.filtraUsuarioPorCPF(cpf);
         if (!usuario) {
-            throw new Error('Usuário não encontrado');
+            return null;
         }
         await (0, mysql_1.executarComandoSQL)("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
         return usuario;
-    }
-    async removeUsuarioPorCPF(cpf) {
-        const resultado = await (0, mysql_1.executarComandoSQL)("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
-        console.log(resultado);
-        return resultado;
-        // console.log('Usuário removido com sucesso:', resultado);
     }
     async atualizarUsuarioPorCPF(cpf, novosDados) {
         const campos = [];

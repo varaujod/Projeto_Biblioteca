@@ -59,15 +59,19 @@ export class UsuarioRepository{
                 usuario.curso);
     }
 
-    async filtraUsuarioPorCPF(cpf: number): Promise<UsuarioEntity>{
-        const usuario = await this.filtraUsuarioPorCPF(cpf);
-        if (!usuario) {
-            throw new Error('Usuário não encontrado');
+    async filtraUsuarioPorCPF(cpf: number): Promise<UsuarioEntity | null>{
+        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
+        if (resultado && resultado.length > 0) {
+            const user = resultado[0];
+            return new UsuarioEntity(
+                user.nome,
+                user.cpf,
+                user.email,
+                user.categoria,
+                user.curso
+            );
         }
-
-        await executarComandoSQL("DELETE FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
-
-        return usuario;
+    return null;
     }
 
     async removeUsuarioPorCPF(cpf: number): Promise<UsuarioEntity | null>{

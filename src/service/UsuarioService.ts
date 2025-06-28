@@ -28,7 +28,7 @@ export class UsuarioService{
     }
 
 
-    filtrarUsuario(data: any): Promise<UsuarioEntity>{
+    filtrarUsuario(data: any): Promise<UsuarioEntity | null>{
         const cpf = data.cpf;
         const usuario = this.usuarioRepository.filtraUsuarioPorCPF(cpf);
 
@@ -56,7 +56,7 @@ export class UsuarioService{
         return await this.usuarioRepository.listarUsuarios();
     }
 
-    async atualizaUsuario(data: any): Promise<UsuarioEntity>{
+    async atualizaUsuario(data: any): Promise<UsuarioEntity | null>{
         const cpf = data.cpf;
         const novosDados = data.novosDados;
 
