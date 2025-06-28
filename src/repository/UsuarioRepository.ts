@@ -30,9 +30,9 @@ export class UsuarioRepository{
                 )`
         try{
             const resultado = await executarComandoSQL(query, []);
-            console.log('Tabela criada com Sucesso!', resultado);
+            console.log('Tabela de Usuário criada com Sucesso!', resultado);
         } catch(err){
-            console.error('Erro ao executar a query: ', err);
+            console.error('Erro ao executar a query de usuario: ', err);
         }
     }
 
@@ -50,7 +50,7 @@ export class UsuarioRepository{
                 0,
                 0]);
         
-        console.log('Produto inserido com Sucesso: ', resultado);
+        console.log('Usuário criado com Sucesso: ', resultado);
         return new UsuarioEntity(
                 usuario.nome, 
                 usuario.cpf, 
@@ -166,7 +166,7 @@ export class UsuarioRepository{
     async validacaoCadastro(cpf: number): Promise<boolean | null>{
         const resultado = await this.filtraUsuarioPorCPF(cpf);
 
-        return resultado && resultado.length > 0;
+        return resultado !== null;
     }
 
     // private findIndex(cpf: number): number{

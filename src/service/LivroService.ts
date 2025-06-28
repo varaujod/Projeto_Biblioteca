@@ -10,7 +10,7 @@ export class LivroService{
     private estoqueRepository = EstoqueRepository.getInstance();
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
-    novoLivro(data: any): LivroEntity{
+    async novoLivro(data: any): LivroEntity{
         if(!this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria)){
             throw new Error("Por favor informar uma categoria existente");
         }
