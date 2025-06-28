@@ -1,25 +1,19 @@
 export class EstoqueEntity{
-    static ultimoId: number = 0;
-
+    id: number;
     isbn: number;
-    cod: number;
     quantidade: number;
     quantidade_emprestada: number;
-    disponibilidade: 'disponivel' | 'não-disponivel';
+    disponibilidade: string;
+    // disponibilidade: 'disponivel' | 'não-disponivel';
 
-    constructor(isbn: number, quantidade: number, quantidade_emprestada: number){
+    constructor(id: number, isbn: number, quantidade: number, quantidade_emprestada: number, disponibilidade: string){
         if(!isbn || !quantidade){
             throw new Error("Por favor informar todos os campos");
         }
+        this.id = id;
         this.isbn = isbn;
-        this.cod = this.gerarId();
-        this.quantidade = quantidade
-        this.quantidade_emprestada = quantidade_emprestada
+        this.quantidade = quantidade;
+        this.quantidade_emprestada = quantidade_emprestada;
         this.disponibilidade = 'disponivel';
-    }
-
-    gerarId(): number{
-        EstoqueEntity.ultimoId++;
-        return EstoqueEntity.ultimoId;
     }
 }

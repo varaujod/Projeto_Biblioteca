@@ -90,7 +90,7 @@ export class LivroRepository{
             return null;
        }
 
-       await executarComandoSQL("DELETAR FROM biblioteca.Livro where isbn = ?", [isbn]);
+       await executarComandoSQL("DELETE FROM biblioteca.Livro where isbn = ?", [isbn]);
        return livro;
     }
 

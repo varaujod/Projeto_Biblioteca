@@ -1,6 +1,5 @@
 import { LivroEntity } from "../model/LivroEntity";
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
-import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroRepository } from "../repository/LivroRepository";
 
@@ -8,7 +7,6 @@ export class LivroService{
     private livroRepository = LivroRepository.getInstance();
     private categoriaLivroRepository = CategoriaLivroRepository.getInstance();
     private estoqueRepository = EstoqueRepository.getInstance();
-    private emprestimoRepository = EmprestimoRepository.getInstance();
 
     async novoLivro(data: any): Promise<LivroEntity>{
         if(!this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria)){
@@ -38,9 +36,9 @@ export class LivroService{
     }
 
     async removeLivro(isbn: number): Promise<LivroEntity>{
-        const exemplares = this.estoqueRepository.listarEstoque();
+        const exemplares = await this.estoqueRepository.listarEstoque();
         for(const exemplar of exemplares){
-            const emprestimosAtivoDoLivro = this.estoqueRepository.quantidadeLivrosEmprestados(exemplar.cod);
+            const emprestimosAtivoDoLivro = await this.estoqueRepository.quantidadeLivrosEmprestados(exemplar.id);
             if (emprestimosAtivoDoLivro) {
                 throw new Error("Não é possível remover o livro: há exemplares emprestados!");
             }
