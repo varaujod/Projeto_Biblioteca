@@ -80,8 +80,8 @@ export class LivroRepository{
         return null;
     }
 
-    async validacaoLivro(isbn: number): Promise<boolean>{
-        return await this.filtraLivroPorISBN(isbn) !== undefined;
+    validacaoLivro(isbn: number): boolean{
+        return this.filtraLivroPorISBN(isbn) !== undefined;
     }
 
     async removeLivroPorISBN(isbn: number): Promise<LivroEntity | null>{

@@ -10,7 +10,7 @@ export class LivroService{
     private estoqueRepository = EstoqueRepository.getInstance();
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
-    async novoLivro(data: any): LivroEntity{
+    async novoLivro(data: any): Promise<LivroEntity>{
         if(!this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria)){
             throw new Error("Por favor informar uma categoria existente");
         }
@@ -21,41 +21,46 @@ export class LivroService{
 
         if(this.livroRepository.validacaoLivro(data.isbn)){
             throw new Error("Este livro já é cadastrado!");
-        } else{
-            const livro = new LivroEntity(data.titulo, data.isbn, data.autor, data.editora, data.edicao, data.categoria);
-
-            this.livroRepository.insereLivro(livro);
-
-            return livro;
         }
+
+        return await this.livroRepository.insereLivro(data);
     }
 
-    filtrarLivro(data: any){
+    filtrarLivro(data: any): Promise<LivroEntity | null>{
         const isbn = data.isbn;
-        return this.livroRepository.filtraLivroPorISBN(isbn);
+        const livro = this.livroRepository.filtraLivroPorISBN(isbn);
+
+        if(livro === null){
+            throw new Error("Este livro ainda não foi cadastrado com esta ISBN!");
+        }
+
+        return livro;
     }
 
-    removeLivro(isbn: number){
-        const exemplares = this.estoqueRepository.listarEstoque().filter(e => e.isbn === isbn);
+    async removeLivro(isbn: number): Promise<LivroEntity>{
+        const exemplares = this.estoqueRepository.listarEstoque();
         for(const exemplar of exemplares){
             const emprestimosAtivoDoLivro = this.estoqueRepository.quantidadeLivrosEmprestados(exemplar.cod);
             if (emprestimosAtivoDoLivro) {
                 throw new Error("Não é possível remover o livro: há exemplares emprestados!");
             }
         }
-        return this.livroRepository.removeLivroPorISBN(isbn);
+
+        const livroRemovido = await this.livroRepository.removeLivroPorISBN(isbn);
+        if(!livroRemovido){
+            throw new Error("Livro não encontrado para remoção!");
+        }
+        return livroRemovido;
     }
 
-    listarLivros(){
-        return this.livroRepository.listarLivros();
+    async listarLivros(): Promise<LivroEntity[]>{
+        return await this.livroRepository.listarLivros();
     }
 
-    atualizaLivro(data: any){
+    async atualizaLivro(data: any): Promise<LivroEntity | null>{
         const isbn = data.isbn;
         const novosDados = data.novosDados;
 
-        return this.livroRepository.atualizarLivroPorISBN(isbn, novosDados);
+        return await this.livroRepository.atualizarLivroPorISBN(isbn, novosDados);
     }
-
-
 }
