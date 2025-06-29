@@ -76,13 +76,10 @@ class EmprestimoRepository {
         // }
         if (resultado && resultado.length > 0) {
             for (const user of resultado) {
-                // 1. Instancia com os campos obrigatórios
                 const emprestimo = new EmprestimoEntity_1.EmprestimoEntity(user.id, user.usuario, user.codexemplar, user.categoria);
-                // 2. Preenche os campos vindos do banco
                 emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
                 emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
                 emprestimo.status = user.status;
-                // 3. Atualiza os campos calculados
                 emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
                 emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
                 emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
@@ -93,17 +90,18 @@ class EmprestimoRepository {
         return emprestimos;
     }
     async filtraEmprestimoPorID(id) {
-        const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Emprestimo where id = ?", [id]);
-        if (resultado && resultado.lenght > 0) {
+        const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Emprestimo WHERE id = ?", [id]);
+        if (resultado && resultado.length > 0) {
             const user = resultado[0];
             const emprestimo = new EmprestimoEntity_1.EmprestimoEntity(user.id, user.usuario, user.codexemplar, user.categoria);
-            emprestimo.dataEmprestimo;
-            emprestimo.dataDevolucao;
-            emprestimo.status;
-            emprestimo.dataPrevista;
-            emprestimo.diasRestantes;
-            emprestimo.multaAtrasado;
-            emprestimo.diasSuspensao;
+            emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
+            emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
+            emprestimo.status = user.status;
+            emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
+            emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
+            emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
+            emprestimo.diasSuspensao = emprestimo.calcularDiasSuspensao();
+            return emprestimo;
         }
         return null;
     }

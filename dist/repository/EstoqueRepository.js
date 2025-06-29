@@ -38,13 +38,17 @@ class EstoqueRepository {
             'disponivel'
         ]);
         console.log('Livro adicionado com sucesso no estoque!', resultado);
-        return new EstoqueEntity_1.EstoqueEntity(resultado.insertId, livro.isbn, livro.quantidade, livro.quantidade_emprestada);
+        const entity = new EstoqueEntity_1.EstoqueEntity(resultado.insertId, livro.isbn, livro.quantidade, livro.quantidade_emprestada);
+        entity.disponibilidade = 'disponivel';
+        return entity;
     }
     async filtraLivroNoEstoque(id) {
         const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Estoque where id = ?", [id]);
         if (resultado && resultado.length > 0) {
             const user = resultado[0];
-            return new EstoqueEntity_1.EstoqueEntity(user.id, user.isbn, user.quantidade, user.quantidade_emprestada);
+            const entity = new EstoqueEntity_1.EstoqueEntity(user.id, user.isbn, Number(user.quantidade), Number(user.quantidade_emprestada));
+            entity.disponibilidade = user.disponibilidade;
+            return entity;
         }
         return null;
     }
@@ -54,22 +58,31 @@ class EstoqueRepository {
         if (resultado && resultado.length > 0) {
             for (let i = 0; i < resultado.length; i++) {
                 const user = resultado[i];
-                estoque.push(new EstoqueEntity_1.EstoqueEntity(user.id, user.isbn, user.quantidade, user.quantidade_emprestada));
+                const entity = new EstoqueEntity_1.EstoqueEntity(user.id, user.isbn, Number(user.quantidade), Number(user.quantidade_emprestada));
+                entity.disponibilidade = user.disponibilidade;
+                estoque.push(entity);
             }
         }
         return estoque;
     }
-    async atualizarDisponibilidade(id, novaDisponibilidade) {
-        if (!novaDisponibilidade || !novaDisponibilidade.disponibilidade) {
-            throw new Error("É necessário informar a nova disponibilidade");
+    async atualizarDisponibilidade(id, dados) {
+        const campos = [];
+        const valores = [];
+        if (dados.disponibilidade) {
+            campos.push("disponibilidade = ?");
+            valores.push(dados.disponibilidade);
         }
-        if (novaDisponibilidade.disponibilidade !== 'disponivel' && novaDisponibilidade.disponibilidade !== 'não-disponivel') {
-            throw new Error("Disponibilidade inválida. Use 'disponivel' ou 'não-disponivel'");
+        if (dados.quantidade_emprestada !== undefined) {
+            campos.push("quantidade_emprestada = ?");
+            valores.push(dados.quantidade_emprestada);
         }
-        const resultado = await (0, mysql_1.executarComandoSQL)(`UPDATE biblioteca.Estoque SET disponibilidade = ? WHERE id = ?`, [novaDisponibilidade.disponibilidade, id]);
-        console.log(resultado);
-        const disponibilidadeAtualizado = await this.filtraLivroNoEstoque(id);
-        return disponibilidadeAtualizado;
+        if (campos.length === 0) {
+            throw new Error("Nenhum dado para atualizar.");
+        }
+        const sql = `UPDATE biblioteca.Estoque SET ${campos.join(", ")} WHERE id = ?`;
+        valores.push(id);
+        await (0, mysql_1.executarComandoSQL)(sql, valores);
+        return await this.filtraLivroNoEstoque(id);
     }
     async removerLivroNoEstoque(id) {
         const livro = await this.filtraLivroNoEstoque(id);

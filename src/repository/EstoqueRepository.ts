@@ -44,24 +44,28 @@ export class EstoqueRepository{
             ]);
 
         console.log('Livro adicionado com sucesso no estoque!', resultado);
-        return new EstoqueEntity(
+        const entity = new EstoqueEntity(
             resultado.insertId,
             livro.isbn,
             livro.quantidade,
             livro.quantidade_emprestada
-        )
-    }
+        );
+        entity.disponibilidade = 'disponivel'; 
+        return entity;
+        }
 
     async filtraLivroNoEstoque(id: number): Promise<EstoqueEntity | null>{
         const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Estoque where id = ?", [id]);
         if(resultado && resultado.length > 0){
             const user = resultado[0];
-            return new EstoqueEntity(
+            const entity = new EstoqueEntity(
                 user.id,
                 user.isbn,
-                user.quantidade,
-                user.quantidade_emprestada
+                Number(user.quantidade),
+                Number(user.quantidade_emprestada)
             );
+            entity.disponibilidade = user.disponibilidade; 
+            return entity;
         }
         return null;
     }
@@ -73,34 +77,42 @@ export class EstoqueRepository{
         if(resultado && resultado.length > 0){
             for(let i = 0; i < resultado.length; i++){
                 const user = resultado[i];
-                estoque.push(new EstoqueEntity(
+                const entity = new EstoqueEntity(
                     user.id,
                     user.isbn,
-                    user.quantidade,
-                    user.quantidade_emprestada
-                ));
+                    Number(user.quantidade),
+                    Number(user.quantidade_emprestada)
+            );
+                entity.disponibilidade = user.disponibilidade; 
+                estoque.push(entity);
             }
         }
         return estoque;
     }
 
-    async atualizarDisponibilidade(id: number, novaDisponibilidade: any): Promise<EstoqueEntity | null>{
-        
-        if(!novaDisponibilidade || !novaDisponibilidade.disponibilidade) {
-            throw new Error("É necessário informar a nova disponibilidade");
+    async atualizarDisponibilidade(id: number, dados: { disponibilidade?: string, quantidade_emprestada?: number }): Promise<EstoqueEntity | null> {
+        const campos: string[] = [];
+        const valores: any[] = [];
+
+        if (dados.disponibilidade) {
+            campos.push("disponibilidade = ?");
+            valores.push(dados.disponibilidade);
+        }
+        if (dados.quantidade_emprestada !== undefined) {
+            campos.push("quantidade_emprestada = ?");
+            valores.push(dados.quantidade_emprestada);
         }
 
-        if(novaDisponibilidade.disponibilidade !== 'disponivel' && novaDisponibilidade.disponibilidade !== 'não-disponivel') {
-            throw new Error("Disponibilidade inválida. Use 'disponivel' ou 'não-disponivel'");
+        if (campos.length === 0) {
+            throw new Error("Nenhum dado para atualizar.");
         }
 
-        const resultado = await executarComandoSQL(
-            `UPDATE biblioteca.Estoque SET disponibilidade = ? WHERE id = ?`, 
-            [novaDisponibilidade.disponibilidade, id]);
-        console.log(resultado);
+        const sql = `UPDATE biblioteca.Estoque SET ${campos.join(", ")} WHERE id = ?`;
+        valores.push(id);
 
-        const disponibilidadeAtualizado = await this.filtraLivroNoEstoque(id);
-        return disponibilidadeAtualizado;
+        await executarComandoSQL(sql, valores);
+
+        return await this.filtraLivroNoEstoque(id);
     }
 
     async removerLivroNoEstoque(id: number): Promise<EstoqueEntity | null>{

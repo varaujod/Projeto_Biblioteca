@@ -115,24 +115,25 @@ export class EmprestimoRepository{
         return emprestimos;
     }
 
-    async filtraEmprestimoPorID(id: number): Promise<EmprestimoEntity | null>{
-        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Emprestimo where id = ?", [id]);
-        if(resultado && resultado.lenght > 0){
-            const user = resultado[0];
-            const emprestimo = new EmprestimoEntity(
-                user.id,
-                user.usuario,
-                user.codexemplar,
-                user.categoria
-            );
-                emprestimo.dataEmprestimo
-                emprestimo.dataDevolucao
-                emprestimo.status
-                emprestimo.dataPrevista
-                emprestimo.diasRestantes
-                emprestimo.multaAtrasado
-                emprestimo.diasSuspensao
-        }
+    async filtraEmprestimoPorID(id: number): Promise<EmprestimoEntity | null> {
+        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Emprestimo WHERE id = ?", [id]);
+            if (resultado && resultado.length > 0) {
+                const user = resultado[0];
+                const emprestimo = new EmprestimoEntity(
+                    user.id,
+                    user.usuario,
+                    user.codexemplar,
+                    user.categoria
+                );
+                emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
+                emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
+                emprestimo.status = user.status as 'ativo' | 'devolvido' | 'atrasado';
+                emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
+                emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
+                emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
+                emprestimo.diasSuspensao = emprestimo.calcularDiasSuspensao();
+                return emprestimo;
+            }
         return null;
     }
 
