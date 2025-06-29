@@ -1,10 +1,12 @@
+import { executarComandoSQL } from "../database/mysql";
 import { EmprestimoEntity } from "../model/EmprestimoEntity";
 
 export class EmprestimoRepository{
     private static instance: EmprestimoRepository;
-    private EmprestimoList: EmprestimoEntity[] = [];
 
-    private constructor() {}
+    private constructor() {
+        this.createTable();
+    }
 
     public static getInstance(): EmprestimoRepository{
         if(!this.instance){
@@ -14,12 +16,56 @@ export class EmprestimoRepository{
         return this.instance;
     }
 
-    insereEmprestimo(emprestimo: EmprestimoEntity){
-        this.EmprestimoList.push(emprestimo);
+    private async createTable(){
+        const query = `CREATE TABLE IF NOT EXISTS biblioteca.Emprestimo(
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                usuario DECIMAL(11) NOT NULL,
+                codexemplar DECIMAL(13) NOT NULL,
+                categoria VARCHAR(10) NOT NULL,
+                dataemprestimo DATE NOT NULL,
+                datadevolucao DATE NOT NULL,
+                dataprevista DATE NOT NULL,
+                diasrestantes DATE NOT NULL,
+                status VARCHAR(10) NOT NULL,
+                multaatrasado INT,
+                diassuspensao INT
+                )`
+
+        try{
+            const resultado = await executarComandoSQL(query, []);
+            console.log('Tabela de emprestimo criada com sucesso!', resultado);
+        } catch(err){
+            console.error('Erro ao executar a query de estoque: ', err);
+        }
     }
 
-    listarEmprestimos(){
-        return this.EmprestimoList;
+    async insereEmprestimo(emprestimo: EmprestimoEntity): Promise<EmprestimoEntity>{
+        const resultado = await executarComandoSQL(
+            "INSERT INTO biblioteca.Emprestimo (usuario, codexemplar, categoria, dataemprestimo, datadevolucao, dataprevista, diasrestantes, status, multaatrasado, diasrestantes) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?",
+            [
+                emprestimo.usuario,
+                emprestimo.codExemplar,
+                emprestimo.categoria,
+                emprestimo.dataEmprestimo,
+                emprestimo.dataDevolucao,
+                emprestimo.dataPrevista,
+                emprestimo.diasRestantes,
+                'ativo',
+                emprestimo.multaAtrasado,
+                emprestimo.diasSuspensao
+            ]);
+
+        console.log('Emprestimo feito com sucesso!', resultado);
+        return new EmprestimoEntity(
+            resultado.insertId,
+            emprestimo.usuario,
+            emprestimo.codExemplar,
+            emprestimo.categoria
+        )
+    }
+
+    async listarEmprestimos(): Promise<EmprestimoEntity[]>{
+        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Emprestimo", []);
     }
 
     filtraEmprestimoPorID(id: number){

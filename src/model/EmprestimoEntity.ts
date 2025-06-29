@@ -1,6 +1,4 @@
 export class EmprestimoEntity{
-    static ultimoId: number = 0;
-
     id: number;
     usuario: number;
     codExemplar: number;
@@ -13,12 +11,12 @@ export class EmprestimoEntity{
     multaAtrasado: number;
     diasSuspensao: number;
 
-    constructor(usuario: number, codExemplar: number, categoria: 'aluno' | 'professor'){
+    constructor(id?: number, usuario?: number, codExemplar?: number, categoria?: 'aluno' | 'professor'){
         if(!usuario || !codExemplar || !categoria){
             throw new Error("Por favor informar todos os campos");
         }
 
-        this.id = this.gerarId();
+        this.id = id ?? 0;
         this.usuario = usuario;
         this.codExemplar = codExemplar;
         this.categoria = categoria;
@@ -98,10 +96,5 @@ export class EmprestimoEntity{
         } else{
             return 0;
         }
-    }
-
-    gerarId(): number{
-        EmprestimoEntity.ultimoId++;
-        return EmprestimoEntity.ultimoId;
     }
 }
