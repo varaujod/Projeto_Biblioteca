@@ -92,19 +92,18 @@ export class EmprestimoRepository{
 
         if (resultado && resultado.length > 0) {
         for (const user of resultado) {
-            // 1. Instancia com os campos obrigatórios
+
             const emprestimo = new EmprestimoEntity(
                 user.id,
                 user.usuario,
                 user.codexemplar,
                 user.categoria
             );
-            // 2. Preenche os campos vindos do banco
+    
             emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
             emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
             emprestimo.status = user.status as 'ativo' | 'devolvido' | 'atrasado';
 
-            // 3. Atualiza os campos calculados
             emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
             emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
             emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
