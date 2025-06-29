@@ -33,7 +33,7 @@ class UsuarioService {
     }
     async removeUsuario(cpf) {
         const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);
-        if (emprestimosAtivos.length > 0) {
+        if ((await emprestimosAtivos).length > 0) {
             throw new Error("Usuário não pode ser removido pois possui empréstimos pendentes!");
         }
         const usuarioRemovido = await this.usuarioRepository.removeUsuarioPorCPF(cpf);

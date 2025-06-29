@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmprestimoEntity = void 0;
 class EmprestimoEntity {
-    static ultimoId = 0;
     id;
     usuario;
     codExemplar;
@@ -14,11 +13,11 @@ class EmprestimoEntity {
     status;
     multaAtrasado;
     diasSuspensao;
-    constructor(usuario, codExemplar, categoria) {
+    constructor(id, usuario, codExemplar, categoria) {
         if (!usuario || !codExemplar || !categoria) {
             throw new Error("Por favor informar todos os campos");
         }
-        this.id = this.gerarId();
+        this.id = id ?? 0;
         this.usuario = usuario;
         this.codExemplar = codExemplar;
         this.categoria = categoria;
@@ -86,10 +85,6 @@ class EmprestimoEntity {
         else {
             return 0;
         }
-    }
-    gerarId() {
-        EmprestimoEntity.ultimoId++;
-        return EmprestimoEntity.ultimoId;
     }
 }
 exports.EmprestimoEntity = EmprestimoEntity;

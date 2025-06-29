@@ -23,9 +23,9 @@ class EstoqueService {
     async listarEstoque() {
         return await this.estoqueRepository.listarEstoque();
     }
-    filtrarLivroNoEstoque(data) {
+    async filtrarLivroNoEstoque(data) {
         const id = data.id;
-        const exemplar = this.estoqueRepository.filtraLivroNoEstoque(id);
+        const exemplar = await this.estoqueRepository.filtraLivroNoEstoque(id);
         if (exemplar === null) {
             throw new Error("Exemplar não encontrado");
         }

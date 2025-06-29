@@ -23,9 +23,9 @@ export class EmprestimoRepository{
                 codexemplar DECIMAL(13) NOT NULL,
                 categoria VARCHAR(10) NOT NULL,
                 dataemprestimo DATE NOT NULL,
-                datadevolucao DATE NOT NULL,
+                datadevolucao DATE,
                 dataprevista DATE NOT NULL,
-                diasrestantes DATE NOT NULL,
+                diasrestantes INT NOT NULL,
                 status VARCHAR(10) NOT NULL,
                 multaatrasado INT,
                 diassuspensao INT
@@ -41,18 +41,18 @@ export class EmprestimoRepository{
 
     async insereEmprestimo(emprestimo: EmprestimoEntity): Promise<EmprestimoEntity>{
         const resultado = await executarComandoSQL(
-            "INSERT INTO biblioteca.Emprestimo (usuario, codexemplar, categoria, dataemprestimo, datadevolucao, dataprevista, diasrestantes, status, multaatrasado, diasrestantes) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?",
+            "INSERT INTO biblioteca.Emprestimo (usuario, codexemplar, categoria, dataemprestimo, datadevolucao, dataprevista, diasrestantes, status, multaatrasado, diassuspensao) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 emprestimo.usuario,
                 emprestimo.codExemplar,
                 emprestimo.categoria,
-                emprestimo.dataEmprestimo,
-                emprestimo.dataDevolucao,
-                emprestimo.dataPrevista,
-                emprestimo.diasRestantes,
+                new Date(), 
+                null, 
+                emprestimo.calcularDataDevolucao(),
+                emprestimo.diasRestantesEmprestimo(),
                 'ativo',
-                emprestimo.multaAtrasado,
-                emprestimo.diasSuspensao
+                emprestimo.calcularDiasAtraso(),
+                emprestimo.calcularDiasSuspensao()
             ]);
 
         console.log('Emprestimo feito com sucesso!', resultado);
@@ -66,61 +66,194 @@ export class EmprestimoRepository{
 
     async listarEmprestimos(): Promise<EmprestimoEntity[]>{
         const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Emprestimo", []);
+        const emprestimos: EmprestimoEntity[] = [];
+
+        // if (resultado && resultado.length > 0) {
+        //     for (let i = 0; i < resultado.length; i++) {
+        //         const user = resultado[i];
+        //         const emprestimo = new EmprestimoEntity(
+        //             user.id,
+        //             user.usuario,
+        //             user.codexemplar,
+        //             user.categoria
+        //         );
+
+        //         emprestimo.dataEmprestimo;
+        //         emprestimo.dataDevolucao;
+        //         emprestimo.status;
+        //         emprestimo.dataPrevista;
+        //         emprestimo.diasRestantes;
+        //         emprestimo.multaAtrasado;
+        //         emprestimo.diasSuspensao;
+
+        //         emprestimos.push(emprestimo);
+        //     }
+        // }
+
+        if (resultado && resultado.length > 0) {
+        for (const user of resultado) {
+            // 1. Instancia com os campos obrigatórios
+            const emprestimo = new EmprestimoEntity(
+                user.id,
+                user.usuario,
+                user.codexemplar,
+                user.categoria
+            );
+            // 2. Preenche os campos vindos do banco
+            emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
+            emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
+            emprestimo.status = user.status as 'ativo' | 'devolvido' | 'atrasado';
+
+            // 3. Atualiza os campos calculados
+            emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
+            emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
+            emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
+            emprestimo.diasSuspensao = emprestimo.calcularDiasSuspensao();
+
+            emprestimos.push(emprestimo);
+        }
+    }
+        return emprestimos;
     }
 
-    filtraEmprestimoPorID(id: number){
-        return this.EmprestimoList.find(emprestimo => emprestimo.id === id);
+    async filtraEmprestimoPorID(id: number): Promise<EmprestimoEntity | null>{
+        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Emprestimo where id = ?", [id]);
+        if(resultado && resultado.lenght > 0){
+            const user = resultado[0];
+            const emprestimo = new EmprestimoEntity(
+                user.id,
+                user.usuario,
+                user.codexemplar,
+                user.categoria
+            );
+                emprestimo.dataEmprestimo
+                emprestimo.dataDevolucao
+                emprestimo.status
+                emprestimo.dataPrevista
+                emprestimo.diasRestantes
+                emprestimo.multaAtrasado
+                emprestimo.diasSuspensao
+        }
+        return null;
     }
 
-    filtraEmprestimosAtivosDoUsuario(usuario: number){
-        return this.EmprestimoList.filter(
-            emprestimo => emprestimo.usuario === usuario && emprestimo.status === 'ativo'
+    async filtraEmprestimosAtivosDoUsuario(usuario: number): Promise<EmprestimoEntity[]> {
+        const resultado = await executarComandoSQL(
+            "SELECT * FROM biblioteca.Emprestimo WHERE usuario = ? AND status = 'ativo'",
+            [usuario]
         );
+        const emprestimos: EmprestimoEntity[] = [];
+
+        if (resultado && resultado.length > 0) {
+            for (const user of resultado) {
+                const emprestimo = new EmprestimoEntity(
+                    user.id,
+                    user.usuario,
+                    user.codexemplar,
+                    user.categoria
+                );
+                emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
+                emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
+                emprestimo.status = user.status;
+                emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
+                emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
+                emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
+                emprestimo.diasSuspensao = emprestimo.calcularDiasSuspensao();
+
+                emprestimos.push(emprestimo);
+            }
+        }
+        return emprestimos;
     }
 
-    filtraEmprestimosAtrasadosDoUsuario(cpf: number): EmprestimoEntity[]{
-        return this.EmprestimoList.filter(
-            emprestimo => emprestimo.usuario === cpf && emprestimo.status === 'ativo' && emprestimo.estaAtrasado()
+    async filtraEmprestimosAtrasadosDoUsuario(usuario: number): Promise<EmprestimoEntity[]> {
+        const resultado = await executarComandoSQL(
+            "SELECT * FROM biblioteca.Emprestimo WHERE usuario = ? AND status = 'ativo'",
+            [usuario]
         );
+        const emprestimos: EmprestimoEntity[] = [];
+
+        if (resultado && resultado.length > 0) {
+            for (const user of resultado) {
+                const emprestimo = new EmprestimoEntity(
+                    user.id,
+                    user.usuario,
+                    user.codexemplar,
+                    user.categoria
+                );
+                emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
+                emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
+                emprestimo.status = user.status;
+                emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
+                emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
+                emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
+                emprestimo.diasSuspensao = emprestimo.calcularDiasSuspensao();
+
+                if (emprestimo.estaAtrasado()) {
+                    emprestimos.push(emprestimo);
+                }
+            }
+        }
+        return emprestimos;
     }
 
-    emprestimosAtivosDoUsuario(cpf: number): number {
-        return this.filtraEmprestimosAtivosDoUsuario(cpf).length;
+    async emprestimosAtivosDoUsuario(usuario: number): Promise<number> {
+        const emprestimos = await this.filtraEmprestimosAtivosDoUsuario(usuario);
+        return emprestimos.length;
     }
 
-    verificarUsuarioSuspenso(cpf: number): boolean{
-        const emprestimosAtrasados = this.filtraEmprestimosAtrasadosDoUsuario(cpf);
+    async verificarUsuarioSuspenso(usuario: number): Promise<boolean> {
+        const emprestimosAtrasados = await this.filtraEmprestimosAtrasadosDoUsuario(usuario);
         return emprestimosAtrasados.some(emprestimo => emprestimo.calcularDiasAtraso() > 60);
     }
 
-    atualizarStatusEmprestimo(id: number, novoStatus: 'ativo' | 'devolvido' | 'atrasado'): void{
-        const emprestimo = this.filtraEmprestimoPorID(id);
+    async atualizarStatusEmprestimo(id: number, novoStatus: 'ativo' | 'devolvido' | 'atrasado'): Promise<void> {
+        let query = "UPDATE biblioteca.Emprestimo SET status = ?";
+        const params: any[] = [novoStatus];
 
-        if(emprestimo){
-            emprestimo.status = novoStatus;
-
-            if(novoStatus === 'devolvido'){
-                emprestimo.finalizarEmprestimo();
-            }
+        if (novoStatus === 'devolvido') {
+            query += ", datadevolucao = ?";
+            params.push(new Date());
         }
+
+        query += " WHERE id = ?";
+        params.push(id);
+
+        await executarComandoSQL(query, params);
     }
 
-    verificarLimiteEmprestimo(cpf: number, categoria: 'professor' | 'aluno'): boolean{
-        const emprestimosAtivos = this.emprestimosAtivosDoUsuario(cpf);
-        let limiteEmprestimos = 0;
-
-        if(categoria === 'professor'){
-            limiteEmprestimos = 5;
-        } else {
-            limiteEmprestimos = 3;
-        }
-
+    async verificarLimiteEmprestimo(usuario: number, categoria: 'professor' | 'aluno'): Promise<boolean> {
+        const emprestimosAtivos = await this.emprestimosAtivosDoUsuario(usuario);
+        let limiteEmprestimos = categoria === 'professor' ? 5 : 3;
         return emprestimosAtivos < limiteEmprestimos;
     }
 
-    listarEmprestimosAtivos(){
-        return this.EmprestimoList.filter(
-            emprestimo => emprestimo.status === 'ativo'
+    async listarEmprestimosAtivos(): Promise<EmprestimoEntity[]> {
+        const resultado = await executarComandoSQL(
+            "SELECT * FROM biblioteca.Emprestimo WHERE status = 'ativo'",
+            []
         );
+        const emprestimos: EmprestimoEntity[] = [];
+
+        if (resultado && resultado.length > 0) {
+            for (const user of resultado) {
+                const emprestimo = new EmprestimoEntity(
+                    user.id,
+                    user.usuario,
+                    user.codexemplar,
+                    user.categoria
+                );
+            emprestimo.dataEmprestimo = new Date(user.dataemprestimo);
+            emprestimo.dataDevolucao = user.datadevolucao ? new Date(user.datadevolucao) : null;
+            emprestimo.status = user.status;
+            emprestimo.dataPrevista = emprestimo.calcularDataDevolucao();
+            emprestimo.diasRestantes = emprestimo.diasRestantesEmprestimo();
+            emprestimo.multaAtrasado = emprestimo.calcularDiasAtraso();
+            emprestimo.diasSuspensao = emprestimo.calcularDiasSuspensao();
+
+            emprestimos.push(emprestimo);
+            }
+        }
+        return emprestimos;
     }
 }

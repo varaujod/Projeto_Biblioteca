@@ -12,8 +12,8 @@ export class EmprestimoService{
     private livroRepository = LivroRepository.getInstance();
     private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
 
-    novoEmprestimo(data: any): EmprestimoEntity{
-        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
+    async novoEmprestimo(data: any): Promise<EmprestimoEntity>{
+        const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
 
         if(!usuario){
             throw new Error("Usuário não encontrado!");
@@ -26,12 +26,12 @@ export class EmprestimoService{
             throw new Error("Usuário não está ativo para realizar empréstimos!");
         }
 
-        if(this.emprestimoRespository.verificarUsuarioSuspenso(data.usuario)){
-            this.usuarioRepository.atualizarUsuarioPorCPF(data.usuario, { status: 'suspenso'});
+        if(await this.emprestimoRespository.verificarUsuarioSuspenso(data.usuario)){
+            await this.usuarioRepository.atualizarUsuarioPorCPF(data.usuario, { status: 'suspenso'});
             throw new Error("Usuário possui empréstimos em atraso!");
         }
 
-        const estoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+        const estoque = await this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
 
         if(!estoque){
             throw new Error("Exemplar não encontrado!");
@@ -61,18 +61,18 @@ export class EmprestimoService{
             throw new Error("Exemplar não encontrado!");
         }
 
-        const exemplarEstoque = this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
+        const exemplarEstoque = await this.estoqueRepository.filtraLivroNoEstoque(data.codExemplar);
 
         if(estoque.quantidade_emprestada < estoque.quantidade) {
             estoque.quantidade_emprestada += 1;
             if (estoque.quantidade_emprestada === estoque.quantidade) {
                 estoque.disponibilidade = 'não-disponivel';
                 if(exemplarEstoque){
-                    this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'não-disponivel'});
+                    await this.livroRepository.atualizarLivroPorISBN(exemplarEstoque.isbn, { status: 'não-disponivel'});
                 }
             }
 
-            this.estoqueRepository.atualizarDisponibilidade(estoque.cod, { 
+            await this.estoqueRepository.atualizarDisponibilidade(estoque.id, { 
             disponibilidade: estoque.disponibilidade,
             quantidade_emprestada: estoque.quantidade_emprestada
             });
@@ -80,73 +80,66 @@ export class EmprestimoService{
             throw new Error("Todos os exemplares estão emprestados!");
         }
 
-        const novoEmprestimo = new EmprestimoEntity(
-            data.usuario,
-            data.codExemplar,
-            data.categoria
-        );
-
-
-        this.emprestimoRespository.insereEmprestimo(novoEmprestimo);
-
-        return novoEmprestimo;
+        return await this.emprestimoRespository.insereEmprestimo(data);
     }
 
-    listarEmprestimos(){
-        return this.emprestimoRespository.listarEmprestimos();
+    async listarEmprestimos(): Promise<EmprestimoEntity[]>{
+        return await this.emprestimoRespository.listarEmprestimos();
     }
 
-    listarEmprestimosAtivos(){
-        return this.emprestimoRespository.listarEmprestimosAtivos();
+    async listarEmprestimosAtivos(): Promise<EmprestimoEntity[]>{
+        return await this.emprestimoRespository.listarEmprestimosAtivos();
     }
     
-    filtrarEmprestimoPorID(data: any){
+    filtrarEmprestimoPorID(data: any): Promise<EmprestimoEntity | null>{
         const id = data.id;
         const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
 
-        if(!emprestimo){
+        if(emprestimo === null){
             throw new Error("Emprestimo não encontrado");
         }
 
         return emprestimo;
     }
 
-    registrarDevolucao(data: any){
+    async registrarDevolucao(data: any): Promise<EmprestimoEntity | null>{
         const id = data.id;
         const novoStatus = 'devolvido';
 
-        const emprestimo = this.emprestimoRespository.filtraEmprestimoPorID(id);
+        const emprestimo = await this.emprestimoRespository.filtraEmprestimoPorID(id);
         if (!emprestimo) {
             throw new Error("Empréstimo não encontrado!");
         }
 
-        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(emprestimo.usuario);
+        const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(emprestimo.usuario);
         if (!usuario) {
             throw new Error("Usuário não encontrado!");
         }
 
-        this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
+        await this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
         usuario.atualizarLivrosAtrasados(Math.max(0, usuario.livrosAtrasados - 1));
 
         if(usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
             usuario.status = "ativo";
         }
 
-        this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
+        await this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
 
-        const estoque = this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
+        const estoque = await this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
 
         if(estoque && estoque.quantidade_emprestada > 0) {
             estoque.quantidade_emprestada -= 1;
             if (estoque.quantidade_emprestada < estoque.quantidade) {
                 estoque.disponibilidade = 'disponivel';
-                this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel'});
+                await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel'});
             }
-            this.estoqueRepository.atualizarDisponibilidade(estoque.cod, { 
+            await this.estoqueRepository.atualizarDisponibilidade(estoque.id, { 
                 disponibilidade: estoque.disponibilidade,
                 quantidade_emprestada: estoque.quantidade_emprestada
             });
         }
+
+        return await this.emprestimoRespository.filtraEmprestimoPorID(id);
     }
     
 }

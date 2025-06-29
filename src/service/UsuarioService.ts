@@ -41,7 +41,7 @@ export class UsuarioService{
 
     async removeUsuario(cpf: number): Promise<UsuarioEntity>{
         const emprestimosAtivos = this.emprestimoRepository.filtraEmprestimosAtivosDoUsuario(cpf);
-        if (emprestimosAtivos.length > 0) {
+        if ((await emprestimosAtivos).length > 0) {
             throw new Error("Usuário não pode ser removido pois possui empréstimos pendentes!");
         }
 

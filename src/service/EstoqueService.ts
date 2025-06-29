@@ -30,9 +30,9 @@ export class EstoqueService{
         return await this.estoqueRepository.listarEstoque();
     }
 
-    filtrarLivroNoEstoque(data: any): Promise<EstoqueEntity | null>{
+    async filtrarLivroNoEstoque(data: any): Promise<EstoqueEntity | null>{
         const id = data.id;
-        const exemplar = this.estoqueRepository.filtraLivroNoEstoque(id);
+        const exemplar = await this.estoqueRepository.filtraLivroNoEstoque(id);
         
         if(exemplar === null) {
             throw new Error("Exemplar não encontrado");
