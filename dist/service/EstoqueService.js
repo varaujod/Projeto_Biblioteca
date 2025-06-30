@@ -11,10 +11,6 @@ class EstoqueService {
         if (!livroExistente) {
             throw new Error("Não é possível adicionar um exemplar de um livro que não está cadastrado. Por favor, cadastre o livro primeiro.");
         }
-        const exemplarExistente = await this.estoqueRepository.filtraLivroNoEstoque(data.id);
-        if (exemplarExistente) {
-            throw new Error("Já existe um exemplar com este código!");
-        }
         if (data.quantidade <= 0) {
             throw new Error("Não é possível cadastrar este livro no estoque, pois a quantidade informada é zero");
         }

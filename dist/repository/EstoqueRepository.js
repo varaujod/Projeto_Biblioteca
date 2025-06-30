@@ -77,7 +77,7 @@ class EstoqueRepository {
             valores.push(dados.quantidade_emprestada);
         }
         if (campos.length === 0) {
-            throw new Error("Nenhum dado para atualizar.");
+            return await this.filtraLivroNoEstoque(id);
         }
         const sql = `UPDATE biblioteca.Estoque SET ${campos.join(", ")} WHERE id = ?`;
         valores.push(id);

@@ -62,7 +62,7 @@ class EmprestimoService {
                 quantidade_emprestada: estoque.quantidade_emprestada
             });
         }
-        const emprestimo = new EmprestimoEntity_1.EmprestimoEntity(undefined, data.usuario, data.codExemplar, data.categoria);
+        const emprestimo = new EmprestimoEntity_1.EmprestimoEntity(undefined, data.usuario, estoque.id, data.categoria);
         return await this.emprestimoRespository.insereEmprestimo(emprestimo);
     }
     async listarEmprestimos() {
@@ -97,24 +97,23 @@ class EmprestimoService {
         }
         await this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
         const estoque = await this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
-        if (estoque && estoque.quantidade_emprestada > 0) {
+        if (!estoque) {
+            throw new Error("Não há nenhum livro no seu estoque, por favor cadastre um livro.");
+        }
+        if (estoque) {
             estoque.quantidade_emprestada = Number(estoque.quantidade_emprestada) || 0;
-            estoque.quantidade_emprestada -= 1;
-            if (estoque.quantidade_emprestada < 0)
-                estoque.quantidade_emprestada = 0;
+            if (estoque.quantidade_emprestada > 0) {
+                estoque.quantidade_emprestada -= 1;
+                if (estoque.quantidade_emprestada < 0)
+                    estoque.quantidade_emprestada = 0;
+            }
+            let dadosAtualizar = { quantidade_emprestada: estoque.quantidade_emprestada };
             if (estoque.quantidade_emprestada < estoque.quantidade) {
                 estoque.disponibilidade = 'disponivel';
-                await this.estoqueRepository.atualizarDisponibilidade(estoque.id, {
-                    disponibilidade: estoque.disponibilidade,
-                    quantidade_emprestada: estoque.quantidade_emprestada
-                });
+                dadosAtualizar.disponibilidade = estoque.disponibilidade;
                 await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel' });
             }
-            else {
-                await this.estoqueRepository.atualizarDisponibilidade(estoque.id, {
-                    quantidade_emprestada: estoque.quantidade_emprestada
-                });
-            }
+            await this.estoqueRepository.atualizarDisponibilidade(estoque.id, dadosAtualizar);
         }
         return await this.emprestimoRespository.filtraEmprestimoPorID(id);
     }

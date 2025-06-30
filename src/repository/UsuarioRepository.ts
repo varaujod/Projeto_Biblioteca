@@ -131,7 +131,7 @@ export class UsuarioRepository{
         }
 
         if (campos.length === 0) {
-            throw new Error("Nenhum dado para atualizar.");
+            return await this.filtraUsuarioPorCPF(cpf);
         }
 
         const sql = `UPDATE biblioteca.Usuario SET ${campos.join(", ")} WHERE cpf = ?`;

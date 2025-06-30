@@ -130,7 +130,7 @@ export class LivroRepository{
         }
 
         if (campos.length === 0) {
-            throw new Error("Nenhum dado para atualizar.");
+            return await this.filtraLivroPorISBN(isbn);
         }
 
         const sql = `UPDATE biblioteca.Livro SET ${campos.join(", ")} WHERE isbn = ?`;

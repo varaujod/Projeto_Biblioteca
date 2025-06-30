@@ -104,7 +104,7 @@ export class EstoqueRepository{
         }
 
         if (campos.length === 0) {
-            throw new Error("Nenhum dado para atualizar.");
+            return await this.filtraLivroNoEstoque(id);
         }
 
         const sql = `UPDATE biblioteca.Estoque SET ${campos.join(", ")} WHERE id = ?`;

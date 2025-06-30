@@ -79,7 +79,7 @@ export class EmprestimoService{
         const emprestimo = new EmprestimoEntity(
             undefined,
             data.usuario,
-            data.codExemplar,
+            estoque.id,
             data.categoria
         );
 
@@ -105,7 +105,7 @@ export class EmprestimoService{
         return emprestimo;
     }
 
-    async registrarDevolucao(data: any): Promise<EmprestimoEntity | null>{
+    async registrarDevolucao(data: any): Promise<EmprestimoEntity | null> {
         const id = data.id;
         const novoStatus = 'devolvido';
 
@@ -122,34 +122,35 @@ export class EmprestimoService{
         await this.emprestimoRespository.atualizarStatusEmprestimo(id, novoStatus);
         usuario.atualizarLivrosAtrasados(Math.max(0, usuario.livrosAtrasados - 1));
 
-        if(usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
+        if (usuario.livrosAtrasados <= 2 && usuario.diasSuspensao <= 60) {
             usuario.status = "ativo";
         }
 
         await this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
 
         const estoque = await this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
-
-        if (estoque && estoque.quantidade_emprestada > 0) {
-            estoque.quantidade_emprestada = Number(estoque.quantidade_emprestada) || 0;
-            estoque.quantidade_emprestada -= 1;
-
-            if(estoque.quantidade_emprestada < 0) estoque.quantidade_emprestada = 0;
-
-            if(estoque.quantidade_emprestada < estoque.quantidade) {
-                estoque.disponibilidade = 'disponivel';
-                await this.estoqueRepository.atualizarDisponibilidade(estoque.id, {
-                    disponibilidade: estoque.disponibilidade,
-                    quantidade_emprestada: estoque.quantidade_emprestada
-                });
-   
-                await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel' });
-            } else {
-                await this.estoqueRepository.atualizarDisponibilidade(estoque.id, {
-                    quantidade_emprestada: estoque.quantidade_emprestada
-                });
-            }
+        if (!estoque) {
+            throw new Error("Não há nenhum livro no seu estoque, por favor cadastre um livro.");
         }
+
+        if (estoque) {
+            estoque.quantidade_emprestada = Number(estoque.quantidade_emprestada) || 0;
+            if (estoque.quantidade_emprestada > 0) {
+                estoque.quantidade_emprestada -= 1;
+                if (estoque.quantidade_emprestada < 0) estoque.quantidade_emprestada = 0;
+            }
+
+            let dadosAtualizar: any = { quantidade_emprestada: estoque.quantidade_emprestada };
+
+            if (estoque.quantidade_emprestada < estoque.quantidade) {
+                estoque.disponibilidade = 'disponivel';
+                dadosAtualizar.disponibilidade = estoque.disponibilidade;
+                await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'disponivel' });
+            }
+
+            await this.estoqueRepository.atualizarDisponibilidade(estoque.id, dadosAtualizar);
+        }
+
         return await this.emprestimoRespository.filtraEmprestimoPorID(id);
     }
 
