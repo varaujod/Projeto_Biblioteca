@@ -4,16 +4,13 @@ exports.CategoriaLivroController = void 0;
 const CategoriaLivroService_1 = require("../service/CategoriaLivroService");
 class CategoriaLivroController {
     categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
-    listarCategoriaLivro(req, res) {
+    async listarCategoriaLivro(req, res) {
         try {
-            const lista = this.categoriaLivroService.listarCategoriaLivro();
+            const lista = await this.categoriaLivroService.listarCategoriaLivro();
             res.status(200).json(lista);
         }
-        catch (error) {
-            let message = "Não conseguimos realizar a listagem de categorias de livros";
-            if (error instanceof Error) {
-                message = error.message;
-            }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel listar as categorias de livros!';
             res.status(400).json({
                 message: message
             });

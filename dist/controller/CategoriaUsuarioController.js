@@ -4,16 +4,13 @@ exports.CategoriaUsuarioController = void 0;
 const CategoriaUsuarioService_1 = require("../service/CategoriaUsuarioService");
 class CategoriaUsuarioController {
     categoriaUsuarioService = new CategoriaUsuarioService_1.CategoriaUsuarioService();
-    listarCategoria(req, res) {
+    async listarCategoria(req, res) {
         try {
-            const lista = this.categoriaUsuarioService.listarCategoria();
+            const lista = await this.categoriaUsuarioService.listarCategorias();
             res.status(200).json(lista);
         }
-        catch (error) {
-            let message = "Não conseguimos realizar a listagem de categoria de usuarios";
-            if (error instanceof Error) {
-                message = error.message;
-            }
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Não foi possivel listar as categorias de usuário!';
             res.status(400).json({
                 message: message
             });

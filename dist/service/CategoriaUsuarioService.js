@@ -4,8 +4,8 @@ exports.CategoriaUsuarioService = void 0;
 const CategoriaUsuarioRepository_1 = require("../repository/CategoriaUsuarioRepository");
 class CategoriaUsuarioService {
     categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
-    listarCategoria() {
-        return this.categoriaUsuarioRepository.listarCategoria();
+    async listarCategorias() {
+        return await this.categoriaUsuarioRepository.listarCategoria();
     }
 }
 exports.CategoriaUsuarioService = CategoriaUsuarioService;

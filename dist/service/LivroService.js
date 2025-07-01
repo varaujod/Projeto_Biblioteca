@@ -9,7 +9,7 @@ class LivroService {
     categoriaLivroRepository = CategoriaLivroRepository_1.CategoriaLivroRepository.getInstance();
     estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
     async novoLivro(data) {
-        if (!this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria)) {
+        if (!(await this.categoriaLivroRepository.encontrarCategoriaLivro(data.categoria))) {
             throw new Error("Por favor informar uma categoria existente");
         }
         if (!this.livroRepository.validacaoISBN(data.isbn)) {

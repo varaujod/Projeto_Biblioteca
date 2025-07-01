@@ -68,28 +68,6 @@ export class EmprestimoRepository{
         const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Emprestimo", []);
         const emprestimos: EmprestimoEntity[] = [];
 
-        // if (resultado && resultado.length > 0) {
-        //     for (let i = 0; i < resultado.length; i++) {
-        //         const user = resultado[i];
-        //         const emprestimo = new EmprestimoEntity(
-        //             user.id,
-        //             user.usuario,
-        //             user.codexemplar,
-        //             user.categoria
-        //         );
-
-        //         emprestimo.dataEmprestimo;
-        //         emprestimo.dataDevolucao;
-        //         emprestimo.status;
-        //         emprestimo.dataPrevista;
-        //         emprestimo.diasRestantes;
-        //         emprestimo.multaAtrasado;
-        //         emprestimo.diasSuspensao;
-
-        //         emprestimos.push(emprestimo);
-        //     }
-        // }
-
         if (resultado && resultado.length > 0) {
         for (const user of resultado) {
 

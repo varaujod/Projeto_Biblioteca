@@ -38,7 +38,7 @@ class EmprestimoService {
             let limite = data.categoria === 'professor' ? 5 : 3;
             throw new Error(`Usuário já atingiu o limite máximo de ${limite} empréstimos simultâneos!`);
         }
-        if (!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
+        if (!(await this.categoriaUsuarioRepository.encontrarCategoria(data.categoria))) {
             throw new Error("Por favor informar uma categoria existente");
         }
         if (!estoque) {

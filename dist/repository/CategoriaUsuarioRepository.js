@@ -1,14 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaUsuarioRepository = void 0;
+const mysql_1 = require("../database/mysql");
 const CategoriaUsuario_1 = require("../model/CategoriaUsuario");
 class CategoriaUsuarioRepository {
     static instance;
-    CategoriaUsuarioList = [];
     constructor() {
-        this.CategoriaUsuarioList.push(new CategoriaUsuario_1.CategoriaUsuario("Aluno"));
-        this.CategoriaUsuarioList.push(new CategoriaUsuario_1.CategoriaUsuario("Professor"));
-        this.CategoriaUsuarioList.push(new CategoriaUsuario_1.CategoriaUsuario("Bibliotecario"));
+        this.criarTable();
+        this.inserirCategoriasPadrao();
     }
     ;
     static getInstance() {
@@ -17,11 +16,50 @@ class CategoriaUsuarioRepository {
         }
         return this.instance;
     }
-    listarCategoria() {
-        return this.CategoriaUsuarioList;
+    async criarTable() {
+        const query = `CREATE TABLE IF NOT EXISTS biblioteca.CategoriaUsuario(
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(100) NOT NULL
+                )`;
+        try {
+            const resultado = await (0, mysql_1.executarComandoSQL)(query, []);
+            console.log('Tabela de categoria de usuarios criada com sucesso!', resultado);
+        }
+        catch (err) {
+            console.error('Erro ao executar a query de estoque: ', err);
+        }
     }
-    encontrarCategoria(cat) {
-        return this.CategoriaUsuarioList.find(categoria => categoria.nome === cat);
+    async inserirCategoriasPadrao() {
+        const categorias = ["Aluno", "Professor", "Bibliotecário"];
+        for (const nome of categorias) {
+            try {
+                const resultado = await (0, mysql_1.executarComandoSQL)("INSERT IGNORE INTO biblioteca.CategoriaUsuario (nome) values (?)", [nome]);
+                console.log('Categoria criada com sucesso!', resultado);
+            }
+            catch (err) {
+                console.error(`Erro ao inserir categoria ${nome}:`, err);
+            }
+        }
+    }
+    async listarCategoria() {
+        const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.CategoriaUsuario", []);
+        const categorias = [];
+        if (resultado && resultado.length > 0) {
+            for (let i = 0; i < resultado.length; i++) {
+                const row = resultado[i];
+                categorias.push(new CategoriaUsuario_1.CategoriaUsuario(row.id, row.nome));
+            }
+        }
+        return categorias;
+    }
+    async encontrarCategoria(cat) {
+        const query = `SELECT * FROM biblioteca.CategoriaUsuario WHERE nome = ?`;
+        const resultado = await (0, mysql_1.executarComandoSQL)(query, [cat]);
+        if (resultado && resultado.length > 0) {
+            const row = resultado[0];
+            return new CategoriaUsuario_1.CategoriaUsuario(row.id, row.nome);
+        }
+        return null;
     }
 }
 exports.CategoriaUsuarioRepository = CategoriaUsuarioRepository;

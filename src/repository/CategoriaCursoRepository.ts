@@ -1,13 +1,12 @@
+import { executarComandoSQL } from "../database/mysql";
 import { CategoriaCurso } from "../model/CategoriaCurso";
 
 export class CategoriaCursoRepository{
     private static instance: CategoriaCursoRepository;
-    private CategoriaCursoList: CategoriaCurso[] = [];
     
     private constructor() {
-        this.CategoriaCursoList.push(new CategoriaCurso("ADS"));
-        this.CategoriaCursoList.push(new CategoriaCurso("Pedagogia"));
-        this.CategoriaCursoList.push(new CategoriaCurso("Administração"));
+        this.criarTable();
+        this.inserirCategoriasPadrao();
     };
     
     public static getInstance(): CategoriaCursoRepository{
@@ -18,11 +17,55 @@ export class CategoriaCursoRepository{
         return this.instance;
     }
 
-    listarCursos(){
-        return this.CategoriaCursoList;
+    private async criarTable(){
+        const query = `CREATE TABLE IF NOT EXISTS biblioteca.CategoriaCurso(
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(100) NOT NULL
+            )`
+
+        try{
+            const resultado = await executarComandoSQL(query, []);
+            console.log('Tabela de categoria de cursos criada com sucesso', resultado);
+        } catch(err){
+            console.error('Erro ao executar a query de estoque: ', err);
+        }
     }
 
-    encontrarCurso(cur: string){
-        return this.CategoriaCursoList.find(curso => curso.nome === cur);
+    private async inserirCategoriasPadrao(){
+        const categorias = ["ADS", "Pedagogia", "Administração"];
+        for(const nome of categorias){
+            try{
+                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.CategoriaCurso (nome) values (?)", [nome]);
+                console.log('Categoria criada com sucesso!', resultado);
+            } catch(err){
+                console.error(`Erro ao inserir categoria ${nome}:`, err);
+            }
+        }
     }
+
+    async listarCursos(): Promise<CategoriaCurso[]>{
+        const resultado = await executarComandoSQL("SELECT * FROM biblioteca.CategoriaCurso", []);
+        const categorias: CategoriaCurso[] = [];
+
+        if(resultado && resultado.length > 0){
+            for (let i = 0; i < resultado.length; i++) {
+                const row = resultado[i];
+                categorias.push(new CategoriaCurso(row.id, row.nome));
+            } 
+        }
+
+        return categorias;
+    }
+
+    async encontrarCursos(cat: string): Promise<CategoriaCurso | null> {
+            const query = `SELECT * FROM biblioteca.CategoriaCurso WHERE nome = ?`;
+            const resultado = await executarComandoSQL(query, [cat]);
+    
+            if (resultado && resultado.length > 0) {
+                const row = resultado[0];
+                return new CategoriaCurso(row.id, row.nome);
+            }
+    
+            return null;
+        }
 }

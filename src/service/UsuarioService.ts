@@ -11,11 +11,11 @@ export class UsuarioService{
     private emprestimoRepository = EmprestimoRepository.getInstance();
 
     async novoUsuario(data: any): Promise<UsuarioEntity>{
-        if(!this.categoriaUsuarioRepository.encontrarCategoria(data.categoria)) {
+        if(!(await this.categoriaUsuarioRepository.encontrarCategoria(data.categoria))) {
             throw new Error("Por favor informar uma categoria existente");
         } 
 
-        if(!this.categoriaCursoRepository.encontrarCurso(data.curso)){
+        if(!(await this.categoriaCursoRepository.encontrarCursos(data.curso))){
             throw new Error("Por favor informar um curso existente");
         }
         const usuarioEncontrado = await this.usuarioRepository.validacaoCadastro(data.cpf)

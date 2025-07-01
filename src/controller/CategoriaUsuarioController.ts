@@ -4,18 +4,15 @@ import { Request, Response } from "express";
 export class CategoriaUsuarioController{
     private categoriaUsuarioService = new CategoriaUsuarioService();
 
-    listarCategoria(req: Request, res: Response): void{
+    async listarCategoria(req: Request, res: Response){
         try{
-            const lista = this.categoriaUsuarioService.listarCategoria();
+            const lista = await this.categoriaUsuarioService.listarCategorias();
             res.status(200).json(lista);
-        } catch(error: unknown){
-           let message = "Não conseguimos realizar a listagem de categoria de usuarios";
-            if(error instanceof Error){
-                message = error.message;
-            }
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel listar as categorias de usuário!';
             res.status(400).json({
                 message: message
-            })
+            });
         }
     }
 }

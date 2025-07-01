@@ -1,9 +1,10 @@
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
+import { CategoriaLivro } from "../model/CategoriaLivro";
 
 export class CategoriaLivroService{
     private categoriaLivroRepository = CategoriaLivroRepository.getInstance();
 
-    listarCategoriaLivro(){
-        return this.categoriaLivroRepository.listarCategoriasLivro();
+    async listarCategoriaLivro(): Promise<CategoriaLivro[]>{
+        return await this.categoriaLivroRepository.listarCategoriasLivro();
     }
 }

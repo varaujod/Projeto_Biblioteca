@@ -78,7 +78,7 @@ class EmprestimoEntity {
         }
         const hoje = new Date();
         const diferencaTime = this.dataPrevista.getTime() - hoje.getTime();
-        const diferencaDias = Math.floor(diferencaTime / (1000 * 60 * 60 * 24));
+        const diferencaDias = Math.ceil(diferencaTime / (1000 * 60 * 60 * 24));
         if (diferencaDias > 0) {
             return diferencaDias;
         }

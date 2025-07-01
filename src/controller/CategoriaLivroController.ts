@@ -4,15 +4,12 @@ import { Request, Response } from "express";
 export class CategoriaLivroController{
     private categoriaLivroService = new CategoriaLivroService();
 
-    listarCategoriaLivro(req: Request, res: Response): void{
+    async listarCategoriaLivro(req: Request, res: Response){
         try{
-            const lista = this.categoriaLivroService.listarCategoriaLivro();
+            const lista = await this.categoriaLivroService.listarCategoriaLivro();
             res.status(200).json(lista);
-        } catch(error: unknown){
-           let message = "Não conseguimos realizar a listagem de categorias de livros";
-            if(error instanceof Error){
-                message = error.message;
-            }
+        } catch(err){
+            const message = err instanceof Error ? err.message: 'Não foi possivel listar as categorias de livros!';
             res.status(400).json({
                 message: message
             })
