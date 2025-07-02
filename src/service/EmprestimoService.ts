@@ -67,9 +67,7 @@ export class EmprestimoService{
                 disponibilidade: estoque.disponibilidade,
                 quantidade_emprestada: estoque.quantidade_emprestada
             });
-
-        await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'não-disponivel' });
-
+            await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'não-disponivel' });
         } else{
             await this.estoqueRepository.atualizarDisponibilidade(estoque.id, {
                 quantidade_emprestada: estoque.quantidade_emprestada

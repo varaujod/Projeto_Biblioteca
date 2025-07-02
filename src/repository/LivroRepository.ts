@@ -56,7 +56,8 @@ export class LivroRepository{
             livro.autor,
             livro.editora,
             livro.edicao,
-            livro.categoria
+            livro.categoria,
+            'disponivel'
         );
     }
     
@@ -74,7 +75,8 @@ export class LivroRepository{
                 user.autor,
                 user.editora,
                 user.edicao, 
-                user.categoria
+                user.categoria,
+                user.status
             );
         }
         return null;
@@ -155,7 +157,8 @@ export class LivroRepository{
                     user.autor,
                     user.editora,
                     user.edicao, 
-                    user.categoria
+                    user.categoria,
+                    user.status
                 ));
             }
         }

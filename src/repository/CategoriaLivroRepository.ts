@@ -33,6 +33,8 @@ export class CategoriaLivroRepository{
 
     private async inserirCategoriasPadrao(){
         const categorias = ["Romance", "Computação", "Letras", "Gestão"];
+        await executarComandoSQL("DROP TABLE IF EXISTS biblioteca.CategoriaLivro", []);
+        await executarComandoSQL("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaLivro(id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100) NOT NULL)", []);
         for(const nome of categorias){
             try{
                 const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.CategoriaLivro (nome) values (?)",[nome]);

@@ -5,9 +5,9 @@ export class LivroEntity{
     editora: string;
     edicao: string;
     categoria: string;
-    status: 'disponivel' | 'não-disponivel';
+    status: string;
 
-    constructor(titulo: string, isbn: number, autor: string, editora: string, edicao: string, categoria: string){
+    constructor(titulo: string, isbn: number, autor: string, editora: string, edicao: string, categoria: string, status: string){
         if(!titulo || !isbn || !autor || !editora || !edicao || !categoria){
             throw new Error("Por favor informar todos os campos");
         }
@@ -18,6 +18,6 @@ export class LivroEntity{
         this.editora = editora;
         this.edicao = edicao;
         this.categoria = categoria;
-        this.status = 'disponivel';
+        this.status = status;
     }
 }

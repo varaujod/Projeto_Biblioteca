@@ -33,9 +33,11 @@ export class CategoriaUsuarioRepository{
 
     private async inserirCategoriasPadrao(){
         const categorias = ["Aluno", "Professor", "Bibliotecário"];
+        await executarComandoSQL("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
+        await executarComandoSQL("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaUsuario(id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100) NOT NULL)", []);
         for(const nome of categorias){
             try{
-                const resultado = await executarComandoSQL("INSERT IGNORE INTO biblioteca.CategoriaUsuario (nome) values (?)", [nome]);
+                const resultado = await executarComandoSQL("INSERT INTO biblioteca.CategoriaUsuario (nome) VALUES (?)", [nome]);
                 console.log('Categoria criada com sucesso!', resultado);
             } catch(err){
                 console.error(`Erro ao inserir categoria ${nome}:`, err);

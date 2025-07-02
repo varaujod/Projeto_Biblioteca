@@ -31,6 +31,8 @@ class CategoriaCursoRepository {
     }
     async inserirCategoriasPadrao() {
         const categorias = ["ADS", "Pedagogia", "Administração"];
+        await (0, mysql_1.executarComandoSQL)("DROP TABLE IF EXISTS biblioteca.CategoriaCurso", []);
+        await (0, mysql_1.executarComandoSQL)("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaCurso(id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100) NOT NULL)", []);
         for (const nome of categorias) {
             try {
                 const resultado = await (0, mysql_1.executarComandoSQL)("INSERT IGNORE INTO biblioteca.CategoriaCurso (nome) values (?)", [nome]);

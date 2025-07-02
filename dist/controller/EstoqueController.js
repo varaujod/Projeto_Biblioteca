@@ -45,7 +45,7 @@ class EstoqueController {
     async atualizarDisponibildade(req, res) {
         try {
             const disponibilidadeAtualizada = await this.estoqueService.atualizarDisponibilidade({
-                cod: Number(req.params.cod),
+                id: Number(req.params.id),
                 novaDisponibilidade: req.body
             });
             res.status(200).json({
