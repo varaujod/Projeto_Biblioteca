@@ -46,8 +46,13 @@ class LivroService {
         return await this.livroRepository.listarLivros();
     }
     async atualizaLivro(data) {
-        const isbn = data.isbn;
+        const isbn = Number(data.isbn);
         const novosDados = data.novosDados;
+        if (novosDados.categoria) {
+            if (!(await this.categoriaLivroRepository.encontrarCategoriaLivro(novosDados.categoria))) {
+                throw new Error("Por favor informar uma categoria existente");
+            }
+        }
         return await this.livroRepository.atualizarLivroPorISBN(isbn, novosDados);
     }
 }

@@ -60,21 +60,18 @@ export class UsuarioService{
         const cpf = data.cpf;
         const novosDados = data.novosDados;
 
+        if (novosDados.categoria) {
+            if (!(await this.categoriaUsuarioRepository.encontrarCategoria(novosDados.categoria))) {
+                throw new Error("Por favor informar uma categoria existente");
+            }
+        }
+
+        if (novosDados.curso) {
+            if (!(await this.categoriaCursoRepository.encontrarCursos(novosDados.curso))) {
+                throw new Error("Por favor informar um curso existente");
+            }
+        }
+        
         return await this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
-
-    // private async atualizarStatusUsuarios(){
-    //     const usuarios = this.listarUsuarios();
-    //     const emprestimoRepository = EmprestimoRepository.getInstance();
-        
-    //     for(const usuario of usuarios){
-    //         const emprestimosAtivos = emprestimoRepository.filtraEmprestimosAtivosDoUsuario(usuario.cpf);
-
-    //         let livrosAtrasados = 0;
-    //         let diasAtrasoTotal = 0;
-
-    //         for(const emprestimo of emprestimo)
-
-    //     }
-    // }
 }

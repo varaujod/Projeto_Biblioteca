@@ -103,8 +103,7 @@ class LivroRepository {
         valores.push(isbn);
         const resultado = await (0, mysql_1.executarComandoSQL)(sql, valores);
         console.log(resultado);
-        const livroAtualizado = await this.filtraLivroPorISBN(isbn);
-        return livroAtualizado;
+        return await this.filtraLivroPorISBN(isbn);
     }
     async listarLivros() {
         const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Livro", []);

@@ -141,8 +141,7 @@ export class LivroRepository{
         const resultado = await executarComandoSQL(sql, valores);
         console.log(resultado);
 
-        const livroAtualizado = await this.filtraLivroPorISBN(isbn);
-        return livroAtualizado;
+        return await this.filtraLivroPorISBN(isbn);
     }
 
     async listarLivros(): Promise<LivroEntity[]>{

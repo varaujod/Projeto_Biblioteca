@@ -48,6 +48,16 @@ class UsuarioService {
     async atualizaUsuario(data) {
         const cpf = data.cpf;
         const novosDados = data.novosDados;
+        if (novosDados.categoria) {
+            if (!(await this.categoriaUsuarioRepository.encontrarCategoria(novosDados.categoria))) {
+                throw new Error("Por favor informar uma categoria existente");
+            }
+        }
+        if (novosDados.curso) {
+            if (!(await this.categoriaCursoRepository.encontrarCursos(novosDados.curso))) {
+                throw new Error("Por favor informar um curso existente");
+            }
+        }
         return await this.usuarioRepository.atualizarUsuarioPorCPF(cpf, novosDados);
     }
 }
