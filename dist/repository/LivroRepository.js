@@ -18,10 +18,10 @@ class LivroRepository {
         const query = `CREATE TABLE IF NOT EXISTS biblioteca.Livro(
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 titulo VARCHAR(255) NOT NULL,
-                isbn DECIMAL(13) NOT NULL UNIQUE,
-                autor VARCHAR(255) NOT NULL,
-                editora VARCHAR(255) NOT NULL,
-                edicao VARCHAR(255) NOT NULL,
+                isbn VARCHAR(13) NOT NULL UNIQUE,
+                autor VARCHAR(255) NOT NULL UNIQUE,
+                editora VARCHAR(255) NOT NULL UNIQUE,
+                edicao VARCHAR(255) NOT NULL UNIQUE,
                 categoria VARCHAR(255) NOT NULL,
                 status VARCHAR(15) NOT NULL
                 )`;

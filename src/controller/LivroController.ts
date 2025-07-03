@@ -30,7 +30,7 @@ export class LivroController{
 
     async filtrarLivro(req: Request, res: Response){
         try{
-            const livro = await this.livroService.filtrarLivro({ isbn: Number(req.params.isbn) });
+            const livro = await this.livroService.filtrarLivro({ isbn: String(req.params.isbn) });
             res.status(200).json(livro);
         } catch(err){
             const message = err instanceof Error ? err.message: 'Não foi possivel filtrar o livro!';
@@ -43,7 +43,7 @@ export class LivroController{
     async atualizarLivro(req: Request, res: Response){
         try{
             const livroAtualizado = await this.livroService.atualizaLivro({
-                isbn: Number(req.params.isbn),
+                isbn: String(req.params.isbn),
                 novosDados: req.body
             });
 
@@ -61,7 +61,7 @@ export class LivroController{
 
     async removerLivro(req: Request, res: Response){
         try{
-            const isbn = Number(req.params.isbn);
+            const isbn = String(req.params.isbn);
             const livro = await this.livroService.removeLivro(isbn);
 
             res.status(200).json({

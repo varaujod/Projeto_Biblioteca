@@ -14,7 +14,7 @@ export class LivroService{
         }
 
         if(!this.livroRepository.validacaoISBN(data.isbn)){
-            throw new Error("É necessário de 13 números obrigatorios da ISBN para cadastrar um livro!");
+            throw new Error("É necessário de 13 digitos obrigatorios da ISBN para cadastrar um livro!");
         }
 
         if(await this.livroRepository.validacaoLivro(data.isbn)){
@@ -25,7 +25,7 @@ export class LivroService{
     }
 
     filtrarLivro(data: any): Promise<LivroEntity | null>{
-        const isbn = data.isbn;
+        const isbn = String(data.isbn);
         const livro = this.livroRepository.filtraLivroPorISBN(isbn);
 
         if(livro === null){
@@ -35,7 +35,7 @@ export class LivroService{
         return livro;
     }
 
-    async removeLivro(isbn: number): Promise<LivroEntity>{
+    async removeLivro(isbn: string): Promise<LivroEntity>{
         const exemplares = await this.estoqueRepository.listarEstoque();
         for(const exemplar of exemplares){
             const emprestimosAtivoDoLivro = await this.estoqueRepository.quantidadeLivrosEmprestados(exemplar.id);
@@ -56,7 +56,7 @@ export class LivroService{
     }
 
     async atualizaLivro(data: any): Promise<LivroEntity | null>{
-        const isbn = Number(data.isbn);
+        const isbn = String(data.isbn);
         const novosDados = data.novosDados;
 
         if (novosDados.categoria) {

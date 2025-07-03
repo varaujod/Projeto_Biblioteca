@@ -13,7 +13,7 @@ class LivroService {
             throw new Error("Por favor informar uma categoria existente");
         }
         if (!this.livroRepository.validacaoISBN(data.isbn)) {
-            throw new Error("É necessário de 13 números obrigatorios da ISBN para cadastrar um livro!");
+            throw new Error("É necessário de 13 digitos obrigatorios da ISBN para cadastrar um livro!");
         }
         if (await this.livroRepository.validacaoLivro(data.isbn)) {
             throw new Error("Este livro já é cadastrado!");
@@ -21,7 +21,7 @@ class LivroService {
         return await this.livroRepository.insereLivro(data);
     }
     filtrarLivro(data) {
-        const isbn = data.isbn;
+        const isbn = String(data.isbn);
         const livro = this.livroRepository.filtraLivroPorISBN(isbn);
         if (livro === null) {
             throw new Error("Este livro ainda não foi cadastrado com esta ISBN!");
@@ -46,7 +46,7 @@ class LivroService {
         return await this.livroRepository.listarLivros();
     }
     async atualizaLivro(data) {
-        const isbn = Number(data.isbn);
+        const isbn = String(data.isbn);
         const novosDados = data.novosDados;
         if (novosDados.categoria) {
             if (!(await this.categoriaLivroRepository.encontrarCategoriaLivro(novosDados.categoria))) {

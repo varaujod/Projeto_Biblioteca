@@ -98,7 +98,7 @@ class EmprestimoService {
         await this.usuarioRepository.atualizarUsuarioPorCPF(usuario.cpf, usuario.status);
         const estoque = await this.estoqueRepository.filtraLivroNoEstoque(Number(emprestimo.codExemplar));
         if (!estoque) {
-            throw new Error("Não há nenhum livro no seu estoque, por favor cadastre um livro.");
+            throw new Error("Não há nenhum livro do seu estoque com este emprestimo, por favor cadastre um livro ou realize um emprestimo.");
         }
         if (estoque) {
             estoque.quantidade_emprestada = Number(estoque.quantidade_emprestada) || 0;

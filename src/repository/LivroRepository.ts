@@ -19,10 +19,10 @@ export class LivroRepository{
         const query = `CREATE TABLE IF NOT EXISTS biblioteca.Livro(
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 titulo VARCHAR(255) NOT NULL,
-                isbn DECIMAL(13) NOT NULL UNIQUE,
-                autor VARCHAR(255) NOT NULL,
-                editora VARCHAR(255) NOT NULL,
-                edicao VARCHAR(255) NOT NULL,
+                isbn VARCHAR(13) NOT NULL UNIQUE,
+                autor VARCHAR(255) NOT NULL UNIQUE,
+                editora VARCHAR(255) NOT NULL UNIQUE,
+                edicao VARCHAR(255) NOT NULL UNIQUE,
                 categoria VARCHAR(255) NOT NULL,
                 status VARCHAR(15) NOT NULL
                 )`
@@ -61,11 +61,11 @@ export class LivroRepository{
         );
     }
     
-    validacaoISBN(isbn: number): boolean {
+    validacaoISBN(isbn: string): boolean {
         return isbn.toString().length === 13;
     }
 
-    async filtraLivroPorISBN(isbn: number): Promise<LivroEntity | null>{
+    async filtraLivroPorISBN(isbn: string): Promise<LivroEntity | null>{
         const resultado = await executarComandoSQL("SELECT * FROM biblioteca.Livro WHERE isbn = ?", [isbn]);
         if(resultado && resultado.length > 0) {
             const user = resultado[0];
@@ -82,12 +82,12 @@ export class LivroRepository{
         return null;
     }
 
-    async validacaoLivro(isbn: number): Promise<boolean> {
+    async validacaoLivro(isbn: string): Promise<boolean> {
         const livro = await this.filtraLivroPorISBN(isbn);
         return livro !== null;
     }
 
-    async removeLivroPorISBN(isbn: number): Promise<LivroEntity | null>{
+    async removeLivroPorISBN(isbn: string): Promise<LivroEntity | null>{
        const livro = await this.filtraLivroPorISBN(isbn);
        if(!livro){
             return null;
@@ -97,7 +97,7 @@ export class LivroRepository{
        return livro;
     }
 
-    async atualizarLivroPorISBN(isbn: number, novosDados: any): Promise<LivroEntity | null>{
+    async atualizarLivroPorISBN(isbn: string, novosDados: any): Promise<LivroEntity | null>{
         const campos: string[] = [];
         const valores: any[] = [];
 

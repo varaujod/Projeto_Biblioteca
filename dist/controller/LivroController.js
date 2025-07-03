@@ -30,7 +30,7 @@ class LivroController {
     }
     async filtrarLivro(req, res) {
         try {
-            const livro = await this.livroService.filtrarLivro({ isbn: Number(req.params.isbn) });
+            const livro = await this.livroService.filtrarLivro({ isbn: String(req.params.isbn) });
             res.status(200).json(livro);
         }
         catch (err) {
@@ -43,7 +43,7 @@ class LivroController {
     async atualizarLivro(req, res) {
         try {
             const livroAtualizado = await this.livroService.atualizaLivro({
-                isbn: Number(req.params.isbn),
+                isbn: String(req.params.isbn),
                 novosDados: req.body
             });
             res.status(200).json({
@@ -60,7 +60,7 @@ class LivroController {
     }
     async removerLivro(req, res) {
         try {
-            const isbn = Number(req.params.isbn);
+            const isbn = String(req.params.isbn);
             const livro = await this.livroService.removeLivro(isbn);
             res.status(200).json({
                 "status": "Livro Deletado com Sucesso!",

@@ -1,12 +1,12 @@
 export class EstoqueEntity{
     id: number;
-    isbn: number;
+    isbn: string;
     quantidade: number;
     quantidade_emprestada: number;
     // disponibilidade: string;
     disponibilidade: 'disponivel' | 'não-disponivel';
 
-    constructor(id: number, isbn: number, quantidade: number, quantidade_emprestada: number){
+    constructor(id: number, isbn: string, quantidade: number, quantidade_emprestada: number){
         if(!isbn || !quantidade){
             throw new Error("Por favor informar todos os campos");
         }

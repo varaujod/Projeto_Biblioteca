@@ -19,7 +19,7 @@ export class EstoqueRepository{
     private async createTable(){
         const query = `CREATE TABLE IF NOT EXISTS biblioteca.Estoque(
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                isbn DECIMAL(13) NOT NULL,
+                isbn VARCHAR(13) NOT NULL,
                 quantidade DECIMAL(10) NOT NULL,
                 quantidade_emprestada DECIMAL(10) NOT NULL,
                 disponibilidade VARCHAR(15) NOT NULL
