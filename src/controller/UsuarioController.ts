@@ -1,5 +1,4 @@
 import { UsuarioService } from "../service/UsuarioService";
-import { Request, Response } from "express";
 import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse  } from "tsoa";
 import { UsuarioDto } from "../model/dto/UsuarioDto";
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";

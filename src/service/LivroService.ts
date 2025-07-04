@@ -24,9 +24,9 @@ export class LivroService{
         return await this.livroRepository.insereLivro(data);
     }
 
-    filtrarLivro(data: any): Promise<LivroEntity | null>{
+    async filtrarLivro(data: any): Promise<LivroEntity | null>{
         const isbn = String(data.isbn);
-        const livro = this.livroRepository.filtraLivroPorISBN(isbn);
+        const livro = await this.livroRepository.filtraLivroPorISBN(isbn);
 
         if(livro === null){
             throw new Error("Este livro ainda não foi cadastrado com esta ISBN!");

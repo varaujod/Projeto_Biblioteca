@@ -1,78 +1,120 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LivroController = void 0;
 const LivroService_1 = require("../service/LivroService");
-class LivroController {
+const tsoa_1 = require("tsoa");
+const BasicResponseDto_1 = require("../model/dto/BasicResponseDto");
+const LivroDto_1 = require("../model/dto/LivroDto");
+let LivroController = class LivroController {
     livroService = new LivroService_1.LivroService();
-    async criarLivro(req, res) {
+    async criarLivro(dto, fail, success) {
         try {
-            const livro = await this.livroService.novoLivro(req.body);
-            res.status(201).json(livro);
+            const livro = await this.livroService.novoLivro(dto);
+            return success(201, new BasicResponseDto_1.BasicResponseDto("Livro cadastrado com sucesso!", livro));
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Não foi possivel criar o Livro!';
-            res.status(400).json({
-                message: message
-            });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(err.message, undefined));
         }
     }
-    async listarLivros(req, res) {
+    async listarLivros(fail, success) {
         try {
-            const lista = await this.livroService.listarLivros();
-            res.status(200).json(lista);
+            const livros = await this.livroService.listarLivros();
+            return success(202, new BasicResponseDto_1.BasicResponseDto("Livros Cadastrados: ", livros));
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Não foi possivel listar os livros!';
-            res.status(400).json({
-                message: message
-            });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(err.message, undefined));
         }
     }
-    async filtrarLivro(req, res) {
+    async filtrarLivro(isbn, fail, success) {
         try {
-            const livro = await this.livroService.filtrarLivro({ isbn: String(req.params.isbn) });
-            res.status(200).json(livro);
+            const livroEncontrado = await this.livroService.filtrarLivro({ isbn: String(isbn) });
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Livro encontrado com sucesso!", livroEncontrado));
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Não foi possivel filtrar o livro!';
-            res.status(400).json({
-                message: message
-            });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(err.message, undefined));
         }
     }
-    async atualizarLivro(req, res) {
+    async atualizarLivro(isbn, dto, fail, success) {
         try {
             const livroAtualizado = await this.livroService.atualizaLivro({
-                isbn: String(req.params.isbn),
-                novosDados: req.body
+                isbn: isbn,
+                novosDados: dto
             });
-            res.status(200).json({
-                "message": "Livro atualizado com sucesso!",
-                "livro": livroAtualizado
-            });
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Livro atualizado com sucesso!", livroAtualizado));
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Não foi possivel atualizar o Livro!';
-            res.status(400).json({
-                message: message
-            });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(err.message, undefined));
         }
     }
-    async removerLivro(req, res) {
+    async removerLivro(isbn, fail, success) {
         try {
-            const isbn = String(req.params.isbn);
-            const livro = await this.livroService.removeLivro(isbn);
-            res.status(200).json({
-                "status": "Livro Deletado com Sucesso!",
-                "livro": livro
-            });
+            const livroRemovido = await this.livroService.removeLivro(isbn);
+            return success(200, new BasicResponseDto_1.BasicResponseDto("Livro Removido com sucesso!", livroRemovido));
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Não foi possivel deletar o Livro!';
-            res.status(400).json({
-                message: message
-            });
+            return fail(400, new BasicResponseDto_1.BasicResponseDto(err.message, undefined));
         }
     }
-}
+};
 exports.LivroController = LivroController;
+__decorate([
+    (0, tsoa_1.Post)(),
+    __param(0, (0, tsoa_1.Body)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [LivroDto_1.LivroDto, Function, Function]),
+    __metadata("design:returntype", Promise)
+], LivroController.prototype, "criarLivro", null);
+__decorate([
+    (0, tsoa_1.Get)(),
+    __param(0, (0, tsoa_1.Res)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Function, Function]),
+    __metadata("design:returntype", Promise)
+], LivroController.prototype, "listarLivros", null);
+__decorate([
+    (0, tsoa_1.Get)("{isbn}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Function, Function]),
+    __metadata("design:returntype", Promise)
+], LivroController.prototype, "filtrarLivro", null);
+__decorate([
+    (0, tsoa_1.Put)("{isbn}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __param(3, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, LivroDto_1.LivroDto, Function, Function]),
+    __metadata("design:returntype", Promise)
+], LivroController.prototype, "atualizarLivro", null);
+__decorate([
+    (0, tsoa_1.Delete)("{isbn}"),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Function, Function]),
+    __metadata("design:returntype", Promise)
+], LivroController.prototype, "removerLivro", null);
+exports.LivroController = LivroController = __decorate([
+    (0, tsoa_1.Route)("livro"),
+    (0, tsoa_1.Tags)("Livro")
+], LivroController);

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LivroEntity = void 0;
-class LivroEntity {
+exports.LivroDto = void 0;
+class LivroDto {
     titulo;
     isbn;
     autor;
@@ -22,4 +22,4 @@ class LivroEntity {
         this.status = status || '';
     }
 }
-exports.LivroEntity = LivroEntity;
+exports.LivroDto = LivroDto;
