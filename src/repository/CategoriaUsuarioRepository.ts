@@ -1,5 +1,5 @@
 import { executarComandoSQL } from "../database/mysql";
-import { CategoriaUsuario } from "../model/CategoriaUsuario";
+import { CategoriaUsuario } from "../model/entity/CategoriaUsuario";
 
 export class CategoriaUsuarioRepository{
     private static instance: CategoriaUsuarioRepository;

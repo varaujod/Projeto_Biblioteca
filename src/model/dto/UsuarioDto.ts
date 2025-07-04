@@ -1,4 +1,4 @@
-export class UsuarioEntity{
+export class UsuarioDto{
     nome: string;
     cpf: number;
     email: string;
@@ -10,16 +10,16 @@ export class UsuarioEntity{
     diasAtraso: number;
 
 
-    constructor(nome: string, cpf: number, email: string, categoria: string, curso: string){
+    constructor(nome?: string, cpf?: number, email?: string, categoria?: string, curso?: string){
         if(!nome || !cpf || !email || !categoria || !curso){
             throw new Error("Por favor informar todos os campos");
         }
         
-        this.nome = nome;
+        this.nome = nome || '';
         this.cpf = this.meuCPF(cpf);
-        this.email = email;
-        this.categoria = categoria;
-        this.curso = curso;
+        this.email = email || '';
+        this.categoria = categoria || '';
+        this.curso = curso || '';
         this.status = "ativo";
         this.diasSuspensao = 0;
         this.livrosAtrasados = 0;

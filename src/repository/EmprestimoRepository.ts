@@ -1,5 +1,5 @@
 import { executarComandoSQL } from "../database/mysql";
-import { EmprestimoEntity } from "../model/EmprestimoEntity";
+import { EmprestimoEntity } from "../model/entity/EmprestimoEntity";
 
 export class EmprestimoRepository{
     private static instance: EmprestimoRepository;

@@ -1,42 +1,52 @@
 import { UsuarioService } from "../service/UsuarioService";
 import { Request, Response } from "express";
+import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse  } from "tsoa";
+import { UsuarioDto } from "../model/dto/UsuarioDto";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
 
-export class UsuarioController{
-    private usuarioService = new UsuarioService();
+@Route("usuario")
+@Tags("Usuário")
+export class UsuarioController extends Controller{
+    usuarioService = new UsuarioService();
 
-    async criarUsuario(req: Request, res: Response){
+    @Post("create")
+    async criarUsuario(
+        @Body() dto: UsuarioDto,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<201, BasicResponseDto>
+    ): Promise< |void>{
         try{
-            const usuario = await this.usuarioService.novoUsuario(req.body);
-            res.status(201).json(usuario);
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel criar o Usuário!';
-            res.status(400).json({
-                message: message
-            });
+            const usuario = await this.usuarioService.novoUsuario(dto);
+            return success(201, new BasicResponseDto("Usuario criado com sucesso", usuario));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async listarUsuarios(req: Request, res: Response){
+    @Get("all")
+    async listarUsuarios(
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<202, BasicResponseDto>
+    ): Promise< |void>{
         try{
-            const lista = await this.usuarioService.listarUsuarios();
-            res.status(200).json(lista);
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel listar os usuarios!';
-            res.status(400).json({
-                message: message
-            });
+            const usuarios = await this.usuarioService.listarUsuarios();
+            return success(202, new BasicResponseDto("Usuários Cadastrados: ", usuarios));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async filtrarUsuario(req: Request, res: Response){
+    @Get("{id}")
+    async filtrarUsuario(
+        @Path() id: number,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<UsuarioDto>{
         try{
-            const usuario = await this.usuarioService.filtrarUsuario({ cpf: Number(req.params.cpf)});
-            res.status(200).json(usuario);
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel filtrar o Usuário!';
-            res.status(400).json({
-                message: message
-            });
+            const usuario = await this.usuarioService.filtrarUsuario(id);
+            return success(200, new BasicResponseDto("Usuário encontrado com sucesso!", usuario));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 

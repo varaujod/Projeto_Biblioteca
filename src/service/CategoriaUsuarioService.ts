@@ -1,5 +1,5 @@
 import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
-import { CategoriaUsuario } from "../model/CategoriaUsuario";
+import { CategoriaUsuario } from "../model/entity/CategoriaUsuario";
 
 export class CategoriaUsuarioService{
     private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();

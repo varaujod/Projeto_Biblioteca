@@ -1,5 +1,5 @@
 import { executarComandoSQL } from "../database/mysql";
-import { UsuarioEntity } from "../model/UsuarioEntity";
+import { UsuarioEntity } from "../model/entity/UsuarioEntity";
 
 export class UsuarioRepository{
     private static instance: UsuarioRepository;
@@ -52,6 +52,7 @@ export class UsuarioRepository{
         
         console.log('Usuário criado com Sucesso: ', resultado);
         return new UsuarioEntity(
+                resultado.insertId,
                 usuario.nome, 
                 usuario.cpf, 
                 usuario.email,  
