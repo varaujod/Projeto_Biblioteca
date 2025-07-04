@@ -160,7 +160,7 @@
 	"info": {
 		"title": "Projeto 1 - Gestão de Biblioteca Acadêmica",
 		"version": "2.0.0",
-		"description": "O principal objetivo é desenvolver uma API (Interface de Programação de Aplicações) para a gestão completa de uma biblioteca acadêmica. Esta API visa permitir o gerenciamento eficiente do acervo bibliográfico, dos usuários da biblioteca e de todas as transações de empréstimos, seguindo rigorosamente um conjunto de regras de negócio pré-definidas. Este projeto é uma atividade de avaliação da disciplina de Programação Web, parte do Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São Paulo (IFSP), Câmpus Boituva. A disciplina é ministrada pelo Prof. Dr. Anisio Silva."
+		"description": "Servidor de Desenvolvimento"
 	},
 	"paths": {
 		"/usuario": {
@@ -813,6 +813,41 @@
 						}
 					}
 				]
+			}
+		},
+		"/categoria-usuario": {
+			"get": {
+				"operationId": "ListarCategoria",
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Categoria de Usuário"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

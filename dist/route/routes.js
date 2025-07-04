@@ -9,6 +9,8 @@ const LivroController_1 = require("./../controller/LivroController");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const EstoqueController_1 = require("./../controller/EstoqueController");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const CategoriaUsuarioController_1 = require("./../controller/CategoriaUsuarioController");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const models = {
     "UsuarioDto": {
         "dataType": "refObject",
@@ -436,6 +438,30 @@ function RegisterRoutes(app) {
             const controller = new EstoqueController_1.EstoqueController();
             await templateService.apiHandler({
                 methodName: 'removerLivroNoEstoque',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+            });
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCategoriaUsuarioController_listarCategoria = {
+        fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
+        success: { "in": "res", "name": "201", "required": true, "ref": "BasicResponseDto" },
+    };
+    app.get('/categoria-usuario', ...((0, runtime_1.fetchMiddlewares)(CategoriaUsuarioController_1.CategoriaUsuarioController)), ...((0, runtime_1.fetchMiddlewares)(CategoriaUsuarioController_1.CategoriaUsuarioController.prototype.listarCategoria)), async function CategoriaUsuarioController_listarCategoria(request, response, next) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = templateService.getValidatedArgs({ args: argsCategoriaUsuarioController_listarCategoria, request, response });
+            const controller = new CategoriaUsuarioController_1.CategoriaUsuarioController();
+            await templateService.apiHandler({
+                methodName: 'listarCategoria',
                 controller,
                 response,
                 next,

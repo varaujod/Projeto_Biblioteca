@@ -9,6 +9,8 @@ import { UsuarioController } from './../controller/UsuarioController';
 import { LivroController } from './../controller/LivroController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { EstoqueController } from './../controller/EstoqueController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { CategoriaUsuarioController } from './../controller/CategoriaUsuarioController';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -557,6 +559,37 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'removerLivroNoEstoque',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCategoriaUsuarioController_listarCategoria: Record<string, TsoaRoute.ParameterSchema> = {
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"201","required":true,"ref":"BasicResponseDto"},
+        };
+        app.get('/categoria-usuario',
+            ...(fetchMiddlewares<RequestHandler>(CategoriaUsuarioController)),
+            ...(fetchMiddlewares<RequestHandler>(CategoriaUsuarioController.prototype.listarCategoria)),
+
+            async function CategoriaUsuarioController_listarCategoria(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCategoriaUsuarioController_listarCategoria, request, response });
+
+                const controller = new CategoriaUsuarioController();
+
+              await templateService.apiHandler({
+                methodName: 'listarCategoria',
                 controller,
                 response,
                 next,
