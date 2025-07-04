@@ -20,7 +20,7 @@ class EstoqueService {
         return await this.estoqueRepository.listarEstoque();
     }
     async filtrarLivroNoEstoque(data) {
-        const id = data.id;
+        const id = Number(data.id);
         const exemplar = await this.estoqueRepository.filtraLivroNoEstoque(id);
         if (exemplar === null) {
             throw new Error("Exemplar não encontrado");
@@ -28,14 +28,17 @@ class EstoqueService {
         return exemplar;
     }
     async atualizarDisponibilidade(data) {
-        const id = data.id;
+        const id = Number(data.id);
         const novaDisponibilidade = data.novaDisponibilidade;
         const estoque = await this.estoqueRepository.filtraLivroNoEstoque(id);
         if (estoque && estoque.quantidade_emprestada === estoque.quantidade) {
             await this.estoqueRepository.atualizarDisponibilidade(id, { disponibilidade: 'não-disponivel' });
             await this.livroRepository.atualizarLivroPorISBN(estoque.isbn, { status: 'não-disponivel' });
         }
-        return await this.estoqueRepository.atualizarDisponibilidade(id, novaDisponibilidade);
+        if (!novaDisponibilidade) {
+            throw new Error("Disponibilidade não informada");
+        }
+        return await this.estoqueRepository.atualizarDisponibilidade(id, { disponibilidade: novaDisponibilidade });
     }
     async removerLivroNoEstoque(id) {
         const estoque = await this.estoqueRepository.filtraLivroNoEstoque(id);

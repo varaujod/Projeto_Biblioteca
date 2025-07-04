@@ -1,81 +1,89 @@
 import { EstoqueService } from "../service/EstoqueService";
 import { Request, Response } from "express";
+import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse  } from "tsoa";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { EstoqueDto } from "../model/dto/EstoqueDto";
 
-export class EstoqueController{
-    private estoqueService = new EstoqueService();
+@Route("estoque")
+@Tags("Estoque")
+export class EstoqueController extends Controller{
+    estoqueService = new EstoqueService();
 
-    async adicionarLivroNoEstoque(req: Request, res: Response){
+    @Post()
+    async adicionarLivroNoEstoque(
+        @Body() dto: EstoqueDto,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void>{
         try{
-            const livro = await this.estoqueService.novoLivronoEstoque(req.body);
-            res.status(201).json({
-                "message": "Livro adicionado com Sucesso no seu Estoque! :)",
-                "livro": livro
-            })
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel adicionar o livro no Estoque!';
-            res.status(400).json({
-                message: message
-            });
+            const livro = await this.estoqueService.novoLivronoEstoque(dto);
+            return success(200, new BasicResponseDto("Livro adicionado com sucesso no seu estoque!", livro));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async listarEstoque(req: Request, res: Response){
+    @Get()
+    async listarEstoque(
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<202, BasicResponseDto>
+    ): Promise<void>{
         try{
             const lista = await this.estoqueService.listarEstoque();
-            res.status(200).json(lista);
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel listar o seu estoque!';
-            res.status(400).json({
-                message: message
-            });
+            return success(202, new BasicResponseDto("Lista do seu estoque: ", lista));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async filtrarLivroNoEstoque(req: Request, res: Response){
+    @Get("{id}")
+    async filtrarLivroNoEstoque(
+        @Path() id: number,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void>{
         try{
-            const id = Number(req.params.id);
-            const resultado = await this.estoqueService.filtrarLivroNoEstoque({id});
-            res.status(200).json(resultado);
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel filtrar o livro no seu estoque!';
-            res.status(400).json({ message });
+            const resultado = await this.estoqueService.filtrarLivroNoEstoque({ id: Number(id) });
+            return success(200, new BasicResponseDto("Livro no estoque foi encontrado com sucesso!", resultado));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async atualizarDisponibildade(req: Request, res: Response){
+    @Put("{id}")
+    async atualizarDisponibildade(
+        @Path() id: number,
+        @Body() dto: Partial<EstoqueDto>,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void>{
         try{
             const disponibilidadeAtualizada = await this.estoqueService.atualizarDisponibilidade({
-                id: Number(req.params.id),
-                novaDisponibilidade: req.body
+                id: id,
+                novaDisponibilidade: dto.disponibilidade
             });
 
-            res.status(200).json({
-                "message": "Disponibilidade atualizado com sucesso!",
-                "livro": disponibilidadeAtualizada
-            });
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel atualizar a disponibilidade!';
-            res.status(400).json({
-                message: message
-            });
+            if (!dto.disponibilidade) {
+                return fail(400, new BasicResponseDto("Campo 'disponibilidade' é obrigatório.", undefined));
+            }
+
+            return success(200, new BasicResponseDto("Disponibilidade atualizado com sucesso!", disponibilidadeAtualizada));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async removerLivroNoEstoque(req: Request, res: Response){
+    @Delete("{id}")
+    async removerLivroNoEstoque(
+        @Path() id: number,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void>{
         try{
-            const id = Number(req.params.id);
-            const livro = await this.estoqueService.removerLivroNoEstoque(id);
-
-            res.status(200).json({
-                "status": "Exemplar Deletado com sucesso em seu estoque!",
-                "usuario": livro
-
-            })
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel deletar o Livro!';
-            res.status(400).json({
-                message: message
-            });
+            const livroRemovido = await this.estoqueService.removerLivroNoEstoque(id);
+            return success(200, new BasicResponseDto("Exemplar Deletado com sucesso em seu estoque!", livroRemovido))
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 

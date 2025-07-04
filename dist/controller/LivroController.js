@@ -17,7 +17,7 @@ const LivroService_1 = require("../service/LivroService");
 const tsoa_1 = require("tsoa");
 const BasicResponseDto_1 = require("../model/dto/BasicResponseDto");
 const LivroDto_1 = require("../model/dto/LivroDto");
-let LivroController = class LivroController {
+let LivroController = class LivroController extends tsoa_1.Controller {
     livroService = new LivroService_1.LivroService();
     async criarLivro(dto, fail, success) {
         try {

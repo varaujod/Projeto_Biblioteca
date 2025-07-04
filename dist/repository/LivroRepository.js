@@ -44,7 +44,7 @@ class LivroRepository {
             'disponivel'
         ]);
         console.log("Livro criado com Sucesso: ", resultado);
-        return new LivroEntity_1.LivroEntity(livro.titulo, livro.isbn, livro.autor, livro.editora, livro.edicao, livro.categoria, 'disponivel');
+        return new LivroEntity_1.LivroEntity(resultado.insertId, livro.titulo, livro.isbn, livro.autor, livro.editora, livro.edicao, livro.categoria, 'disponivel');
     }
     validacaoISBN(isbn) {
         return isbn.toString().length === 13;
@@ -53,7 +53,7 @@ class LivroRepository {
         const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Livro WHERE isbn = ?", [isbn]);
         if (resultado && resultado.length > 0) {
             const user = resultado[0];
-            return new LivroEntity_1.LivroEntity(user.titulo, user.isbn, user.autor, user.editora, user.edicao, user.categoria, user.status);
+            return new LivroEntity_1.LivroEntity(user.id, user.titulo, user.isbn, user.autor, user.editora, user.edicao, user.categoria, user.status);
         }
         return null;
     }
@@ -111,7 +111,7 @@ class LivroRepository {
         if (resultado && resultado.length > 0) {
             for (let i = 0; i < resultado.length; i++) {
                 const user = resultado[i];
-                livros.push(new LivroEntity_1.LivroEntity(user.titulo, user.isbn, user.autor, user.editora, user.edicao, user.categoria, user.status));
+                livros.push(new LivroEntity_1.LivroEntity(user.id, user.titulo, user.isbn, user.autor, user.editora, user.edicao, user.categoria, user.status));
             }
         }
         return livros;

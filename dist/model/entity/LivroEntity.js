@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LivroEntity = void 0;
 class LivroEntity {
+    id;
     titulo;
     isbn;
     autor;
@@ -9,10 +10,11 @@ class LivroEntity {
     edicao;
     categoria;
     status;
-    constructor(titulo, isbn, autor, editora, edicao, categoria, status) {
+    constructor(id, titulo, isbn, autor, editora, edicao, categoria, status) {
         if (!titulo || !isbn || !autor || !editora || !edicao || !categoria) {
             throw new Error("Por favor informar todos os campos");
         }
+        this.id = id || 0;
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;

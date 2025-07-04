@@ -5,7 +5,7 @@ import { LivroDto } from "../model/dto/LivroDto";
 
 @Route("livro")
 @Tags("Livro")
-export class LivroController{
+export class LivroController extends Controller{
     livroService = new LivroService();
 
     @Post()

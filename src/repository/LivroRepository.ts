@@ -51,6 +51,7 @@ export class LivroRepository{
             console.log("Livro criado com Sucesso: ", resultado);
 
         return new LivroEntity(
+            resultado.insertId,
             livro.titulo,
             livro.isbn,
             livro.autor,
@@ -70,6 +71,7 @@ export class LivroRepository{
         if(resultado && resultado.length > 0) {
             const user = resultado[0];
             return new LivroEntity(
+                user.id,
                 user.titulo,
                 user.isbn,
                 user.autor,
@@ -151,6 +153,7 @@ export class LivroRepository{
             for(let i = 0; i < resultado.length; i++){
                 const user = resultado[i];
                 livros.push(new LivroEntity(
+                    user.id,
                     user.titulo,
                     user.isbn,
                     user.autor,
