@@ -65,11 +65,12 @@ export class UsuarioRepository{
         if (resultado && resultado.length > 0) {
             const user = resultado[0];
             return new UsuarioEntity(
-                user.nome,
-                user.cpf,
-                user.email,
-                user.categoria,
-                user.curso
+                user.id,         
+                user.nome,       
+                user.cpf,        
+                user.email,      
+                user.categoria,  
+                user.curso       
             );
         }
     return null;
@@ -153,6 +154,7 @@ export class UsuarioRepository{
             for (let i = 0; i < resultado.length; i++) {
                 const user = resultado[i];
                 usuarios.push(new UsuarioEntity(
+                    user.id,
                     user.nome,
                     user.cpf,
                     user.email,

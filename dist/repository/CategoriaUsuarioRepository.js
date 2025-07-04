@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoriaUsuarioRepository = void 0;
 const mysql_1 = require("../database/mysql");
-const CategoriaUsuario_1 = require("../model/CategoriaUsuario");
+const CategoriaUsuario_1 = require("../model/entity/CategoriaUsuario");
 class CategoriaUsuarioRepository {
     static instance;
     constructor() {

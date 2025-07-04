@@ -9,7 +9,7 @@ import { BasicResponseDto } from "../model/dto/BasicResponseDto";
 export class UsuarioController extends Controller{
     usuarioService = new UsuarioService();
 
-    @Post("create")
+    @Post()
     async criarUsuario(
         @Body() dto: UsuarioDto,
         @Res() fail: TsoaResponse<400, BasicResponseDto>,
@@ -23,7 +23,7 @@ export class UsuarioController extends Controller{
         }
     }
 
-    @Get("all")
+    @Get()
     async listarUsuarios(
         @Res() fail: TsoaResponse<400, BasicResponseDto>,
         @Res() success: TsoaResponse<202, BasicResponseDto>
@@ -36,54 +36,50 @@ export class UsuarioController extends Controller{
         }
     }
 
-    @Get("{id}")
+    @Get("{cpf}")
     async filtrarUsuario(
-        @Path() id: number,
+        @Path() cpf: number,
         @Res() fail: TsoaResponse<400, BasicResponseDto>,
         @Res() success: TsoaResponse<200, BasicResponseDto>
     ): Promise<UsuarioDto>{
         try{
-            const usuario = await this.usuarioService.filtrarUsuario(id);
-            return success(200, new BasicResponseDto("Usuário encontrado com sucesso!", usuario));
+            const usuarioEncontrado = await this.usuarioService.filtrarUsuario({ cpf: Number(cpf) });
+            return success(200, new BasicResponseDto("Usuário encontrado com sucesso!", usuarioEncontrado));
         } catch(err: any){
             return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async atualizarUsuario(req: Request, res: Response){
+    @Put("{cpf}")
+    async atualizarUsuario(
+        @Path() cpf: number,
+        @Body() dto: UsuarioDto,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise< |void>{
         try{
             const usuarioAtualizado = await this.usuarioService.atualizaUsuario({
-                cpf: Number(req.params.cpf),
-                novosDados: req.body
+                cpf: cpf,
+                novosDados: dto
             });
 
-            res.status(200).json({
-                "message": "Usuário atualizado com sucesso!",
-                "usuario": usuarioAtualizado
-            });
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel atualizar o Usuário!';
-            res.status(400).json({
-                message: message
-            });
+            return success(200, new BasicResponseDto("Usuario atualizado com sucesso!", usuarioAtualizado));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 
-    async removerUsuario(req: Request, res: Response){
+    @Delete("{cpf}")
+    async removerUsuario(
+        @Path() cpf: number,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void>{
         try{
-            const cpf = Number(req.params.cpf);
-            const usuario = await this.usuarioService.removeUsuario(cpf);
-
-            res.status(200).json({
-                "status": "Usuario Deletado com Sucesso!",
-                "usuario": usuario
-
-            })
-        } catch(err){
-            const message = err instanceof Error ? err.message: 'Não foi possivel deletar o Usuário!';
-            res.status(400).json({
-                message: message
-            });
+            const usuarioRemovido = await this.usuarioService.removeUsuario(cpf);
+            return success(200, new BasicResponseDto("Usuário Removido com sucesso!", usuarioRemovido));
+        } catch(err: any){
+            return fail(400, new BasicResponseDto(err.message, undefined));
         }
     }
 

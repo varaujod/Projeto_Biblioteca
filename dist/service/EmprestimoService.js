@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmprestimoService = void 0;
-const EmprestimoEntity_1 = require("../model/EmprestimoEntity");
+const EmprestimoEntity_1 = require("../model/entity/EmprestimoEntity");
 const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");

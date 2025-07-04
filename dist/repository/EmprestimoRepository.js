@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmprestimoRepository = void 0;
 const mysql_1 = require("../database/mysql");
-const EmprestimoEntity_1 = require("../model/EmprestimoEntity");
+const EmprestimoEntity_1 = require("../model/entity/EmprestimoEntity");
 class EmprestimoRepository {
     static instance;
     constructor() {

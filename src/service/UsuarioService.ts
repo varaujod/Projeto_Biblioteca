@@ -28,9 +28,9 @@ export class UsuarioService{
     }
 
 
-    filtrarUsuario(data: any): Promise<UsuarioEntity | null>{
+    async filtrarUsuario(data: any): Promise<UsuarioEntity | null>{
         const cpf = data.cpf;
-        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(cpf);
 
         if(usuario === null){
             throw new Error("Este usuário ainda não foi cadastrado com este CPF!");

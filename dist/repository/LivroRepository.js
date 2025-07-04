@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LivroRepository = void 0;
 const mysql_1 = require("../database/mysql");
-const LivroEntity_1 = require("../model/LivroEntity");
+const LivroEntity_1 = require("../model/entity/LivroEntity");
 class LivroRepository {
     static instance;
     constructor() {

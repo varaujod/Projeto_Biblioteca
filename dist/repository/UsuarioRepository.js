@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsuarioRepository = void 0;
 const mysql_1 = require("../database/mysql");
-const UsuarioEntity_1 = require("../model/UsuarioEntity");
+const UsuarioEntity_1 = require("../model/entity/UsuarioEntity");
 class UsuarioRepository {
     static instance;
     constructor() {
@@ -48,13 +48,13 @@ class UsuarioRepository {
             0
         ]);
         console.log('Usuário criado com Sucesso: ', resultado);
-        return new UsuarioEntity_1.UsuarioEntity(usuario.nome, usuario.cpf, usuario.email, usuario.categoria, usuario.curso);
+        return new UsuarioEntity_1.UsuarioEntity(resultado.insertId, usuario.nome, usuario.cpf, usuario.email, usuario.categoria, usuario.curso);
     }
     async filtraUsuarioPorCPF(cpf) {
         const resultado = await (0, mysql_1.executarComandoSQL)("SELECT * FROM biblioteca.Usuario WHERE cpf = ?", [cpf]);
         if (resultado && resultado.length > 0) {
             const user = resultado[0];
-            return new UsuarioEntity_1.UsuarioEntity(user.nome, user.cpf, user.email, user.categoria, user.curso);
+            return new UsuarioEntity_1.UsuarioEntity(user.id, user.nome, user.cpf, user.email, user.categoria, user.curso);
         }
         return null;
     }
@@ -117,7 +117,7 @@ class UsuarioRepository {
         if (resultado && resultado.length > 0) {
             for (let i = 0; i < resultado.length; i++) {
                 const user = resultado[i];
-                usuarios.push(new UsuarioEntity_1.UsuarioEntity(user.nome, user.cpf, user.email, user.categoria, user.curso));
+                usuarios.push(new UsuarioEntity_1.UsuarioEntity(user.id, user.nome, user.cpf, user.email, user.categoria, user.curso));
             }
         }
         return usuarios;

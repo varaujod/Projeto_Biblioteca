@@ -23,9 +23,9 @@ class UsuarioService {
         }
         return await this.usuarioRepository.insereUsuario(data);
     }
-    filtrarUsuario(data) {
+    async filtrarUsuario(data) {
         const cpf = data.cpf;
-        const usuario = this.usuarioRepository.filtraUsuarioPorCPF(cpf);
+        const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(cpf);
         if (usuario === null) {
             throw new Error("Este usuário ainda não foi cadastrado com este CPF!");
         }

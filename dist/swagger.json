@@ -1,0 +1,312 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"UsuarioDto": {
+				"properties": {
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "number",
+						"format": "double"
+					},
+					"email": {
+						"type": "string"
+					},
+					"categoria": {
+						"type": "string"
+					},
+					"curso": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"ativo",
+							"inativo",
+							"suspenso"
+						]
+					},
+					"diasSuspensao": {
+						"type": "number",
+						"format": "double"
+					},
+					"livrosAtrasados": {
+						"type": "number",
+						"format": "double"
+					},
+					"diasAtraso": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"nome",
+					"cpf",
+					"email",
+					"categoria",
+					"curso"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BasicResponseDto": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"object": {}
+				},
+				"required": [
+					"message",
+					"object"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "Projeto 1 - Gestão de Biblioteca Acadêmica",
+		"version": "2.0.0",
+		"description": "O principal objetivo é desenvolver uma API (Interface de Programação de Aplicações) para a gestão completa de uma biblioteca acadêmica. Esta API visa permitir o gerenciamento eficiente do acervo bibliográfico, dos usuários da biblioteca e de todas as transações de empréstimos, seguindo rigorosamente um conjunto de regras de negócio pré-definidas. Este projeto é uma atividade de avaliação da disciplina de Programação Web, parte do Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São Paulo (IFSP), Câmpus Boituva. A disciplina é ministrada pelo Prof. Dr. Anisio Silva."
+	},
+	"paths": {
+		"/usuario": {
+			"post": {
+				"operationId": "CriarUsuario",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuário"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UsuarioDto"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "ListarUsuarios",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"202": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuário"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/usuario/{cpf}": {
+			"get": {
+				"operationId": "FiltrarUsuario",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuário"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "cpf",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "AtualizarUsuario",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuário"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "cpf",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UsuarioDto"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "RemoverUsuario",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuário"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "cpf",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3090/library",
+			"description": "Servidor de Desenvolvimento"
+		}
+	]
+}
