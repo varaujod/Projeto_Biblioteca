@@ -849,6 +849,76 @@
 				"security": [],
 				"parameters": []
 			}
+		},
+		"/categoria-livros": {
+			"get": {
+				"operationId": "ListarCategoriaLivro",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Categoria de Livro"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/categoria-cursos": {
+			"get": {
+				"operationId": "ListarCurso",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cursos Disponiveis"
+				],
+				"security": [],
+				"parameters": []
+			}
 		}
 	},
 	"servers": [

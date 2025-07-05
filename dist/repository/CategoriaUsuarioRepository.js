@@ -7,12 +7,12 @@ class CategoriaUsuarioRepository {
     static instance;
     constructor() {
         this.criarTable();
-        this.inserirCategoriasPadrao();
     }
     ;
     static getInstance() {
         if (!this.instance) {
             this.instance = new CategoriaUsuarioRepository();
+            this.inserirCategoriasPadrao();
         }
         return this.instance;
     }
@@ -29,9 +29,9 @@ class CategoriaUsuarioRepository {
             console.error('Erro ao executar a query de estoque: ', err);
         }
     }
-    async inserirCategoriasPadrao() {
+    static async inserirCategoriasPadrao() {
         const categorias = ["Aluno", "Professor", "Bibliotecário"];
-        await (0, mysql_1.executarComandoSQL)("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
+        // await executarComandoSQL("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
         await (0, mysql_1.executarComandoSQL)("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaUsuario(id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100) NOT NULL)", []);
         for (const nome of categorias) {
             try {

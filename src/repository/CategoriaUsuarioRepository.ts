@@ -6,12 +6,12 @@ export class CategoriaUsuarioRepository{
 
     private constructor() {
         this.criarTable();
-        this.inserirCategoriasPadrao();
     };
 
     public static getInstance(): CategoriaUsuarioRepository{
         if(!this.instance){
             this.instance = new CategoriaUsuarioRepository();
+            this.inserirCategoriasPadrao();
         }
 
         return this.instance;
@@ -31,9 +31,9 @@ export class CategoriaUsuarioRepository{
         }
     }
 
-    private async inserirCategoriasPadrao(){
+    private static async inserirCategoriasPadrao(){
         const categorias = ["Aluno", "Professor", "Bibliotecário"];
-        await executarComandoSQL("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
+        // await executarComandoSQL("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
         await executarComandoSQL("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaUsuario(id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100) NOT NULL)", []);
         for(const nome of categorias){
             try{

@@ -11,6 +11,10 @@ const EstoqueController_1 = require("./../controller/EstoqueController");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const CategoriaUsuarioController_1 = require("./../controller/CategoriaUsuarioController");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const CategoriaLivroController_1 = require("./../controller/CategoriaLivroController");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+const CategoriaCursoController_1 = require("./../controller/CategoriaCursoController");
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const models = {
     "UsuarioDto": {
         "dataType": "refObject",
@@ -462,6 +466,54 @@ function RegisterRoutes(app) {
             const controller = new CategoriaUsuarioController_1.CategoriaUsuarioController();
             await templateService.apiHandler({
                 methodName: 'listarCategoria',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+            });
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCategoriaLivroController_listarCategoriaLivro = {
+        fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
+        success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },
+    };
+    app.get('/categoria-livros', ...((0, runtime_1.fetchMiddlewares)(CategoriaLivroController_1.CategoriaLivroController)), ...((0, runtime_1.fetchMiddlewares)(CategoriaLivroController_1.CategoriaLivroController.prototype.listarCategoriaLivro)), async function CategoriaLivroController_listarCategoriaLivro(request, response, next) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = templateService.getValidatedArgs({ args: argsCategoriaLivroController_listarCategoriaLivro, request, response });
+            const controller = new CategoriaLivroController_1.CategoriaLivroController();
+            await templateService.apiHandler({
+                methodName: 'listarCategoriaLivro',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+            });
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsCategoriaCursoController_listarCurso = {
+        fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
+        success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },
+    };
+    app.get('/categoria-cursos', ...((0, runtime_1.fetchMiddlewares)(CategoriaCursoController_1.CategoriaCursoController)), ...((0, runtime_1.fetchMiddlewares)(CategoriaCursoController_1.CategoriaCursoController.prototype.listarCurso)), async function CategoriaCursoController_listarCurso(request, response, next) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        let validatedArgs = [];
+        try {
+            validatedArgs = templateService.getValidatedArgs({ args: argsCategoriaCursoController_listarCurso, request, response });
+            const controller = new CategoriaCursoController_1.CategoriaCursoController();
+            await templateService.apiHandler({
+                methodName: 'listarCurso',
                 controller,
                 response,
                 next,
