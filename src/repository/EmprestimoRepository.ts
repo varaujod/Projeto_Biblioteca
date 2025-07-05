@@ -200,7 +200,7 @@ export class EmprestimoRepository{
         await executarComandoSQL(query, params);
     }
 
-    async verificarLimiteEmprestimo(usuario: number, categoria: 'professor' | 'aluno'): Promise<boolean> {
+    async verificarLimiteEmprestimo(usuario: number, categoria: string): Promise<boolean> {
         const emprestimosAtivos = await this.emprestimosAtivosDoUsuario(usuario);
         let limiteEmprestimos = categoria === 'professor' ? 5 : 3;
         return emprestimosAtivos < limiteEmprestimos;

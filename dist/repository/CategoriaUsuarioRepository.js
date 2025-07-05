@@ -31,7 +31,7 @@ class CategoriaUsuarioRepository {
     }
     static async inserirCategoriasPadrao() {
         const categorias = ["Aluno", "Professor", "Bibliotecário"];
-        // await executarComandoSQL("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
+        await (0, mysql_1.executarComandoSQL)("DROP TABLE IF EXISTS biblioteca.CategoriaUsuario", []);
         await (0, mysql_1.executarComandoSQL)("CREATE TABLE IF NOT EXISTS biblioteca.CategoriaUsuario(id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(100) NOT NULL)", []);
         for (const nome of categorias) {
             try {

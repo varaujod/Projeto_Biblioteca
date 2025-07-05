@@ -4,6 +4,7 @@ import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { LivroRepository } from "../repository/LivroRepository";
 import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
+import { EmprestimoDto } from "../model/dto/EmprestimoDto";
 
 export class EmprestimoService{
     private emprestimoRespository = EmprestimoRepository.getInstance();
@@ -12,7 +13,16 @@ export class EmprestimoService{
     private livroRepository = LivroRepository.getInstance();
     private categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
 
-    async novoEmprestimo(data: any): Promise<EmprestimoEntity>{
+    async novoEmprestimo(data: EmprestimoDto): Promise<EmprestimoEntity>{
+        const categoria = data.categoria.toLowerCase();
+
+        if(categoria !== 'aluno' && categoria !== 'professor') {
+            throw new Error("Categoria inválida. Use 'aluno' ou 'professor'.");
+        }
+
+        const dataEmprestimo = new Date();
+        const diasEmprestimo = categoria === 'professor' ? 40 : 15;
+
         const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
 
         if(!usuario){

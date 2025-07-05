@@ -15,3 +15,13 @@ app.use('/library', apiRouter);
 (0, routes_1.RegisterRoutes)(app);
 (0, Swagger_1.setupSwagger)(app);
 app.listen(PORT, () => console.log("API ONLINE na porta " + PORT));
+// app.use((err, req, res, next) => {
+//   if (err.name === 'ValidateError') {
+//     console.error('ValidateError:', err.fields);
+//     return res.status(422).json({
+//       message: 'Validation Failed',
+//       details: err.fields,
+//     });
+//   }
+//   next(err);
+// });

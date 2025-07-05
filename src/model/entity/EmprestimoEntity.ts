@@ -2,7 +2,7 @@ export class EmprestimoEntity{
     id: number;
     usuario: number;
     codExemplar: number;
-    categoria: 'professor' | 'aluno';
+    categoria: string;
     dataEmprestimo: Date;
     dataDevolucao: Date | null;
     dataPrevista: Date;
@@ -11,7 +11,7 @@ export class EmprestimoEntity{
     multaAtrasado: number;
     diasSuspensao: number;
 
-    constructor(id?: number, usuario?: number, codExemplar?: number, categoria?: 'aluno' | 'professor'){
+    constructor(id?: number, usuario?: number, codExemplar?: number, categoria?: string){
         if(!usuario || !codExemplar || !categoria){
             throw new Error("Por favor informar todos os campos");
         }

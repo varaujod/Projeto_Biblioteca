@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Path, Post, Res, Route, Tags, TsoaResponse } from "tsoa";
+import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
 import { EmprestimoService } from "../service/EmprestimoService";
 import { Request, Response } from "express";
 import { EmprestimoDto } from "../model/dto/EmprestimoDto";
@@ -58,7 +58,7 @@ export class EmprestimoController extends Controller{
         }
     }
 
-    @Delete("{id}")
+    @Put("{id}")
     async registrarDevolucao(
         @Path() id: number,
         @Res() fail: TsoaResponse<400, BasicResponseDto>,

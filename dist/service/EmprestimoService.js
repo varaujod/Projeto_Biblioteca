@@ -14,6 +14,12 @@ class EmprestimoService {
     livroRepository = LivroRepository_1.LivroRepository.getInstance();
     categoriaUsuarioRepository = CategoriaUsuarioRepository_1.CategoriaUsuarioRepository.getInstance();
     async novoEmprestimo(data) {
+        const categoria = data.categoria.toLowerCase();
+        if (categoria !== 'aluno' && categoria !== 'professor') {
+            throw new Error("Categoria inválida. Use 'aluno' ou 'professor'.");
+        }
+        const dataEmprestimo = new Date();
+        const diasEmprestimo = categoria === 'professor' ? 40 : 15;
         const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
         if (!usuario) {
             throw new Error("Usuário não encontrado!");
