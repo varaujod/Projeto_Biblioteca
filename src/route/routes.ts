@@ -58,7 +58,7 @@ const models: TsoaRoute.Models = {
             "editora": {"dataType":"string","required":true},
             "edicao": {"dataType":"string","required":true},
             "categoria": {"dataType":"string","required":true},
-            "status": {"dataType":"string","required":true},
+            "status": {"dataType":"string"},
         },
         "additionalProperties": false,
     },

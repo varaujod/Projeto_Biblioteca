@@ -15,6 +15,7 @@ export class LivroController extends Controller{
         @Res() success: TsoaResponse<201, BasicResponseDto>
     ): Promise<void>{
         try{
+            dto.isbn = String(dto.isbn);
             const livro = await this.livroService.novoLivro(dto);
             return success(201, new BasicResponseDto("Livro cadastrado com sucesso!", livro));
         } catch(err: any){
@@ -57,6 +58,7 @@ export class LivroController extends Controller{
         @Res() success: TsoaResponse<200, BasicResponseDto>
     ): Promise<void>{
         try{
+            dto.isbn = String(dto.isbn);
             const livroAtualizado = await this.livroService.atualizaLivro({
                 isbn: isbn,
                 novosDados: dto

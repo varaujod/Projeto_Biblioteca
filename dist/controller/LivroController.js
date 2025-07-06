@@ -21,6 +21,7 @@ let LivroController = class LivroController extends tsoa_1.Controller {
     livroService = new LivroService_1.LivroService();
     async criarLivro(dto, fail, success) {
         try {
+            dto.isbn = String(dto.isbn);
             const livro = await this.livroService.novoLivro(dto);
             return success(201, new BasicResponseDto_1.BasicResponseDto("Livro cadastrado com sucesso!", livro));
         }
@@ -48,6 +49,7 @@ let LivroController = class LivroController extends tsoa_1.Controller {
     }
     async atualizarLivro(isbn, dto, fail, success) {
         try {
+            dto.isbn = String(dto.isbn);
             const livroAtualizado = await this.livroService.atualizaLivro({
                 isbn: isbn,
                 novosDados: dto

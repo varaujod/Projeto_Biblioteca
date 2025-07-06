@@ -100,8 +100,7 @@
 					"autor",
 					"editora",
 					"edicao",
-					"categoria",
-					"status"
+					"categoria"
 				],
 				"type": "object",
 				"additionalProperties": false

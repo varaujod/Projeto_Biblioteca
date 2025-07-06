@@ -1,3 +1,4 @@
+import { LivroDto } from "../model/dto/LivroDto";
 import { LivroEntity } from "../model/entity/LivroEntity";
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
 import { EstoqueRepository } from "../repository/EstoqueRepository";

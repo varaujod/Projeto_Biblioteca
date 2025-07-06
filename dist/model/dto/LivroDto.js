@@ -9,7 +9,7 @@ class LivroDto {
     edicao;
     categoria;
     status;
-    constructor(titulo, isbn, autor, editora, edicao, categoria, status) {
+    constructor(titulo, isbn, autor, editora, edicao, categoria) {
         if (!titulo || !isbn || !autor || !editora || !edicao || !categoria) {
             throw new Error("Por favor informar todos os campos");
         }
@@ -19,7 +19,7 @@ class LivroDto {
         this.editora = editora;
         this.edicao = edicao;
         this.categoria = categoria;
-        this.status = status || '';
+        this.status = 'disponivel';
     }
 }
 exports.LivroDto = LivroDto;
