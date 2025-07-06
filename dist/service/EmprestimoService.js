@@ -18,8 +18,6 @@ class EmprestimoService {
         if (categoria !== 'aluno' && categoria !== 'professor') {
             throw new Error("Categoria inválida. Use 'aluno' ou 'professor'.");
         }
-        const dataEmprestimo = new Date();
-        const diasEmprestimo = categoria === 'professor' ? 40 : 15;
         const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
         if (!usuario) {
             throw new Error("Usuário não encontrado!");

@@ -20,9 +20,6 @@ export class EmprestimoService{
             throw new Error("Categoria inválida. Use 'aluno' ou 'professor'.");
         }
 
-        const dataEmprestimo = new Date();
-        const diasEmprestimo = categoria === 'professor' ? 40 : 15;
-
         const usuario = await this.usuarioRepository.filtraUsuarioPorCPF(data.usuario);
 
         if(!usuario){

@@ -17,7 +17,7 @@ class EstoqueRepository {
     async createTable() {
         const query = `CREATE TABLE IF NOT EXISTS biblioteca.Estoque(
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                isbn VARCHAR(13) NOT NULL,
+                isbn VARCHAR(13) NOT NULL UNIQUE,
                 quantidade DECIMAL(10) NOT NULL,
                 quantidade_emprestada DECIMAL(10) NOT NULL,
                 disponibilidade VARCHAR(15) NOT NULL
@@ -30,7 +30,15 @@ class EstoqueRepository {
             console.error('Erro ao executar a query de estoque: ', err);
         }
     }
+    async existeISBN(isbn) {
+        const resultado = await (0, mysql_1.executarComandoSQL)("SELECT COUNT(*) as total FROM biblioteca.Estoque WHERE isbn = ?", [isbn]);
+        return resultado[0].total > 0;
+    }
     async insereLivroNoEstoque(livro) {
+        const existe = await this.existeISBN(livro.isbn);
+        if (existe) {
+            throw new Error("Já existe um exemplar com este ISBN no estoque.");
+        }
         const resultado = await (0, mysql_1.executarComandoSQL)("INSERT INTO biblioteca.Estoque (isbn, quantidade, quantidade_emprestada, disponibilidade) values (?, ?, ?, ?)", [
             livro.isbn,
             livro.quantidade,
