@@ -1,4 +1,4 @@
-## Projeto I - Gestão de Biblioteca Acadêmica
+## Projeto II - Gestão de Biblioteca Acadêmica
 
 Este projeto é uma atividade de avaliação da disciplina de Programação Web, parte do Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal de São Paulo (IFSP), Câmpus Boituva. A disciplina é ministrada pelo **Prof. Dr. Anisio Silva**. 
 
@@ -8,7 +8,7 @@ O principal objetivo é desenvolver uma API (Interface de Programação de Aplic
 
 ## Arquitetura e Tecnologia
 
-A API está sendo construída com base na arquitetura **MVC (Model-View-Controller)**, utilizando **TypeScript** em conjunto com o framework **Express.js**. Para a persistência dos dados, serão utilizados **arrays em memória**, sem a necessidade de um banco de dados externo. É importante notar que o projeto proíbe o uso de herança entre classes. 
+A API está sendo construída com base na arquitetura **MVC (Model-View-Controller)**, utilizando **TypeScript** em conjunto com o framework **Express.js**. Para a persistência dos dados, serão utilizados **arrays em memória**, sem a necessidade de um banco de dados externo. É importante notar que o projeto proíbe o uso de herança entre classes. Na segunda versão, a persistência dos dados, foi utilizado o SGDB MySQL, com a implementação direta de queries SQL, sem o uso de um ORM (Object-Relational Mapping). É importante notar que o projeto proíbe o uso de herança entre classes. A documentação da API será realizada utilizando Swagger, garantindo clareza e facilidade de consumo dos endpoints.
 
 ## Funcionalidades Principais
 
